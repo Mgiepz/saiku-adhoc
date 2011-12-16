@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>adhoc</title>
+
+		
+		 <!-- Blueprint CSS -->
+        <!--link rel="stylesheet" href="css/blueprint/src/reset.css" type="text/css" media="screen, projection"-->
+        <link rel="stylesheet" href="css/blueprint/src/typography.css" type="text/css" media="screen, projection">
+        <link rel="stylesheet" href="css/blueprint/src/forms.css" type="text/css" media="screen, projection">
+        <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/src/ie.css" type="text/css" media="screen, projection"><![endif]-->
+ 		<link rel="stylesheet" href="js/jquery/dataTables/css/demo_page.css" type="text/css" media="screen, projection">    
+ 		<link rel="stylesheet" href="js/jquery/dataTables/css/demo_table.css" type="text/css" media="screen, projection">    
+      
+        <!--  jQuery CSS -->
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css" type="text/css" media="all" />
+        <link rel="stylesheet" type="text/css" href="js/jquery/jcarousel/skins/IE7/skin.css" />
+		<link rel="stylesheet" type="text/css" href="js/jquery/colorpicker/css/colorpicker.css" />
+		<link rel="stylesheet" type="text/css" href="js/jquery/colorpicker/css/saiku.css" />
+        <link rel="stylesheet" type="text/css" href="js/jquery/treeview/jquery.treeview.css" />
+             
+        <!-- Saiku CSS -->
+        <link rel="stylesheet" href="css/saiku/src/styles.css" type="text/css">
+        <link rel="stylesheet" href="css/saiku/src/editor.css" type="text/css">
+
+
+
+		<link rel="stylesheet" href="js/jquery/jquery-formbuilder-0.1.css" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.ico">
+		
+	</head>
+	<body>
+
+		<div id="header" class="hide">
+		</div>
+
+		<div class="processing_container">
+		</div>	
+		<div class="processing">
+			<div class="processing_inner">
+				<span class="processing_image">&nbsp;</span>
+				<span class="processing_message">Loading...</span>
+			</div>
+		</div>
+
+		<!--  jQuery, jQuery UI -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+		<!--script src="js/adhoc/jquery-min.js"></script-->
+		<script type="text/javascript" src="js/jquery/dataTables/js/jquery.dataTables.js"></script>
+		
+		<script>typeof(window.jQuery) !== "undefined" || document.write('<script src="js/jquery/jquery-min.js"><\/script>')</script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js" type="text/javascript"></script>
+		<script>typeof(window.jQuery.ui) !== "undefined" || document.write('<script src="js/jquery/jquery-ui.min.js"><\/script>')</script>
+		<script type="text/javascript" src="js/jquery/dataTables/js/jquery.dataTables.js"></script-->
+		<!-- Backbone.js and deps -->
+		<!--script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.1.7/underscore.js"></script>
+		<script>typeof(_) !== "undefined" || document.write('<script src="js/backbone/underscore.js"><\/script>')</script>
+		<script type="text/javascript" src="js/backbone/json2.js"></script>
+		<script src="js/jquery/jquery.highlight.js" type="text/javascript"></script>
+        <script src="js/jquery/jquery-editInPlace-v2.2.1/lib/jquery.editinplace.js" type="text/javascript"></script>
+		<!--script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.5.1/backbone-min.js"></script-->
+		<!--script>typeof(Backbone) !== "undefined" || document.write('<script src="js/backbone/backbone.js"><\/script>')</script-->
+
+		<script type="text/javascript" src="js/jquery/jcarousel/lib/jquery.jcarousel.min.js"></script>
+		<script type="text/javascript" src="js/jquery/jquery.cycleClass.js"></script>
+		<script type="text/javascript" src="js/jquery/Fontpicker.js"></script>
+		<script type="text/javascript" src="js/jquery/colorpicker/js/colorpicker.js"></script>
+		<script type="text/javascript" src="js/jquery/treeview/jquery.treeview.js"></script>
+		
+		<script src="js/backbone/backbone.js"></script>
+
+		<script src="js/adhoc/models/Session.js"></script>
+		<script src="js/adhoc/models/Properties.js"></script>
+		<script src="js/adhoc/models/MdModel.js"></script>
+		<script src="js/adhoc/models/QueryAction.js"></script>
+		<script src="js/adhoc/models/Query.js"></script>
+		<script src="js/adhoc/models/Result.js"></script>
+		<script src="js/adhoc/models/ReportResult.js"></script>
+		<script src="js/adhoc/models/InplaceEdit.js"></script>
+		<script src="js/adhoc/models/Repository.js"></script>
+		<script src="js/adhoc/models/FileTree.js"></script>
+		<script src="js/adhoc/views/Workspace.js"></script>
+		<script src="js/adhoc/views/WorkspaceDropZone.js"></script>
+		<script src="js/adhoc/views/ElementFormatPanel.js"></script>
+		<script src="js/adhoc/views/WorkspaceToolbar.js"></script>
+		<script src="js/adhoc/views/Tab.js"></script>
+		<script src="js/adhoc/views/Table.js"></script>
+		<script src="js/adhoc/views/Modal.js"></script>
+		<script src="js/adhoc/views/ExportFileModal.js"></script>
+		<script src="js/adhoc/views/SelectionsModal.js"></script>
+		<script src="js/adhoc/views/ColumnConfigModal.js"></script>
+		<script src="js/adhoc/views/SetupTemplate.js"></script>
+		<script src="js/adhoc/views/Report.js"></script>
+		<script src="js/adhoc/views/MdModelList.js"></script>
+		<script src="js/adhoc/Settings.js"></script>
+		<script src="js/adhoc/Application.js"></script>
+		<script src="js/adhoc/routers/QueryRouter.js"></script>
+	    <script src="js/adhoc/plugins/BIServer/plugin.js" defer></script>
+
+		<!-- Templates -->
+		<script type="text/x-jquery-tmpl" id="template-models">
+			<select class="mdModels">
+			<option value="">Select a Model</option>
+			<% _.each(mdModelInfos, function(mdModelInfo) { %>
+			<option value="<%= mdModelInfo.domainId %>/<%= mdModelInfo.modelId %>"><%= mdModelInfo.modelName %></option>
+			<% }); %>
+			</select>
+		</script>
+
+        <script type="text/x-jquery-tmpl" id="template-md-model">
+        <ul>
+        <% _.each(mdModel.categories, function(category) { %>
+        	<li class='parent_dimension'>
+                <span class="root collapsed sprite"></span>
+                    <a class="folder_collapsed sprite" href="#"><%= category.name %></a>            
+                <ul>     
+					<% _.each(category.columns, function(column) { %>
+                        <li class="hide"><a title="<%= column.name %>" 
+                            class="dimension" href="#CATEGORY/<%= category.id %>/COLUMN/<%= column.id %>"><%= column.name %></a>
+                        </li>
+					<% }); %>                       
+                </ul>	
+              </li>	
+        <% }); %>
+        </ul>
+        </script>
+        
+        <script type="text/x-jquery-tmpl" id="template-resultlist">
+        <ul>
+            <li>
+                <span class="root expand sprite"></span>
+                   <a href="#" title="Result" class="folder_expand sprite">User Filters</a>               
+                <ul>
+                <% _.each(measures, function(measure) { %>
+                    <li><a title="[Measures].[<%= measure.name %>]" 
+                        class="measure" href="#Measures/member/<%= measure.uniqueName %>"><%= measure.name %></a>
+                    </li>
+                <% }); %>
+                </ul>
+            </li>
+        </ul>
+        </script>
+ 
+        <script type="text/x-jquery-tmpl" id="template-workspace-dropzones">
+        <div class="workspace_fields">
+            <div class="fields_list" title="COLUMNS">
+                <div class="fields_list_header i18n">Columns</div>
+                <div class="fields_list_body columns">
+                    <ul class="connectable"></ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="fields_list" title="GROUPS">
+                <div class="fields_list_header i18n">Groups</div>
+                <div class="fields_list_body group">
+                    <ul class="connectable">
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="fields_list" title="FILTERS">
+                <div class="fields_list_header i18n">Filters</div>
+                <div class="fields_list_body filter">
+                    <ul class="connectable">
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div-->
+        </div>
+        </script>
+        
+       <script type="text/x-jquery-tmpl" id="template-edit-panel-details">     
+                <div>Details Editor</div>
+        </script>
+
+       <script type="text/x-jquery-tmpl" id="template-edit-panel-details-header">     
+                <div>Details Header Editor</div>
+        </script>
+
+		<script type="text/x-jquery-tmpl" id="template-workspace">
+			<div class="workspace">
+			<div class="workspace_inner">
+			<div class="workspace_toolbar"></div>
+			<div class="workspace_results"></div>
+			<div class="workspace_report">
+				<div class="workspace_report_sidebar">
+				<div class="workspace_report_template">
+					<h3 class="top i18n">Report Template</h3>
+					<div id="template-carousel" class="jcarousel-skin-ie7" style="text-align:center">
+         			<ul>
+         			</ul>
+  				</div>
+				</div>	
+				<div class="workspace_report_editor">
+					<h3 class="top i18n">Edit Report Element</h3>
+					<div id="edit_panel"></div>
+				</div>
+				</div>
+				<div class="workspace_report_canvas" style="left:auto; right:auto">
+			</div>			
+			</div>
+			</div>
+			</div>		
+			<div class="sidebar">
+			<h3 class="top i18n">Models</h3>
+			<div class="sidebar_inner">
+			<%= model_navigation %>
+			</div>
+			<h3 class="i18n">Categories</h3>
+			<div class="sidebar_inner category_tree"></div>
+			<h3 class="i18n">User Filters</h3>
+			<div class="sidebar_inner resultlist_tree"></div>
+			</div>
+			
+			<div class="sidebar_separator"></div>
+			<div class="clear"></div>
+		</script>
+		
+		<script type="text/x-jquery-tmpl" id="template-workspace-toolbar">
+        <ul>
+            <li><a href="#save_query" 
+                class="i18n save button disabled_toolbar sprite" 
+                title="Save query"></a></li>
+            <li class="seperator"><a href="#run_query" 
+                class="i18n run button disabled_toolbar sprite" 
+                title="Run query"></a></li>
+             <li><a href="#automatic_execution" 
+                class="i18n auto button disabled_toolbar sprite" 
+                title="Automatic execution"></a></li>
+             <li><a href="#toggle_fields" 
+                class="i18n toggle_fields button sprite"
+                title="Toggle fields"></a></li>
+            <li><a href="#toggle_sidebar" 
+                class="i18n toggle_sidebar button sprite" 
+                title="Toggle sidebar"></a></li>
+            <li class="seperator"><a href="#calculated_column" 
+                class="i18n formula button  sprite" 
+                title="Add Calculated Column"></a></li>
+            <li><a href="#add_union" 
+                class="i18n union button sprite" 
+                title="Add Union"></a></li>
+            <li><a href="#add_join" 
+                class="i18n join button  sprite" 
+                title="Add Join"></a></li>
+            <li class="seperator"><a href="#export_xls" 
+                class="i18n export_xls button  sprite" 
+                title="Export XLS"></a></li>
+            <li><a href="#export_csv" 
+                class="i18n export_csv button  sprite" 
+                title="Export CSV"></a></li>
+            <li class="seperator"><a href="#toggle_report" 
+                class="i18n report button sprite" 
+                title="Report Designer"></a></li>
+            <li><a href="#export_csv" 
+                class="i18n xls_form button sprite" 
+                title="Excel Forms"></a></li>
+            <li><a href="#export_prpt" 
+                class="i18n prpt button sprite" 
+                title="Export PRPT"></a></li>
+            <li><a href="#export_cda" 
+                class="i18n cda button sprite" 
+                title="Export CDA"></a></li>
+            <li class="seperator">
+            	<div class="rowlimit">					
+					<div style="float: left">Row Limit  </div>
+            		<select style="margin: 0px; margin-left: 10px">
+		    			<option value="-1">NONE</option>
+		    			<option value="10">10</option>
+		    			<option value="100">100</option>
+		    			<option value="1000">1000</option>
+		    		</select>	
+            	</div>
+            </li>
+        </ul>
+        </script>
+        
+        <script type="text/x-jquery-tmpl" id="template-selections">
+            <div class="available_selections">
+                Available values:<br/>
+                <select multiple disabled>
+                </select>
+            </div>
+            <div class="selection_buttons">
+                <a class="form_button" href="#move_selection" id="add_members">&nbsp;&gt;&nbsp;</a><br><br>
+                <a class="form_button" href="#move_selection" id="add_all_members">&gt;&gt;</a><br><br>
+                <a class="form_button" href="#move_selection" id="remove_all_members">&lt;&lt;</a><br><br>
+                <a class="form_button" href="#move_selection" id="remove_members">&nbsp;&lt;&nbsp;</a>
+            </div>
+            <div class="used_selections">
+                Selected values:<br/>
+                <select multiple disabled></select>
+            </div>
+        </script>
+        
+         <script type="text/x-jquery-tmpl" id="template-datefilter">
+            <div class="datepick datepicker_from">
+                Period From:
+            </div>
+            <div class="datepick datepicker_to">
+                Period To:
+            </div>
+        </script>
+        
+        <script type="text/x-jquery-tmpl" id="template-column-setup">
+        	<div style="text-align:center">
+            <div id="displayname"> 
+            	Display Name:<br/>
+            	<input id="name">
+                </input>
+            </div>
+            <div id="formula" class="hide"> 
+            	Formula:<br/>
+            	 <textarea class="formula" style="resize: none;" name="formula" cols="4" rows="5"></textarea>
+            </div>               
+            <div id="format"> 
+            	Format:<br/>
+            	<input id="formatMask" disabled>
+                </input>
+            </div>    
+            <div id="aggregation"> 
+            	Aggregation:<br/>
+            	<select id="selectedAggType">
+                </select>
+            </div>
+            <div id="summary"> 
+            	Summary:<br/>
+            	<select id="selectedSummaryType">
+                </select>
+            </div>
+            </div>     
+        </script>
+        
+        <script type="text/x-jquery-tmpl" id="report-setup">
+        	<div style="text-align:center">
+         		<div id="template-carousel" class="jcarousel-skin-ie7" style="text-align:center">
+         			<ul>
+         			</ul>
+  				</div>
+  				<div id="limit"> 
+            	Query Limit:<br/>
+            	<input id="limit_input" disabled>
+                </input>
+            </div>    
+            </div>     
+        </script>
+	</body>
+</html>

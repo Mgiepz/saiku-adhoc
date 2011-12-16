@@ -1,0 +1,12 @@
+*.project
+mvn_build.bat
+build_deploy.bat
+winter.prpt
+target/
+node_modules/
+saiku-adhoc-core/target/
+saiku-adhoc-plugin/target/
+saiku-adhoc-webapp/target/
+*.DS_Store
+/.settings
+/.project

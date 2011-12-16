@@ -1,0 +1,5 @@
+-You need to have cda installed
+-Copy the web part to the server manually
+-Copy cda-datasource jar from dev-lib to web-inf/lib until pentaho includes it
+ 
+For questions join us at ##saiku on freenode

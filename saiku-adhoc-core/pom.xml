@@ -1,0 +1,479 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.saiku</groupId>
+  <artifactId>saiku-adhoc-core</artifactId>
+  <version>2.2-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  	<properties>
+		<spring.version>3.0.3.RELEASE</spring.version>
+		<spring.security.version>3.0.3.RELEASE</spring.security.version>
+		<spring.security.tiger.version>2.0.6.RELEASE</spring.security.tiger.version>
+	</properties>
+   <repositories>
+     <repository>
+        <id>repo.pentaho.org</id>
+        <name>repo.pentaho.org-releases</name>
+        <url>http://repository.pentaho.org/artifactory/pentaho</url>
+         <snapshots>
+           <enabled>true</enabled>
+        </snapshots>
+    </repository>
+
+        <repository>
+        <id>repo.pentaho.org2</id>
+        <name>sona</name>
+        <url>http://repo.pentaho.org/artifactory/third-party/</url>
+         <snapshots>
+           <enabled>true</enabled>
+        </snapshots>
+    </repository>
+            <repository>
+        <id>java.net</id>
+        <name>java</name>
+        <url>http://download.java.net/maven/2/</url>
+         <snapshots>
+           <enabled>true</enabled>
+        </snapshots>
+    </repository>
+        <repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>repo</name>
+          <url>http://repo.analytical-labs.com/repo</url>
+        </repository>
+ </repositories>
+    <build>
+   <plugins>
+   					<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<executions>
+<!--					<execution>
+						<id>surefire-it</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skip>false</skip>
+						</configuration>
+					</execution>-->
+				</executions>
+			</plugin>
+
+		
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<!--
+					<configuration> <contextPath>/</contextPath>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<stopKey>sparklr</stopKey> <stopPort>9999</stopPort>
+					</configuration> <executions> <execution> <id>start-jetty</id>
+					<phase>pre-integration-test</phase> <goals> <goal>run</goal>
+					</goals> <configuration>
+					<scanIntervalSeconds>0</scanIntervalSeconds> <daemon>true</daemon>
+					</configuration> </execution> <execution> <id>stop-jetty</id>
+					<phase>post-integration-test</phase> <goals> <goal>stop</goal>
+					</goals> </execution> </executions>
+				-->
+			</plugin>
+
+
+    <plugin>
+    
+      <artifactId>maven-compiler-plugin</artifactId>
+      <configuration>
+        <source>1.5</source>
+        <target>1.5</target>
+      </configuration>
+    </plugin>
+
+  </plugins>
+  </build>
+  <dependencies>
+  <dependency>
+	<groupId>commons-httpclient</groupId>
+	<artifactId>commons-httpclient</artifactId>
+	<version>3.1</version>
+</dependency>
+            <dependency>
+	<groupId>org.json</groupId>
+	<artifactId>json</artifactId>
+	<version>20080701</version>
+</dependency>
+            
+  		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${spring.security.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+				<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!--
+			<dependency> <groupId>org.springframework</groupId>
+			<artifactId>spring-dao</artifactId> <version>2.0.3</version>
+			</dependency>
+		-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core-tiger</artifactId>
+			<version>${spring.security.tiger.version}</version>
+			<exclusions>
+				<!--we'll depend on enunciate's version of these artifacts.-->
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-aop</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<!--
+					<exclusion> <groupId>org.springframework</groupId>
+					<artifactId>spring-dao</artifactId> </exclusion>
+				-->
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+    <groupId>pentaho</groupId>
+    <artifactId>pentaho-connections</artifactId>
+    <version>2.2.1</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-library</groupId>
+    <artifactId>libloader</artifactId>
+    <version>1.2.3</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-library</groupId>
+    <artifactId>libbase</artifactId>
+    <version>1.2.2</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-reporting-engine</groupId>
+    <artifactId>pentaho-reporting-engine-classic-core</artifactId>
+    <version>3.8-SNAPSHOT</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-library</groupId>
+    <artifactId>libserializer</artifactId>
+    <version>1.2.2</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-library</groupId>
+    <artifactId>libformula</artifactId>
+    <version>1.2.0</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-library</groupId>
+    <artifactId>libfonts</artifactId>
+    <version>1.2.3</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-library</groupId>
+    <artifactId>libformat</artifactId>
+    <version>1.2.4</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-library</groupId>
+    <artifactId>libdocbundle</artifactId>
+    <version>1.2.3</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-library</groupId>
+    <artifactId>libxml</artifactId>
+    <version>1.2.2</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-library</groupId>
+    <artifactId>librepository</artifactId>
+    <version>1.2.3</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-reporting-engine</groupId>
+    <artifactId>pentaho-reporting-engine-classic-extensions-mondrian</artifactId>
+    <version>3.8.3-GA</version>
+</dependency>
+<dependency>
+    <groupId>pentaho</groupId>
+    <artifactId>mondrian</artifactId>
+    <version>3.2.0.13658</version>
+</dependency>
+    <dependency>
+      <groupId>net.sf.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+      <version>1.6.2</version>
+    </dependency>
+<dependency>
+	<groupId>javax.activation</groupId>
+	<artifactId>activation</artifactId>
+	<version>1.1-rev-1</version>
+</dependency>
+ <dependency>
+	<groupId>commons-logging</groupId>
+	<artifactId>commons-logging</artifactId>
+	<version>1.1.1</version>
+</dependency>
+<dependency>
+	<groupId>hsqldb</groupId>
+	<artifactId>hsqldb</artifactId>
+	<version>1.8.0.10</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-reporting-engine</groupId>
+    <artifactId>pentaho-reporting-engine-classic-extensions-pmd</artifactId>
+    <version>3.8.3-GA</version>
+</dependency>
+<dependency>
+	<groupId>org.beanshell</groupId>
+	<artifactId>bsh</artifactId>
+	<version>2.0b4</version>
+</dependency>
+            <dependency>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi</artifactId>
+	<version>3.1-FINAL</version>
+</dependency>
+            
+<dependency>
+    <groupId>pentaho</groupId>
+    <artifactId>pentaho-metadata</artifactId>
+    <version>3.4.3</version>
+</dependency>
+<dependency>
+    <groupId>itext</groupId>
+    <artifactId>itext</artifactId>
+    <version>1.5.2</version>
+</dependency>
+<dependency>
+    <groupId>org.jgroups</groupId>
+    <artifactId>jgroups</artifactId>
+    <version>2.12.0.CR5</version>
+</dependency>
+<dependency>
+    <groupId>pentaho</groupId>
+    <artifactId>pentaho-bi-platform-api</artifactId>
+    <version>3.9.0-stable</version>
+    
+</dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+          <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5-20081211</version>
+      </dependency>
+    <dependency>
+    <groupId>pentaho</groupId>
+    <artifactId>cda</artifactId>
+    <version>TRUNK-SNAPSHOT</version>
+</dependency>
+    <dependency>
+    	<groupId>xerces</groupId>
+    	<artifactId>xmlParserAPIs</artifactId>
+    	<version>2.6.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>xerces</groupId>
+    	<artifactId>xercesImpl</artifactId>
+    	<version>2.9.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>mysql</groupId>
+    	<artifactId>mysql-connector-java</artifactId>
+    	<version>5.1.18</version>
+    </dependency>
+    		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-core</artifactId>
+			<version>1.6</version>
+		</dependency>
+		 <dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+    <groupId>pentaho</groupId>
+    <artifactId>pentaho-bi-platform-util</artifactId>
+    <version>3.9.0-stable</version>
+</dependency>
+<dependency>
+    <groupId>pentaho</groupId>
+    <artifactId>pentaho-bi-platform-engine-core</artifactId>
+    <version>3.9.0-stable</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-reporting-engine</groupId>
+    <artifactId>pentaho-reporting-engine-classic-extensions-cda</artifactId>
+    <version>TRUNK-SNAPSHOT</version>
+</dependency>
+<dependency>
+    <groupId>pentaho-reporting-engine</groupId>
+    <artifactId>pentaho-reporting-engine-wizard-core</artifactId>
+    <version>3.8.3-GA</version>
+</dependency>
+<dependency>
+	<groupId>org.codehaus.jackson</groupId>
+	<artifactId>jackson-jaxrs</artifactId>
+	<version>1.8.5</version>
+</dependency>
+            <dependency>
+    <groupId>pentaho-reporting-engine</groupId>
+    <artifactId>pentaho-reporting-engine-classic-core-platform-plugin</artifactId>
+    <version>4.0.0-stable</version>
+    <exclusions>
+    <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+				</exclusions>
+</dependency>
+            <dependency>
+            	<groupId>org.slf4j</groupId>
+            	<artifactId>slf4j-jdk14</artifactId>
+            	<version>1.6.4</version>
+            </dependency>
+            <dependency>
+			<groupId>org.codehaus.enunciate</groupId>
+			<artifactId>enunciate-gwt-rt</artifactId>
+			<version>1.21</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.enunciate</groupId>
+			<artifactId>enunciate-jersey-rt</artifactId>
+			<version>1.21</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.enunciate</groupId>
+			<artifactId>enunciate-amf-rt</artifactId>
+			<version>1.21</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.enunciate</groupId>
+			<artifactId>enunciate-obj-c</artifactId>
+			<version>1.21</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.enunciate</groupId>
+			<artifactId>enunciate-c</artifactId>
+			<version>1.21</version>
+		</dependency>
+            		<dependency>
+			<groupId>com.sun.jersey.jersey-test-framework</groupId>
+			<artifactId>jersey-test-framework-core</artifactId>
+			<version>1.6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+        <groupId>com.sun.jersey.contribs</groupId>
+        <artifactId>jersey-spring</artifactId>
+        <version>1.6</version>
+        <exclusions>
+				<!--we'll depend on enunciate's version of these artifacts.-->
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-aop</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<!--
+					<exclusion> <groupId>org.springframework</groupId>
+					<artifactId>spring-dao</artifactId> </exclusion>
+				-->
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+			</exclusions>
+      </dependency>
+      
+      <dependency>
+    <groupId>com.pentaho</groupId>
+    <artifactId>robochef</artifactId>
+    <version>0.9.5</version>
+</dependency>
+<dependency>
+	<groupId>net.sourceforge.jexcelapi</groupId>
+	<artifactId>jxl</artifactId>
+	<version>2.6.12</version>
+</dependency>
+            <dependency>
+            <groupId>commons-vfs</groupId>
+            <artifactId>commons-vfs</artifactId>
+            <version>1.0</version>
+            </dependency>
+  </dependencies>
+  
+</project>

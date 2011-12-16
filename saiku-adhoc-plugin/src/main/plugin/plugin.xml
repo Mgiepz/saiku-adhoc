@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin title='Saiku-Adhoc' loader="OVERRIDING">
+
+<menu-items>
+<menu-item id="new-adhoc" anchor="file-new-submenu" label="Saiku-Adhoc"
+command="content/saiku-adhoc/web/index.html" type="MENU_ITEM" how="LAST_CHILD" />
+</menu-items>
+
+<content-type type="adhoc" mime-type="text/html">
+<title>Saiku Adhoc</title>
+<description>Saiku Adhoc query definition file</description>
+<icon-url>content/saiku-ui/images/src/saiku_16.png</icon-url>
+<meta-provider>org.saiku.adhoc.service.AdhocContentTypeMetaProvider</meta-provider>
+<operations>
+<operation>
+<id>RUN</id>
+<command>content/saiku-adhoc/web/index.html?solution={solution}&amp;path={path}&amp;action={name}&amp;biplugin=true#query/open/{name}</command>
+</operation>
+<operation>
+<id>EDIT</id>
+<command>content/saiku-adhoc/web/index.html?solution={solution}&amp;path={path}&amp;action={name}&amp;biplugin=true#query/open/{name}</command>
+</operation>
+<operation>
+         <id>NEWWINDOW</id>
+<command>content/saiku-adhoc/web/index.html?solution={solution}&amp;path={path}&amp;action={name}&amp;biplugin=true#query/open/{name}</command>
+         </operation>
+</operations>
+</content-type>
+
+
+   <static-paths>
+     <static-path url="/saiku-adhoc/web" localFolder="web"/>
+     <static-path url="/saiku-adhoc/web/js/templates" localFolder="web/js/templates"/>
+     <static-path url="/saiku-adhoc/web/js" localFolder="web/js"/>
+     <static-path url="/saiku-adhoc/resources" localFolder="resources/templates"/>
+  <static-path url="/saiku-adhoc/web/css" localFolder="web/css" />
+   <static-path url="/saiku-adhoc/web/images" localFolder="web/images" />
+
+     
+   </static-paths>
+   
+    <content-generator scope="session" id="adhoc-service" type="adhoc-service">
+        <classname>org.saiku.adhoc.service.SaikuAdhocContentGenerator</classname>
+        <title>saiku-adhoc</title>
+    </content-generator>
+    
+<!--content-generator id="querybuilderui" title="Query-Builder" type="qbi" class="org.saiku.adhoc.service.AdocReportingContentGenerator" /-->
+<content-generator id="saiku-adhoc" title="fa la la la la, la la la la" type="notused" class="org.saiku.adhoc.service.ServletAdapterContentGenerator"/>
+
+<lifecycle-listener class="org.saiku.adhoc.utils.AdhocLifecycleListener"/>
+
+</plugin>
