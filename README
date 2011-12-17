@@ -1,5 +1,14 @@
--You need to have cda installed
--Copy the web part to the server manually
--Copy cda-datasource jar from dev-lib to web-inf/lib until pentaho includes it
- 
+First build the UI project from git@github.com:Mgiepz/saiku-adhoc-ui.git by checking it out and running:
+mvn clean package  install:install-file -Dfile=target/saiku-adhoc-ui-2.2-SNAPSHOT.war  -DgroupId=org.saiku -DartifactId=saiku-adhoc-ui -Dversion=2.2-SNAPSHOT -Dpackaging=war
+
+Then checkout https://github.com/Mgiepz/saiku-adhoc.git, cd into saiku-adhoc-core and run:
+mvn clean install
+
+Then if all went well cd into saiku-adhoc-plugin and run:
+mvn clean package
+
+In the resulting "target" directory you will find a saiku-adhoc-plugin-2.2-SNAPSHOT.zip file.
+
+Extract this into pentaho-solutions/system
+
 For questions join us at ##saiku on freenode
