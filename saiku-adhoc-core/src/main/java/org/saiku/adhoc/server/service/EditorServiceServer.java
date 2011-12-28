@@ -21,6 +21,7 @@
 package org.saiku.adhoc.server.service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
@@ -29,7 +30,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
-import org.saiku.adhoc.exceptions.ModelException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
 import org.saiku.adhoc.server.datasource.ICDAManager;
@@ -55,13 +56,18 @@ public class EditorServiceServer extends EditorService {
 	
 	@Override
 	public void createNewModel(String sessionId, MetadataModelInfo modelInfo)
-	throws ModelException, JsonParseException, JsonMappingException, IOException {
+	throws SaikuAdhocException {
 
 	    SaikuMasterModel masterModel = null;
 		
+	    try {
+	    
 		if(modelInfo.getJson()==null){
 			
-			String domainId = URLDecoder.decode(modelInfo.getDomainId(), "UTF-8");
+			String domainId;
+			
+				domainId = URLDecoder.decode(modelInfo.getDomainId(), "UTF-8");
+			
 			Domain domain = metadataService.getDomain(domainId);
 			LogicalModel model = metadataService.getLogicalModel(domainId,
 					modelInfo.getModelId());
@@ -88,6 +94,12 @@ public class EditorServiceServer extends EditorService {
 		sessionHolder.getModel(sessionId).setClientModelSelection(
 				URLEncoder.encode(masterModel.getDerivedModels().getDomain().getId(), "UTF-8")
 				+ "/" + masterModel.getDerivedModels().getLogicalModel().getId());
+		
+		} catch (Exception e) {
+			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - " + e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
+			log.error(message, e);
+			throw new SaikuAdhocException("Encoding not supported", e);
+		}
 		
 		if (log.isDebugEnabled()) {
 			log.debug("SERVICE:EditorService " + sessionId + " createNewModel\n" + sessionHolder.logModel(sessionId));

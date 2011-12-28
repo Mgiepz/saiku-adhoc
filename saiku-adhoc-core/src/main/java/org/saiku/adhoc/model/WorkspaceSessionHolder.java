@@ -28,7 +28,8 @@ import javax.naming.OperationNotSupportedException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
-import org.saiku.adhoc.exceptions.ModelException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.QueryException;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuColumn;
@@ -48,15 +49,15 @@ import org.saiku.adhoc.service.repository.IRepositoryHelper;
  * 
  */
 public class WorkspaceSessionHolder {
-	
+
 	private IRepositoryHelper repository;
-	
+
 	private static final String solution = "system";
-	
+
 	private static final String path = "saiku-adhoc/temp";
-	
+
 	private Map<String, SaikuMasterModel> models = new HashMap<String, SaikuMasterModel>();
-	
+
 	public void initSession(SaikuMasterModel masterModel, String sessionId) {
 
 		// TODO: Move and make configurable
@@ -66,9 +67,9 @@ public class WorkspaceSessionHolder {
 		masterModel.setReportTemplate(new ReportTemplate(solution, path, name));
 
 		models.put(sessionId, masterModel);
-		
+
 	}
-	
+
 	public void setRepositoryHelper(IRepositoryHelper repository) {
 		this.repository = repository;
 	}
@@ -86,32 +87,32 @@ public class WorkspaceSessionHolder {
 		StringBuffer string = new StringBuffer();
 
 		final SaikuMasterModel smm = models.get(sessionId);
-		
+
 		string.append("\nMASTER-MODEL\nCOLUMNS:\n");
-		
+
 		final List<SaikuColumn> columns = smm.getColumns();
 		for (SaikuColumn saikuColumn : columns) {
 			string.append(saikuColumn.toString()+ "\n");
 		}
-		
+
 		final List<SaikuGroup> groups = smm.getGroups();
-		
+
 		string.append("GROUPS:\n");
 		for (SaikuGroup saikuGroup : groups) {
 			string.append(saikuGroup.toString()+ "\n");
 		}
-		
+
 		string.append("FILTERS:\n");
 		final List<SaikuParameter> parameters = smm.getParameters();
 		for (SaikuParameter saikuParameter : parameters) {
 			string.append(saikuParameter.toString()+ "\n");
 		}
-		
+
 		return string.toString();
 	}
 
 	public void materializeModel(String sessionId) {
-		
+
 		SaikuMasterModel model = this.getModel(sessionId);
 
 		String action = sessionId + ".cda";
@@ -119,20 +120,23 @@ public class WorkspaceSessionHolder {
 		//Save the cda first
 		try {
 			model.deriveModels();
-			
+
 			repository.writeFile(solution, path, action, model.getCdaSettings().asXML());
-		 } catch (ModelException e) {
-		         // TODO Auto-generated catch block
-		         e.printStackTrace();
-		     } catch (OperationNotSupportedException e) {
-		         e.printStackTrace();
-		     } catch (IOException e) {
-		         e.printStackTrace();
-		     } catch (TransformerFactoryConfigurationError e) {
-		         e.printStackTrace();
-		     } catch (TransformerException e) {
-		         e.printStackTrace();
-		     }
+		} catch (SaikuAdhocException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OperationNotSupportedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (TransformerFactoryConfigurationError e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		} catch (ResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 }

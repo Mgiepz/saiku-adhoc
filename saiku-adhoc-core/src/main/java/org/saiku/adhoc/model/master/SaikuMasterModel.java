@@ -20,6 +20,7 @@
 
 package org.saiku.adhoc.model.master;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,8 @@ import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.query.model.Query;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
-import org.saiku.adhoc.exceptions.ModelException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.transformation.TransModelToCda;
 import org.saiku.adhoc.model.transformation.TransModelToParams;
 import org.saiku.adhoc.model.transformation.TransModelToQuery;
@@ -49,11 +51,11 @@ public class SaikuMasterModel {
 	protected List<SaikuMessage> reportHeaderMessages;
 
 	protected List<SaikuMessage> reportFooterMessages;
-	
+
 	protected List<SaikuMessage> pageHeaderMessages;
-	
+
 	protected List<SaikuMessage> pageFooterMessages;
-	
+
 
 	protected List<SaikuGroup> groups;
 
@@ -62,20 +64,20 @@ public class SaikuMasterModel {
 	protected List<String> sortColumns;
 
 	private String reportTitle;
-	
+
 	protected String clientModelSelection;
-	
+
 	protected SaikuReportSettings settings;
 
 	@JsonIgnore
-    protected DerivedModelsCollection derivedModels;
+	protected DerivedModelsCollection derivedModels;
 
 
-	public void init(Domain domain, LogicalModel model, String sessionId) throws ModelException{
+	public void init(Domain domain, LogicalModel model, String sessionId) throws SaikuAdhocException{
 
 		this.derivedModels = new DerivedModelsCollection(sessionId, domain, model);
 		derivedModels.init();
-		
+
 		this.settings = new SaikuReportSettings();
 
 		if(this.clientModelSelection==null){
@@ -84,23 +86,23 @@ public class SaikuMasterModel {
 			this.groups = new ArrayList<SaikuGroup>();
 			this.parameters = new ArrayList<SaikuParameter>();
 			this.sortColumns = new ArrayList<String>();
-			
+
 			this.reportHeaderMessages = new ArrayList<SaikuMessage>();
 
 			this.reportFooterMessages = new ArrayList<SaikuMessage>();
-			
+
 			this.pageHeaderMessages = new ArrayList<SaikuMessage>();
-			
+
 			this.pageFooterMessages = new ArrayList<SaikuMessage>();
-			
+
 		}
 
 	}
 
-	
+
 	public SaikuMasterModel() {
 		super();
-		
+
 	}
 
 	private Object readResolve() {
@@ -114,7 +116,7 @@ public class SaikuMasterModel {
 
 		String solution = "system";
 		String path = "saiku-adhoc/temp";
-	 
+
 		String action = this.derivedModels.getSessionId() + ".cda";
 
 		return solution + "/" + path + "/" + action;
@@ -133,23 +135,23 @@ public class SaikuMasterModel {
 	public DerivedModelsCollection getDerivedModels() {
 		return derivedModels;
 	}
-	
+
 	public void setReportTitle(String reportTitle) {
 		this.reportTitle = reportTitle;
 	}
-	
+
 	public String getReportTitle() {
 		return reportTitle;
 	}
-	
+
 	public List<SaikuColumn> getColumns() {
 		return columns;
 	}
-	
+
 	public List<SaikuGroup> getGroups() {
 		return groups;
 	}
-	
+
 	public List<String> getSortColumns() {
 		return sortColumns;
 	}
@@ -157,9 +159,11 @@ public class SaikuMasterModel {
 
 	/**
 	 * This method will sync the derived models in the correct order
-	 * @throws ModelException 
+	 * @throws SaikuAdhocException 
+	 * @throws IOException 
+	 * @throws ResourceException 
 	 */
-	public void deriveModels() throws ModelException{
+	public void deriveModels() throws SaikuAdhocException, ResourceException, IOException{
 
 		//Query -> ok!
 		TransModelToQuery transQuery = new TransModelToQuery();
@@ -183,18 +187,16 @@ public class SaikuMasterModel {
 			wizardSpec = transWizard.doIt(this);
 			this.derivedModels.setWizardSpec(wizardSpec);
 		} catch (Exception e1) {
-			throw new ModelException();
+			throw new SaikuAdhocException();
 		}
 
 		//Prpt
 		TransModelToReport transReport = new TransModelToReport();
 		MasterReport reportTemplate;
-		try {
-			reportTemplate = transReport.doIt(this);
-			this.derivedModels.setReportTemplate(reportTemplate);
-		} catch (Exception e) {
-			throw new ModelException();
-		}
+
+		reportTemplate = transReport.doIt(this);
+		this.derivedModels.setReportTemplate(reportTemplate);
+
 
 
 	}
@@ -222,7 +224,7 @@ public class SaikuMasterModel {
 	public void setParameters(ArrayList<SaikuParameter> parameters) {
 		this.parameters = parameters;
 	}
-	
+
 	public ArrayList<SaikuParameter> getParameters() {
 		return parameters;
 	}
@@ -301,12 +303,12 @@ public class SaikuMasterModel {
 	}
 
 	public SaikuCDA getCda(){
-	    return null;
+		return null;
 	}
 
 
-    public void init(Domain domain, LogicalModel model, String sessionId, ICDAManager cdaManager) throws ModelException {
-        // Empty class for SaikuMasterModelServer
-        
-    }
+	public void init(Domain domain, LogicalModel model, String sessionId, ICDAManager cdaManager) throws SaikuAdhocException {
+		// Empty class for SaikuMasterModelServer
+
+	}
 }

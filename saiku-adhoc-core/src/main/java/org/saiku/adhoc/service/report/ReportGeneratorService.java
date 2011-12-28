@@ -64,7 +64,7 @@ import org.pentaho.reporting.libraries.repository.ContentIOException;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
 import org.pentaho.reporting.platform.plugin.output.PDFOutput;
-import org.saiku.adhoc.exceptions.ModelException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.QueryException;
 import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
@@ -162,10 +162,12 @@ public class ReportGeneratorService {
 	 * @return
 	 * @throws ReportException
 	 * @throws ReportProcessingException 
-	 * @throws ModelException 
+	 * @throws SaikuAdhocException 
+	 * @throws IOException 
+	 * @throws ResourceException 
 	 */
 	protected MasterReport processReport(SaikuMasterModel model,
-			MasterReport output) throws ReportException, ReportProcessingException, ModelException {
+			MasterReport output) throws ReportException, ReportProcessingException, SaikuAdhocException, ResourceException, IOException {
 
 
 		CachingDataFactory dataFactory = null;
@@ -441,7 +443,7 @@ public class ReportGeneratorService {
 	}
 
 
-	public void savePrpt(String sessionId, String path, String file) throws ReportException, BundleWriterException, ContentIOException, IOException, ReportProcessingException, ModelException {
+	public void savePrpt(String sessionId, String path, String file) throws ReportException, BundleWriterException, ContentIOException, IOException, ReportProcessingException, SaikuAdhocException, ResourceException {
 
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
@@ -458,7 +460,9 @@ public class ReportGeneratorService {
 		output = processReport(model, output);
 		prptContent = generatePrptOutput(model, output);
 
-		repository.writeFile(splits[0], splits[1], file, prptContent);
+		String solPath = splits.length > 1 ? splits[1] : "";
+		
+		repository.writeFile(splits[0], solPath, file, prptContent);
 
 
 	}

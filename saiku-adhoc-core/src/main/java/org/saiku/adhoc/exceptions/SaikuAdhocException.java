@@ -19,24 +19,24 @@
  */
 package org.saiku.adhoc.exceptions;
 
-public class ModelException extends Exception {
+public class SaikuAdhocException extends Exception {
 
-	public ModelException() {
+	public SaikuAdhocException() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public ModelException(String message, Throwable cause) {
+	public SaikuAdhocException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ModelException(String message) {
+	public SaikuAdhocException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ModelException(Throwable cause) {
+	public SaikuAdhocException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}

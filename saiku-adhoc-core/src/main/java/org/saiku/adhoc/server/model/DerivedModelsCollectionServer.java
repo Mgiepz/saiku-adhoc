@@ -32,7 +32,7 @@ import org.pentaho.platform.engine.core.system.objfac.StandaloneObjectFactory;
 import org.pentaho.reporting.engine.classic.core.parameters.DefaultParameterDefinition;
 import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaDataFactory;
 import org.pentaho.reporting.engine.classic.wizard.model.DefaultWizardSpecification;
-import org.saiku.adhoc.exceptions.ModelException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.master.DerivedModelsCollection;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.server.datasource.ICDAManager;
@@ -49,16 +49,16 @@ public class DerivedModelsCollectionServer extends DerivedModelsCollection{
 
     
     public DerivedModelsCollectionServer(String sessionId, Domain domain,
-            LogicalModel model) throws ModelException {
+            LogicalModel model) throws SaikuAdhocException {
         super(sessionId, domain, model);
     }
 
-	public DerivedModelsCollectionServer(String sessionId, Domain domain, LogicalModel model, ICDAManager cdaManager2) throws ModelException {
+	public DerivedModelsCollectionServer(String sessionId, Domain domain, LogicalModel model, ICDAManager cdaManager2) throws SaikuAdhocException {
 	    super(sessionId, domain, model);
 	    this.cdaManager = cdaManager2;
     }
 
-    public void init() throws ModelException{
+    public void init() throws SaikuAdhocException{
         
         
         //init all the stuff
@@ -113,7 +113,7 @@ public class DerivedModelsCollectionServer extends DerivedModelsCollection{
             this.cdaDataFactory = f;
                         
         }catch(Exception e){
-            throw new ModelException("heavy failure");
+            throw new SaikuAdhocException("heavy failure");
         }
 	}
 

@@ -41,7 +41,7 @@ import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaDefinition;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
-import org.saiku.adhoc.exceptions.ModelException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.model.dto.HtmlReport;
 import org.saiku.adhoc.model.master.ReportTemplate;
@@ -66,7 +66,7 @@ public class ReportGeneratorServiceServer extends ReportGeneratorService {
 	 * @param template 
 	 * @return
 	 * @throws ReportException
-	 * @throws ModelException
+	 * @throws SaikuAdhocException
 	 * @throws IOException
 	 * @throws ResourceException
 	 */

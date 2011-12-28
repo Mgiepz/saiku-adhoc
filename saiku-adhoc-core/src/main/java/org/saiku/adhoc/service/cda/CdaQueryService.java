@@ -32,8 +32,9 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.concept.types.DataType;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.CdaException;
-import org.saiku.adhoc.exceptions.ModelException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.QueryException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.dto.FilterResult;
@@ -89,7 +90,7 @@ public class CdaQueryService {
 	}
 
 	public FilterResult getFilterResult(String sessionId, String categoryId,
-			String columnId) throws CdaException, QueryException, ModelException{ 
+			String columnId) throws CdaException, QueryException, SaikuAdhocException, ResourceException, IOException{ 
 	
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 		

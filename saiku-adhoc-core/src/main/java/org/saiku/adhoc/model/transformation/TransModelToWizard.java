@@ -36,6 +36,8 @@ import org.pentaho.reporting.engine.classic.wizard.model.DefaultWizardSpecificat
 import org.pentaho.reporting.engine.classic.wizard.model.DetailFieldDefinition;
 import org.pentaho.reporting.engine.classic.wizard.model.GroupDefinition;
 import org.pentaho.reporting.engine.classic.wizard.model.GroupType;
+import org.pentaho.reporting.engine.classic.wizard.model.Length;
+import org.pentaho.reporting.engine.classic.wizard.model.LengthUnit;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.model.master.SaikuColumn;
@@ -76,7 +78,12 @@ public class TransModelToWizard {
 			
 			detailFieldDef.setHorizontalAlignment((ElementAlignment) converter.toPropertyValue(
 					saikuColumn.getElementFormat().getHorizontalAlignment()));
-			
+	
+			if(saikuColumn.getColumnHeaderFormat().getWidth()!=null){
+				Length width = new Length(LengthUnit.PERCENTAGE,saikuColumn.getColumnHeaderFormat().getWidth());
+				detailFieldDef.setWidth(width);	
+			}
+
 			detailFieldDef.setDataFormat(saikuColumn.getFormatMask());
 
 			detailFields[i] = detailFieldDef;

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.ws.rs.Consumes;
@@ -43,7 +44,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.pentaho.platform.engine.core.system.PentahoBase;
 import org.saiku.adhoc.exceptions.CdaException;
-import org.saiku.adhoc.exceptions.ModelException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.QueryException;
 import org.saiku.adhoc.model.dto.ElementFormat;
 import org.saiku.adhoc.model.dto.FilterResult;
@@ -221,7 +222,7 @@ public class QueryResource extends PentahoBase {
 	public FilterResult getFilterValues(
 			@PathParam("queryname") String sessionId,
 			@PathParam("category") String category,
-			@PathParam("column") String column) {
+			@PathParam("column") String column) throws SaikuAdhocException {
 
 		if (log.isDebugEnabled()) {
 			log.debug("REST:GET " + sessionId + " getFilterValues category="+ category + " column=" + column);
@@ -230,18 +231,12 @@ public class QueryResource extends PentahoBase {
 		try {
 
 			return queryService.getFilterResult(sessionId, category, column);
-		} catch (CdaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (QueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		} catch (Exception e) {
+			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - " + e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
+			log.error(message, e);
+			throw new SaikuAdhocException("Encoding not supported", e);
 		}
-
-		return null;
 
 	}
 
@@ -502,8 +497,9 @@ public class QueryResource extends PentahoBase {
 		}
 
 		try {
-			if(config.getFormula()!=null){
-				//we have a new calculated column
+			if(category.equals("CALCULATED") && config.getId().equals("NEW")){
+				//TODO: We need a more meaningfull uid				
+				config.setId(UUID.randomUUID().toString());				
 				editorService.addCalulatedColumn(sessionId, position, config);	
 			}else{
 				editorService.setColumnConfig(sessionId, category, column, position, config);	

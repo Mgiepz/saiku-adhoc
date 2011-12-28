@@ -29,7 +29,7 @@ import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.query.model.Query;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
-import org.saiku.adhoc.exceptions.ModelException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
@@ -63,7 +63,7 @@ public class SaikuMasterModelServer extends SaikuMasterModel {
     }
     
     @Override
-	public void init(Domain domain, LogicalModel model, String sessionId, ICDAManager manager) throws ModelException{
+	public void init(Domain domain, LogicalModel model, String sessionId, ICDAManager manager) throws SaikuAdhocException{
 
 	    this.cdaManager = manager;
 		this.derivedModels = new DerivedModelsCollectionServer(sessionId, domain, model, this.cdaManager);
@@ -108,7 +108,7 @@ public class SaikuMasterModelServer extends SaikuMasterModel {
 		}
 
 	@Override
-	   public void deriveModels() throws ModelException{
+	   public void deriveModels() throws SaikuAdhocException{
 
 	        //Query -> ok!
 	        TransModelToQuery transQuery = new TransModelToQuery();
@@ -132,7 +132,7 @@ public class SaikuMasterModelServer extends SaikuMasterModel {
 	            wizardSpec = transWizard.doIt(this);
 	            this.derivedModels.setWizardSpec(wizardSpec);
 	        } catch (Exception e1) {
-	            throw new ModelException();
+	            throw new SaikuAdhocException();
 	        }
 
 	        //Prpt
@@ -142,7 +142,7 @@ public class SaikuMasterModelServer extends SaikuMasterModel {
 	            reportTemplate = transReport.doIt(this);
 	            this.derivedModels.setReportTemplate(reportTemplate);
 	        } catch (Exception e) {
-	            throw new ModelException();
+	            throw new SaikuAdhocException();
 	        }
 
 

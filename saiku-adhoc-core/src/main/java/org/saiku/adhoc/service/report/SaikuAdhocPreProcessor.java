@@ -306,6 +306,13 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 			return;
 		}
 
+		
+		/*
+		 * "PERCENTAGE"
+		 * 
+		 * Hier gehts ab mit der spaltenbreite
+		 */
+		
 		final Float[] widthSpecs = new Float[detailFieldDefinitions.length];
 		for (int i = 0; i < detailFieldDefinitions.length; i++) {
 			final DetailFieldDefinition fieldDefinition = detailFieldDefinitions[i];
@@ -317,6 +324,11 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 		}
 		final float[] computedWidth = AutoGeneratorUtility.computeFieldWidths(
 				widthSpecs, definition.getPageDefinition().getWidth());
+		
+		/*
+		 * ---------------------------------------------------------------------
+		 */
+		
 
 		itemBand.getStyle().setStyleProperty(BandStyleKeys.LAYOUT, "row");
 		if (detailsHeader != null) {

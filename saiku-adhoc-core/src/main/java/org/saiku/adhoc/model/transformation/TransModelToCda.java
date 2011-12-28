@@ -32,7 +32,7 @@ import org.pentaho.metadata.query.model.Parameter;
 import org.pentaho.metadata.query.model.Query;
 import org.pentaho.metadata.query.model.Selection;
 import org.pentaho.metadata.query.model.util.QueryXmlHelper;
-import org.saiku.adhoc.exceptions.ModelException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
@@ -48,7 +48,7 @@ import pt.webdetails.cda.settings.CdaSettings;
 
 public class TransModelToCda {
 
-	public CdaSettings doIt(SaikuMasterModel smm) throws ModelException {
+	public CdaSettings doIt(SaikuMasterModel smm) throws SaikuAdhocException {
 
 		CdaSettings cda = null;
 
@@ -146,7 +146,7 @@ public class TransModelToCda {
 					.addAll(getCdaColumns(smm));
 
 		} catch (Exception e) {
-			throw new ModelException("could not derive CDA");
+			throw new SaikuAdhocException("could not derive CDA");
 		}
 
 		return cda;

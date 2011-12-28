@@ -36,6 +36,8 @@ private String fontName;
 
 private int fontSize;
 
+private Double width;
+
 private Boolean fontBold;
 
 private Boolean fontItalic;
@@ -129,6 +131,14 @@ this.fontUnderlined = fontUnderlined;
 
 public Boolean getFontUnderlined() {
 return fontUnderlined;
+}
+
+public void setWidth(Double width) {
+	this.width = width;
+}
+
+public Double getWidth() {
+	return width;
 }
 
 

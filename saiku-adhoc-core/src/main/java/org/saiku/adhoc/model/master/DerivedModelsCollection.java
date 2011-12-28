@@ -35,7 +35,7 @@ import org.pentaho.reporting.engine.classic.core.parameters.DefaultParameterDefi
 import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaDataFactory;
 import org.pentaho.reporting.engine.classic.wizard.model.DefaultWizardSpecification;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
-import org.saiku.adhoc.exceptions.ModelException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.service.SaikuProperties;
 
 import pt.webdetails.cda.connections.Connection;
@@ -71,7 +71,7 @@ public class DerivedModelsCollection {
 	protected Map<String,SaikuElementFormat> rptIdToElementFormat;
 
 	public DerivedModelsCollection(String sessionId, Domain domain,
-			LogicalModel model) throws ModelException {
+			LogicalModel model) throws SaikuAdhocException {
 		this.sessionId = sessionId;
 		this.domain = domain;
 		this.logicalModel = model;
@@ -80,7 +80,7 @@ public class DerivedModelsCollection {
 		
 	}
 
-	public void init() throws ModelException{
+	public void init() throws SaikuAdhocException{
 	    //init all the stuff
         this.query = new Query(domain, logicalModel);      
         this.xmlHelper = new QueryXmlHelper();  
@@ -133,7 +133,7 @@ public class DerivedModelsCollection {
             this.cdaDataFactory = f;
                         
         }catch(Exception e){
-            throw new ModelException("heavy failure");
+            throw new SaikuAdhocException("heavy failure");
         }
 	}
 //	public void setFilterValues(Map<String,ArrayList<String>> filterValues) {
