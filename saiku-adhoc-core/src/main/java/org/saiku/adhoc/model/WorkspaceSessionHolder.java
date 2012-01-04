@@ -54,7 +54,7 @@ public class WorkspaceSessionHolder {
 
 	private static final String solution = "system";
 
-	private static final String path = "saiku-adhoc/temp";
+	protected static final String path = "saiku-adhoc/temp";
 
 	private Map<String, SaikuMasterModel> models = new HashMap<String, SaikuMasterModel>();
 

@@ -226,7 +226,7 @@ public class SaikuProperties extends Properties{
 	}
 
 
-	public static final String defaultPrptTemplate = getPropString("saiku-adhoc.default.template","winter.prpt");
+	public static final String defaultPrptTemplate = getPropString("saiku-adhoc.default.template","jade_4_left_aligned_grid.prpt");
 
 	private static Boolean getPropBoolean(String key, String defaultValue) {
 		Boolean ret;
