@@ -338,6 +338,11 @@
 			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
+<dependency>
+	<groupId>com.lowagie</groupId>
+	<artifactId>itext</artifactId>
+	<version>2.1.7</version>
+</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>
