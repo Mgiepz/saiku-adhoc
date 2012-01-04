@@ -212,34 +212,34 @@ public class ServerRepositoryHelper implements IRepositoryHelper {
         
     }
     
-    @Override
-    public boolean writeLocalFile(String path,
-                String artifact, byte[] contents){
-    FileOutputStream fos =null;
-    try {
-                fos = new FileOutputStream(path+artifact);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            try {
-                fos.write(contents);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            
-            try {
-                fos.close();
-                return true;
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return false;
-            }
-
-
-
-}
+    
+//    public boolean writeLocalFile(String path,
+//                String artifact, byte[] contents){
+//    FileOutputStream fos =null;
+//    try {
+//                fos = new FileOutputStream(path+artifact);
+//            } catch (FileNotFoundException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//
+//            try {
+//                fos.write(contents);
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//            
+//            try {
+//                fos.close();
+//                return true;
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//                return false;
+//            }
+//
+//
+//
+//}
 }

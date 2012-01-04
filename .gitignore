@@ -10,3 +10,5 @@ saiku-adhoc-webapp/target/
 *.DS_Store
 /.settings
 /.project
+.classpath
+*.prefs

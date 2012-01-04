@@ -19,6 +19,7 @@
 
 	<bean id="workspaceSessionHolderBean" class="org.saiku.adhoc.server.model.WorkspaceSessionHolderServer">
 	 		<property name="PRPTManager" ref="classpathPrptManager" />
+	 		<property name="CDAManager" ref="classpathCdaManager" />
  	</bean>
  	
  	
@@ -59,6 +60,7 @@
  		<property name="PRPTManager" ref="classpathPrptManager" />
  		<property name="RepositoryHelper" ref="repositoryHelperBean" />
 		<property name="SessionHolder" ref="workspaceSessionHolderBean" />
+		<property name="CDAManager" ref="classpathCdaManager" />
  	</bean>		
 	
 	<bean id="queryResourceBean" class="org.saiku.adhoc.rest.QueryResource">
