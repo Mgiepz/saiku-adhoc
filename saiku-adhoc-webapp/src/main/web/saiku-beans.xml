@@ -33,6 +33,7 @@
  	<bean id="exportServiceBean" class="org.saiku.adhoc.service.cda.ExportService">
  			<property name="SessionHolder" ref="workspaceSessionHolderBean" />
  			<property name="CdaAccessor" ref="cdaAccessorBean" />
+ 			<property name="ReportGeneratorService" ref="reportGeneratorServiceBean" />
  			
  	</bean>
  	
@@ -78,7 +79,6 @@
 		<property name="RepositoryHelper" ref="repositoryHelperBean" />
 		<property name="SessionHolder" ref="workspaceSessionHolderBean" />
 	</bean>
-
 
 
 </beans>
