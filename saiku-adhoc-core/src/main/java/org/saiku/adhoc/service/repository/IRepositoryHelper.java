@@ -46,6 +46,6 @@ public abstract Document browse(String dir, String fileExtensions);
 
 public abstract void cleanTemp();
 
-boolean writeLocalFile(String path, String artifact, byte[] contents);
+//boolean writeLocalFile(String path, String artifact, byte[] contents);
 
 }

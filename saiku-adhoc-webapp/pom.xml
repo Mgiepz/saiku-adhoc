@@ -32,6 +32,10 @@
 						</goals>
 						<configuration>
 							<tasks>
+							<copy todir="target/${project.artifactId}-${project.version}/WEB-INF/classes/saiku-datasources/" overwrite="true">
+									<fileset dir="${basedir}/../saiku-adhoc-plugin/src/main/plugin/resources/templates/">
+									</fileset>
+							</copy>
 			<!--					<zip destfile="target/${project.artifactId}-${project.version}.war">
 									<zipfileset dir="target/${project.artifactId}-${project.version}/" />
 								</zip>

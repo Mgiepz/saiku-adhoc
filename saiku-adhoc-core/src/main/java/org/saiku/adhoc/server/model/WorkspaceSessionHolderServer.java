@@ -19,18 +19,28 @@
  */
 package org.saiku.adhoc.server.model;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.OperationNotSupportedException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
+import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.server.datasource.IPRPTManager;
+import org.saiku.adhoc.server.datasource.SaikuCDA;
 import org.saiku.adhoc.server.model.master.ReportTemplateServer;
+import org.saiku.adhoc.server.model.service.repository.ServerRepositoryHelper;
 
 
 /**
@@ -47,7 +57,8 @@ public class WorkspaceSessionHolderServer extends WorkspaceSessionHolder{
     
 	private Map<String, SaikuMasterModel> models = new HashMap<String, SaikuMasterModel>();
     private IPRPTManager prptManager;
-	
+    private ICDAManager cdaManager;
+
     @Override
 	public void initSession(SaikuMasterModel masterModel, String sessionId) {
 
@@ -60,6 +71,7 @@ public class WorkspaceSessionHolderServer extends WorkspaceSessionHolder{
 		
 	}
 
+    
     public void setPRPTManager(IPRPTManager manager){
         this.prptManager = manager;
         
@@ -67,6 +79,15 @@ public class WorkspaceSessionHolderServer extends WorkspaceSessionHolder{
 
     public IPRPTManager getPRPTManager(){
         return prptManager;
+    }
+    
+    public void setCDAManager(ICDAManager manager){
+        this.cdaManager = manager;
+        
+    }
+
+    public ICDAManager getCDAManager(){
+        return cdaManager;
     }
     
 	public Map getModels() {
@@ -106,4 +127,31 @@ public class WorkspaceSessionHolderServer extends WorkspaceSessionHolder{
 		return string.toString();
 	}
 
+	   public void materializeModel(String sessionId) {
+
+	        SaikuMasterModel model = this.getModel(sessionId);
+
+	        String action = sessionId + ".cda";
+
+	        //Save the cda first
+	        try {
+	            model.deriveModels();
+	            cdaManager.addDatasource(new SaikuCDA(action, model.getCdaSettings().asXML().getBytes("UTF-8")));
+	        } catch (SaikuAdhocException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        } catch (OperationNotSupportedException e) {
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        } catch (TransformerFactoryConfigurationError e) {
+	            e.printStackTrace();
+	        } catch (TransformerException e) {
+	            e.printStackTrace();
+	        } catch (ResourceException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
+
+	    }
 }

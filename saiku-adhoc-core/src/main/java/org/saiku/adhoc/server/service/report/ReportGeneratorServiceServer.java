@@ -25,6 +25,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
+import javax.naming.OperationNotSupportedException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.ReportPreProcessor;
@@ -46,7 +50,9 @@ import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.model.dto.HtmlReport;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
+import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.server.datasource.IPRPTManager;
+import org.saiku.adhoc.server.datasource.SaikuCDA;
 import org.saiku.adhoc.server.reporting.SaikuReportingComponent;
 import org.saiku.adhoc.service.SaikuProperties;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
@@ -56,6 +62,7 @@ import org.saiku.adhoc.utils.ParamUtils;
 public class ReportGeneratorServiceServer extends ReportGeneratorService {
 
 	private IPRPTManager prptManager;
+    private ICDAManager cdaManager;
 
     /**
 	 * Renders the report for a given query to html
@@ -74,6 +81,8 @@ public class ReportGeneratorServiceServer extends ReportGeneratorService {
 	public void renderReportHtml(String sessionId, String templateName, HtmlReport report, Integer acceptedPage) throws Exception {
 
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
+		
+		sessionHolder.materializeModel(sessionId);
 
 		templateName = templateName.equals("default")? SaikuProperties.defaultPrptTemplate : templateName + ".prpt";
 		
@@ -117,6 +126,22 @@ public class ReportGeneratorServiceServer extends ReportGeneratorService {
          
     }
 	  
+	   public void saveCda(String sessionId, String path, String file) throws OperationNotSupportedException, IOException, TransformerFactoryConfigurationError, TransformerException {
+
+	        SaikuMasterModel model = sessionHolder.getModel(sessionId);
+
+	        if (!file.endsWith(".cda")) {
+	            file += ".cda";
+	        }
+
+	       // String[] splits = ParamUtils.splitFirst(path.substring(1),"/");
+            cdaManager.addDatasource(new SaikuCDA(file, model.getCdaSettings().asXML().getBytes("UTF-8")));
+
+//	        repository.writeFile(splits[0], splits[1], file, model.getCdaSettings().asXML());
+
+
+	    }
+	   
     public void setPRPTManager(IPRPTManager manager){
         this.prptManager = manager;
         
@@ -126,4 +151,12 @@ public class ReportGeneratorServiceServer extends ReportGeneratorService {
         return prptManager;
     }
 
+    public void setCDAManager(ICDAManager manager){
+        this.cdaManager = manager;
+        
+    }
+
+    public ICDAManager getCDAManager(){
+        return cdaManager;
+    }
 }

@@ -253,11 +253,6 @@ public Document browse(String dir, String fileExtensions) {
 return null;
 }
 
-@Override
-public boolean writeLocalFile(String path, String artifact, byte[] contents) {
-    // TODO Empty for server
-    return false;
-}
 
 }
 
