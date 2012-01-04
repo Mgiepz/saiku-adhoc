@@ -292,10 +292,15 @@
     <artifactId>pentaho-metadata</artifactId>
     <version>3.4.3</version>
 </dependency>
-<dependency>
+<!--<dependency>
     <groupId>itext</groupId>
     <artifactId>itext</artifactId>
     <version>1.5.2</version>
+</dependency>-->
+<dependency>
+	<groupId>com.lowagie</groupId>
+	<artifactId>itext</artifactId>
+	<version>2.1.7</version>
 </dependency>
 <dependency>
     <groupId>org.jgroups</groupId>
