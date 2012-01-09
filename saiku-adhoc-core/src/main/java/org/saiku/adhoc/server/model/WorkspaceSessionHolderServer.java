@@ -148,9 +148,6 @@ public class WorkspaceSessionHolderServer extends WorkspaceSessionHolder{
 	            e.printStackTrace();
 	        } catch (TransformerException e) {
 	            e.printStackTrace();
-	        } catch (ResourceException e) {
-	            // TODO Auto-generated catch block
-	            e.printStackTrace();
 	        }
 
 	    }

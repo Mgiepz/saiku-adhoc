@@ -46,7 +46,7 @@ public class HtmlReport {
 	}
 
 	private String data;
-	
+
 	private int currentPage;
 	
 	private int pageCount;

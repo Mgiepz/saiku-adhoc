@@ -33,6 +33,7 @@ import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
+import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.transformation.TransModelToCda;
 import org.saiku.adhoc.model.transformation.TransModelToParams;
 import org.saiku.adhoc.model.transformation.TransModelToQuery;
@@ -40,22 +41,32 @@ import org.saiku.adhoc.model.transformation.TransModelToReport;
 import org.saiku.adhoc.model.transformation.TransModelToWizard;
 import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.server.datasource.SaikuCDA;
-import org.saiku.adhoc.service.SaikuProperties;
 
 import pt.webdetails.cda.settings.CdaSettings;
 
 public class SaikuMasterModel {
 
+	public List<SaikuElement> getReportSummaryElements() {
+		return reportSummaryElements;
+	}
+
+	public void setReportSummaryElements(List<SaikuElement> reportSummaryElements) {
+		this.reportSummaryElements = reportSummaryElements;
+	}
+
+
 	protected List<SaikuColumn> columns;
 
-	protected List<SaikuMessage> reportHeaderMessages;
+	protected List<SaikuElement> reportHeaderElements;
 
-	protected List<SaikuMessage> reportFooterMessages;
+	//These are the elements that are NOT in the Summary Row
+	protected List<SaikuElement> reportFooterElements;
 
-	protected List<SaikuMessage> pageHeaderMessages;
+	protected List<SaikuElement> reportSummaryElements;
+	
+	protected List<SaikuElement> pageHeaderElements;
 
-	protected List<SaikuMessage> pageFooterMessages;
-
+	protected List<SaikuElement> pageFooterElements;
 
 	protected List<SaikuGroup> groups;
 
@@ -63,6 +74,7 @@ public class SaikuMasterModel {
 
 	protected List<String> sortColumns;
 
+	//TODO: Remove
 	private String reportTitle;
 
 	protected String clientModelSelection;
@@ -78,7 +90,10 @@ public class SaikuMasterModel {
 		this.derivedModels = new DerivedModelsCollection(sessionId, domain, model);
 		derivedModels.init();
 
-		this.settings = new SaikuReportSettings();
+		if(this.settings==null){
+			this.settings = new SaikuReportSettings();	
+		}
+
 
 		if(this.clientModelSelection==null){
 			//only init these once
@@ -87,18 +102,15 @@ public class SaikuMasterModel {
 			this.parameters = new ArrayList<SaikuParameter>();
 			this.sortColumns = new ArrayList<String>();
 
-			this.reportHeaderMessages = new ArrayList<SaikuMessage>();
-
-			this.reportFooterMessages = new ArrayList<SaikuMessage>();
-
-			this.pageHeaderMessages = new ArrayList<SaikuMessage>();
-
-			this.pageFooterMessages = new ArrayList<SaikuMessage>();
+			this.reportHeaderElements = new ArrayList<SaikuElement>();
+			this.reportFooterElements = new ArrayList<SaikuElement>();
+			this.reportSummaryElements = new ArrayList<SaikuElement>();
+			this.pageHeaderElements = new ArrayList<SaikuElement>();
+			this.pageFooterElements = new ArrayList<SaikuElement>();
 
 		}
 
 	}
-
 
 	public SaikuMasterModel() {
 		super();
@@ -163,7 +175,13 @@ public class SaikuMasterModel {
 	 * @throws IOException 
 	 * @throws ResourceException 
 	 */
-	public void deriveModels() throws SaikuAdhocException, ResourceException, IOException{
+	public void deriveModels() throws SaikuAdhocException{
+		
+		if (this.getColumns().isEmpty()){
+			throw new SaikuAdhocException(				
+        			Messages.getErrorString("MasterModel.ERROR_0002_SELECTION_IS_EMPTY")
+        	);
+		}
 
 		//Query -> ok!
 		TransModelToQuery transQuery = new TransModelToQuery();
@@ -175,10 +193,17 @@ public class SaikuMasterModel {
 		final Map<String, Query> filterQueries = transParams.doIt(this);
 		this.derivedModels.setFilterQueries(filterQueries);
 
-		//CDA -> ok!
+		//CDA
 		TransModelToCda transCda = new TransModelToCda();
+		try {
 		final CdaSettings cda = transCda.doIt(this);
 		this.derivedModels.setCda(cda);
+		} catch (Exception e) {
+			//TODO: move that into transformation.doIt
+			throw new SaikuAdhocException(				
+					Messages.getErrorString("MasterModel.ERROR_0001_TRANSFORMATION_TO_CDA_FAILED")
+			);
+		}
 
 		//Wizard
 		TransModelToWizard transWizard = new TransModelToWizard();
@@ -187,17 +212,17 @@ public class SaikuMasterModel {
 			wizardSpec = transWizard.doIt(this);
 			this.derivedModels.setWizardSpec(wizardSpec);
 		} catch (Exception e1) {
-			throw new SaikuAdhocException();
+			//TODO: move that into transformation.doIt
+			throw new SaikuAdhocException(				
+					Messages.getErrorString("MasterModel.ERROR_0001_TRANSFORMATION_TO_WIZARDSPEC_FAILED")
+			);
 		}
 
 		//Prpt
-		TransModelToReport transReport = new TransModelToReport();
-		MasterReport reportTemplate;
-
-		reportTemplate = transReport.doIt(this);
-		this.derivedModels.setReportTemplate(reportTemplate);
-
-
+			TransModelToReport transReport = new TransModelToReport();
+			MasterReport reportTemplate;
+			reportTemplate = transReport.doIt(this);
+			this.derivedModels.setReportTemplate(reportTemplate);
 
 	}
 
@@ -263,45 +288,46 @@ public class SaikuMasterModel {
 	}
 
 
-	public void setReportHeaderMessages(List<SaikuMessage> reportHeaderMessages) {
-		this.reportHeaderMessages = reportHeaderMessages;
+	public void setReportHeaderElements(List<SaikuElement> reportHeaderMessages) {
+		this.reportHeaderElements = reportHeaderMessages;
 	}
 
 
-	public List<SaikuMessage> getReportHeaderMessages() {
-		return reportHeaderMessages;
+	public List<SaikuElement> getReportHeaderElements() {
+		return reportHeaderElements;
 	}
 
 
-	public void setPageHeaderMessages(List<SaikuMessage> pageHeaderMessages) {
-		this.pageHeaderMessages = pageHeaderMessages;
+	public void setPageHeaderElements(List<SaikuElement> pageHeaderMessages) {
+		this.pageHeaderElements = pageHeaderMessages;
 	}
 
 
-	public List<SaikuMessage> getPageHeaderMessages() {
-		return pageHeaderMessages;
+	public List<SaikuElement> getPageHeaderElements() {
+		return pageHeaderElements;
 	}
 
 
-	public void setPageFooterMessages(List<SaikuMessage> pageFooterMessages) {
-		this.pageFooterMessages = pageFooterMessages;
+	public void setPageFooterElements(List<SaikuElement> pageFooterMessages) {
+		this.pageFooterElements = pageFooterMessages;
 	}
 
 
-	public List<SaikuMessage> getPageFooterMessages() {
-		return pageFooterMessages;
+	public List<SaikuElement> getPageFooterElements() {
+		return pageFooterElements;
 	}
 
 
-	public void setReportFooterMessages(List<SaikuMessage> reportFooterMessages) {
-		this.reportFooterMessages = reportFooterMessages;
+	public void setReportFooterElements(List<SaikuElement> reportFooterMessages) {
+		this.reportFooterElements = reportFooterMessages;
 	}
 
 
-	public List<SaikuMessage> getReportFooterMessages() {
-		return reportFooterMessages;
+	public List<SaikuElement> getReportFooterElements() {
+		return reportFooterElements;
 	}
 
+	@JsonIgnore
 	public SaikuCDA getCda(){
 		return null;
 	}

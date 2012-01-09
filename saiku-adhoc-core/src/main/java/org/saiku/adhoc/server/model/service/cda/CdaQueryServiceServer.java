@@ -22,6 +22,7 @@ package org.saiku.adhoc.server.model.service.cda;
 
 import org.saiku.adhoc.exceptions.CdaException;
 import org.saiku.adhoc.exceptions.QueryException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.server.datasource.SaikuCDA;
@@ -45,40 +46,17 @@ public class CdaQueryServiceServer extends CdaQueryService {
 	 * 
 	 * @param queryName
 	 * @param sessionId 
-	 * @throws QueryException 
 	 * @throws CdaException 
+	 * @throws SaikuAdhocException 
 	 * @throws QuerybuilderServiceException 
 	 */
-	public String runQuery(String queryName, String sessionId) throws QueryException, CdaException {
+	public String runQuery(String queryName, String sessionId) throws CdaException, SaikuAdhocException {
 
 	    sessionHolder.materializeModel(sessionId);
         
         SaikuMasterModel model = sessionHolder.getModel(sessionId);
-        
-        //then let cda generate output Json
-        //TODO: We need to remove the group-only columns here
-        return cdaAccessor.doQuery(model, queryName, null);
 
-        
-//		SaikuMasterModel model = sessionHolder.getModel(sessionId);
-//
-//		String action = sessionId + ".cda";
-//
-//		//Save the cda first
-//		try {
-//			model.deriveModels();
-//			cdaManager.addDatasource(new SaikuCDA(action, model.getCdaSettings().asXML().getBytes("UTF-8")));
-//		} catch (Exception e) {
-//			throw new QueryException(e.getMessage());
-//		}
-//	
-//		if (log.isDebugEnabled()) {
-//			log.debug("SERVICE:CdaQueryService " + sessionId + " runQuery\n" + sessionHolder.logModel(sessionId));
-//		}
-//		
-//		//then let cda generate output Json
-//		//TODO: We need to remove the group-only columns here
-//		return cdaAccessor.doQuery(model, queryName, null);
+        return cdaAccessor.doQuery(model, queryName, null);
 
 	}
 

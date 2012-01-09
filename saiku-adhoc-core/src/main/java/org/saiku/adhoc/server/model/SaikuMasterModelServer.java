@@ -30,10 +30,11 @@ import org.pentaho.metadata.query.model.Query;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
+import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
-import org.saiku.adhoc.model.master.SaikuMessage;
+import org.saiku.adhoc.model.master.SaikuElement;
 import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.model.master.SaikuReportSettings;
 import org.saiku.adhoc.model.transformation.TransModelToCda;
@@ -78,13 +79,13 @@ public class SaikuMasterModelServer extends SaikuMasterModel {
 			this.parameters = new ArrayList<SaikuParameter>();
 			this.sortColumns = new ArrayList<String>();
 			
-			this.reportHeaderMessages = new ArrayList<SaikuMessage>();
+			this.reportHeaderElements = new ArrayList<SaikuElement>();
 
-			this.reportFooterMessages = new ArrayList<SaikuMessage>();
+			this.reportFooterElements = new ArrayList<SaikuElement>();
 			
-			this.pageHeaderMessages = new ArrayList<SaikuMessage>();
+			this.pageHeaderElements = new ArrayList<SaikuElement>();
 			
-			this.pageFooterMessages = new ArrayList<SaikuMessage>();
+			this.pageFooterElements = new ArrayList<SaikuElement>();
 			
 		}
 
@@ -109,6 +110,12 @@ public class SaikuMasterModelServer extends SaikuMasterModel {
 
 	@Override
 	   public void deriveModels() throws SaikuAdhocException{
+		
+			if (this.getColumns().isEmpty()){
+				throw new SaikuAdhocException(				
+	        			Messages.getErrorString("MasterModel.ERROR_SELECTION_IS_EMPTY")
+	        	);
+			}
 
 	        //Query -> ok!
 	        TransModelToQuery transQuery = new TransModelToQuery();
@@ -122,8 +129,15 @@ public class SaikuMasterModelServer extends SaikuMasterModel {
 
 	        //CDA -> ok!
 	        TransModelToCda transCda = new TransModelToCdaServer();
-	        final CdaSettings cda = transCda.doIt(this);
-	        this.derivedModels.setCda(cda);
+	        try{
+	        	final CdaSettings cda = transCda.doIt(this);
+	        	this.derivedModels.setCda(cda);
+	        } catch (Exception e) {
+	        	//TODO: move that into transformation.doIt
+	        	throw new SaikuAdhocException(				
+	        			Messages.getErrorString("MasterModel.ERROR_TRANSFORMATION_TO_CDA_FAILED")
+	        	);
+	        }
 
 	        //Wizard
 	        TransModelToWizard transWizard = new TransModelToWizard();

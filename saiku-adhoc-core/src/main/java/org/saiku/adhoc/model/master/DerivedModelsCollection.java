@@ -75,9 +75,6 @@ public class DerivedModelsCollection {
 		this.sessionId = sessionId;
 		this.domain = domain;
 		this.logicalModel = model;
-		
-	
-		
 	}
 
 	public void init() throws SaikuAdhocException{
@@ -116,11 +113,10 @@ public class DerivedModelsCollection {
             String name = this.sessionId;
             String queryString = this.sessionId;
             f.setQuery(name, queryString);          
-            String baseUrl = PentahoSystem.getApplicationContext().getFullyQualifiedServerURL(); //"http://localhost:8080/pentaho";
+            String baseUrl = PentahoSystem.getApplicationContext().getFullyQualifiedServerURL();
             
             //Use this for the login
-            //PentahoSessionHolder.getSession().getId();
-            
+            //PentahoSessionHolder.getSession().getId();          
             f.setBaseUrl(baseUrl);
             f.setSolution(solution);
             f.setPath(path);
@@ -136,13 +132,6 @@ public class DerivedModelsCollection {
             throw new SaikuAdhocException("heavy failure");
         }
 	}
-//	public void setFilterValues(Map<String,ArrayList<String>> filterValues) {
-//		this.filterValues = filterValues;
-//	}
-//
-//	public Map<String,ArrayList<String>> getFilterValues() {
-//		return filterValues;
-//	}
 
 	public Query getQuery() {
 		return query;

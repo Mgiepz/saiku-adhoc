@@ -72,13 +72,10 @@ public class TransModelToWizard {
 
 			detailFieldDef.setDisplayName(saikuColumn.getName());
 			ElementAlignmentValueConverter converter = new ElementAlignmentValueConverter();
-			
-			
-			detailFieldDef.setAggregationFunction(TemplateUtils.strToAggfunctionClass(saikuColumn.getSelectedSummaryType()));
-			
-			detailFieldDef.setHorizontalAlignment((ElementAlignment) converter.toPropertyValue(
-					saikuColumn.getElementFormat().getHorizontalAlignment()));
 	
+			detailFieldDef.setAggregationFunction(TemplateUtils.strToAggfunctionClass(saikuColumn.getSelectedSummaryType()));
+	
+			//TODO: Wann ist die breite hier 0?
 			if(saikuColumn.getColumnHeaderFormat().getWidth()!=null){
 				Length width = new Length(LengthUnit.PERCENTAGE,saikuColumn.getColumnHeaderFormat().getWidth());
 				detailFieldDef.setWidth(width);	

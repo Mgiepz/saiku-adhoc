@@ -19,15 +19,27 @@
  */
 package org.saiku.adhoc.model.master;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author mgie
  * 
  */
 public class SaikuGroup {
 
+	public List<SaikuElement> getGroupFooterElements() {
+		return groupFooterElements;
+	}
+
+	public void setGroupFooterElements(List<SaikuElement> groupFooterMessages) {
+		this.groupFooterElements = groupFooterMessages;
+	}
+
 	public SaikuGroup() {
 		this.sort = "NONE";
 		this.groupsHeaderFormat = new SaikuElementFormat();	
+		this.groupFooterElements = new ArrayList<SaikuElement>();
 	}
 	
 	private SaikuElementFormat groupsHeaderFormat;
@@ -46,7 +58,10 @@ public class SaikuGroup {
 
 	private String groupName;
 
+	//TODO: Do we really need that label?
 	private String groupTotalsLabel;
+	
+	private List<SaikuElement> groupFooterElements;
 
 	private String uid;
 

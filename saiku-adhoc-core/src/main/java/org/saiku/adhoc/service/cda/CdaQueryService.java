@@ -34,8 +34,8 @@ import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.CdaException;
-import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.QueryException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.dto.FilterResult;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
@@ -72,11 +72,12 @@ public class CdaQueryService {
 	 * 
 	 * @param queryName
 	 * @param sessionId 
+	 * @throws SaikuAdhocException 
 	 * @throws QueryException 
 	 * @throws CdaException 
 	 * @throws QuerybuilderServiceException 
 	 */
-	public String runQuery(String queryName, String sessionId) throws QueryException, CdaException {
+	public String runQuery(String queryName, String sessionId) throws SaikuAdhocException, CdaException {
 
 		
 		sessionHolder.materializeModel(sessionId);

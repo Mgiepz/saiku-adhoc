@@ -12,7 +12,7 @@ import org.pentaho.platform.util.messages.MessageUtil;
 
 
 public class Messages {
-  private static final String BUNDLE_NAME = "refac.saiku.adhoc.messages.messages"; //$NON-NLS-1$
+  private static final String BUNDLE_NAME = "org.saiku.adhoc.messages.messages"; //$NON-NLS-1$
 
   private static final Map<Locale,ResourceBundle> locales = Collections.synchronizedMap(new HashMap<Locale,ResourceBundle>());
 

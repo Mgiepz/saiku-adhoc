@@ -31,6 +31,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.QueryException;
+import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuGroup;
@@ -61,11 +62,12 @@ public class WorkspaceSessionHolder {
 	public void initSession(SaikuMasterModel masterModel, String sessionId) {
 
 		// TODO: Move and make configurable
-		String path = "saiku-adhoc/resources/templates/";
-		String name = SaikuProperties.defaultPrptTemplate;
-
-		masterModel.setReportTemplate(new ReportTemplate(solution, path, name));
-
+		if(masterModel.getReportTemplate()==null){
+			String path = "saiku-adhoc/resources/templates/";
+			String name = SaikuProperties.defaultPrptTemplate;
+			masterModel.setReportTemplate(new ReportTemplate(solution, path, name));
+		}
+		
 		models.put(sessionId, masterModel);
 
 	}
@@ -111,31 +113,20 @@ public class WorkspaceSessionHolder {
 		return string.toString();
 	}
 
-	public void materializeModel(String sessionId) {
+	public void materializeModel(String sessionId) throws SaikuAdhocException {
 
 		SaikuMasterModel model = this.getModel(sessionId);
 
 		String action = sessionId + ".cda";
 
-		//Save the cda first
-		try {
-			model.deriveModels();
+		model.deriveModels();
 
+		try {
 			repository.writeFile(solution, path, action, model.getCdaSettings().asXML());
-		} catch (SaikuAdhocException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (OperationNotSupportedException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (TransformerFactoryConfigurationError e) {
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		} catch (ResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new SaikuAdhocException(				
+					Messages.getErrorString("Repository.ERROR_0001_COULD_NOT_PUBLISH_FILE")
+			);
 		}
 
 	}

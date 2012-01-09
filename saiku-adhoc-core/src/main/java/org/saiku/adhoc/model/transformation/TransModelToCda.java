@@ -33,28 +33,31 @@ import org.pentaho.metadata.query.model.Query;
 import org.pentaho.metadata.query.model.Selection;
 import org.pentaho.metadata.query.model.util.QueryXmlHelper;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
+import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.utils.XmlUtils;
 
 import pt.webdetails.cda.connections.Connection;
+import pt.webdetails.cda.connections.UnsupportedConnectionException;
 import pt.webdetails.cda.connections.metadata.MetadataConnection;
 import pt.webdetails.cda.dataaccess.AbstractDataAccess;
 import pt.webdetails.cda.dataaccess.ColumnDefinition;
 import pt.webdetails.cda.dataaccess.DataAccess;
 import pt.webdetails.cda.dataaccess.MqlDataAccess;
+import pt.webdetails.cda.dataaccess.UnsupportedDataAccessException;
 import pt.webdetails.cda.settings.CdaSettings;
+import pt.webdetails.cda.settings.UnknownDataAccessException;
 
 public class TransModelToCda {
 
-	public CdaSettings doIt(SaikuMasterModel smm) throws SaikuAdhocException {
+	public CdaSettings doIt(SaikuMasterModel smm) throws SaikuAdhocException, UnsupportedConnectionException, UnsupportedDataAccessException, UnknownDataAccessException {
 
 		CdaSettings cda = null;
 
 		String sessionId = smm.getDerivedModels().getSessionId();
 
-		try {
 			cda = new CdaSettings("cda" + sessionId, null);
 
 			String[] domainInfo = smm.getDerivedModels().getDomain().getId()
@@ -144,10 +147,6 @@ public class TransModelToCda {
 			cda.getDataAccess(sessionId).getColumnDefinitions().clear();
 			cda.getDataAccess(sessionId).getColumnDefinitions()
 					.addAll(getCdaColumns(smm));
-
-		} catch (Exception e) {
-			throw new SaikuAdhocException("could not derive CDA");
-		}
 
 		return cda;
 	}

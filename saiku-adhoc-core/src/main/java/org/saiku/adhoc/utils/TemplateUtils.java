@@ -260,9 +260,9 @@ public class TemplateUtils {
 		}
 
 		if(saikuFormat.getVerticalAlignment()==null){
-			final String vert = (String) prptFormat.getStyleProperty(
+			final ElementAlignment vert = (ElementAlignment) prptFormat.getStyleProperty(
 					ElementStyleKeys.VALIGNMENT, null);
-			saikuFormat.setVerticalAlignment(vert);
+			saikuFormat.setVerticalAlignment(prptToSaikuAlignment(vert));
 		}else{
 			prptFormat.setStyleProperty(
 					ElementStyleKeys.VALIGNMENT, saikuToPrptAlignment(saikuFormat.getVerticalAlignment()));
