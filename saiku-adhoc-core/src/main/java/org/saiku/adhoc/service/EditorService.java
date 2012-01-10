@@ -427,22 +427,17 @@ public class EditorService {
 	    final Map<String, SaikuElementFormat> rptIdToElementFormat = model.getDerivedModels().getRptIdToElementFormat();
 
 		if(id.contains("dtl")){
-			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			return new ElementFormat(
-					rptIdToElementFormat.get(id),saikuColumn.getName());
+			return getFormat(id, model, rptIdToElementFormat);
 
 		}else if(id.contains("dth")){
-			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			return new ElementFormat(
-					rptIdToElementFormat.get(id),saikuColumn.getName());
+			return getFormat(id, model, rptIdToElementFormat);
 		
 		}else if(id.contains("ghd")){
 			final SaikuGroup saikuGroup = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			return new ElementFormat(
 					rptIdToElementFormat.get(id),saikuGroup.getGroupName());
 		}
-		
-		//----
+
 		else if(id.contains("gft")){
 			
 			String[] splits = id.split("-");	
@@ -458,8 +453,7 @@ public class EditorService {
 				}
 			}	
 		}
-		//--
-		
+
 		else if(id.contains("rhd")){
 			final List<SaikuElement> msgs = model.getReportHeaderElements();			
 			for (SaikuElement msg : msgs) {
@@ -500,82 +494,69 @@ public class EditorService {
 		return null;
 	}
 
+	private ElementFormat getFormat(String id, final SaikuMasterModel model,
+			final Map<String, SaikuElementFormat> rptIdToElementFormat) {
+		final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
+		return new ElementFormat(
+				rptIdToElementFormat.get(id),saikuColumn.getName());
+	}
+
 	public void setElementFormat(String sessionId, ElementFormat format, String id) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-		if(id.contains("dtl")){
+		if (id.contains("dtl")) {
 			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			saikuColumn.setElementFormat(format.getFormat());
 			saikuColumn.setName(format.getValue());
 
-				}
-					
-		else if(id.contains("dth")){
-			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			saikuColumn.setColumnHeaderFormat(format.getFormat());
-			saikuColumn.setName(format.getValue());
-			
-		}else if(id.contains("ghd")){
-			final SaikuGroup saikuGroup = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			saikuGroup.setGroupsHeaderFormat(format.getFormat());
-			saikuGroup.setGroupName(format.getValue());
+		}
 
-				}	
-		else if(id.contains("gft")){
+		else if (id.contains("dth")) {
+			final SaikuColumn m = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
+			m.setColumnHeaderFormat(format.getFormat());
+			m.setName(format.getValue());
+
+		} else if (id.contains("ghd")) {
+			final SaikuGroup m = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
+			m.setGroupsHeaderFormat(format.getFormat());
+			m.setGroupName(format.getValue());
+
+		} else if (id.contains("gft") || id.contains("rhd")) {
 			final SaikuElement m = (SaikuElement) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			m.setElementFormat(format.getFormat());
 			m.setValue(format.getValue());
 
 		}
-		//Merge as much as possible
-		else if(id.contains("rhd")){
-			final SaikuElement m = (SaikuElement) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			m.setElementFormat(format.getFormat());
-			m.setValue(format.getValue());
-			
-			/*
-	
-			String[] splits = id.split("-");	
-			Integer index = Integer.valueOf(splits[2]);
-			//get the correct group by index
-			SaikuGroup saikuGroup = model.getGroups().get(index);
+		// Merge as much as possible
+		/*
+		 * else if(id.contains("rhd")){ final SaikuElement m = (SaikuElement)
+		 * model.getDerivedModels().getRptIdToSaikuElement().get(id);
+		 * m.setElementFormat(format.getFormat());
+		 * m.setValue(format.getValue());
+		 * 
+		 * }
+		 */
+		else if (id.contains("rft")) {
+			final List<SaikuElement> msgs = model.getReportFooterElements();
+			setFormat(format, id, msgs);
+		} else if (id.contains("phd")) {
+			final List<SaikuElement> msgs = model.getPageHeaderElements();
+			setFormat(format, id, msgs);
+		} else if (id.contains("pft")) {
+			final List<SaikuElement> msgs = model.getPageFooterElements();
+			setFormat(format, id, msgs);
+		}
 
-			final List<SaikuElement> msgs = saikuGroup.getGroupFooterElements();			
-			for (SaikuElement msg : msgs) {
-				if(id.equals(msg.getUid())){
-					msg.setElementFormat(format.getFormat());
-					msg.setValue(format.getValue());
-				}
+	}
+
+	private void setFormat(ElementFormat format, String id, final List<SaikuElement> msgs) {
+		for (SaikuElement msg : msgs) {
+			if(id.equals(msg.getUid())){
+				msg.setElementFormat(format.getFormat());
+				msg.setValue(format.getValue());
 			}
-			*/	
-		
-		}else if(id.contains("rft")){
-			final List<SaikuElement> msgs = model.getReportFooterElements();			
-			for (SaikuElement msg : msgs) {
-				if(id.equals(msg.getUid())){
-					msg.setElementFormat(format.getFormat());
-					msg.setValue(format.getValue());
-				}
-			}			
-		}else if(id.contains("phd")){
-			final List<SaikuElement> msgs = model.getPageHeaderElements();			
-			for (SaikuElement msg : msgs) {
-				if(id.equals(msg.getUid())){
-					msg.setElementFormat(format.getFormat());
-					msg.setValue(format.getValue());
-				}
-			}		
-		}else if(id.contains("pft")){
-			final List<SaikuElement> msgs = model.getPageFooterElements();			
-			for (SaikuElement msg : msgs) {
-				if(id.equals(msg.getUid())){
-					msg.setElementFormat(format.getFormat());
-					msg.setValue(format.getValue());
-				}
-			}				
 		}
-
 	}
 
 	public void setColumnConfig(String sessionId, String category,

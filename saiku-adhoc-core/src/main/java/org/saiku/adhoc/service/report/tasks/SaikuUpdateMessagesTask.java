@@ -57,7 +57,8 @@ public class SaikuUpdateMessagesTask implements UpdateTask {
 
 		//markup the element
 		if(el.getElementTypeName().equals("message") ||
-				el.getElementTypeName().equals("label")){
+				el.getElementTypeName().equals("label")||
+				e.getAttribute("http://reporting.pentaho.org/namespaces/engine/attributes/wizard", "aggregation-type")!=null){		
 			final String htmlClass = "saiku " + uid;
 			e.setAttribute(AttributeNames.Html.NAMESPACE, AttributeNames.Html.STYLE_CLASS, htmlClass);
 
