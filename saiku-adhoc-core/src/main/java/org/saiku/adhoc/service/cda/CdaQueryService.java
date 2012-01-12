@@ -22,6 +22,7 @@ package org.saiku.adhoc.service.cda;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -95,9 +96,9 @@ public class CdaQueryService {
 		//
 		String filterKey = categoryId + "." + columnId; 
 		
-		ArrayList<String> selectedValues = null;
+		List<String> selectedValues = null;
 		
-		final ArrayList<SaikuParameter> parameters = model.getParameters();
+		final List<SaikuParameter> parameters = model.getParameters();
 		for (SaikuParameter saikuParameter : parameters) {
 			if(saikuParameter.getCategory().equals(categoryId)&&
 				saikuParameter.getId().equals(columnId)){

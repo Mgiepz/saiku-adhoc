@@ -86,7 +86,7 @@ public class TransModelToWizard {
 		}
 		
 		//Add the groups
-		final ArrayList<GroupDefinition> groupDefs = new ArrayList<GroupDefinition>();
+		final List<GroupDefinition> groupDefs = new ArrayList<GroupDefinition>();
 
 		List<SaikuGroup> sGroups = smm.getGroups();
 		

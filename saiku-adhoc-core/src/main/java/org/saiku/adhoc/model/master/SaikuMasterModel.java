@@ -70,7 +70,7 @@ public class SaikuMasterModel {
 
 	protected List<SaikuGroup> groups;
 
-	protected ArrayList<SaikuParameter> parameters;
+	protected List<SaikuParameter> parameters;
 
 	protected List<String> sortColumns;
 
@@ -246,11 +246,11 @@ public class SaikuMasterModel {
 		return this.derivedModels.getReportTemplate();		
 	}
 
-	public void setParameters(ArrayList<SaikuParameter> parameters) {
+	public void setParameters(List<SaikuParameter> parameters) {
 		this.parameters = parameters;
 	}
 
-	public ArrayList<SaikuParameter> getParameters() {
+	public List<SaikuParameter> getParameters() {
 		return parameters;
 	}
 

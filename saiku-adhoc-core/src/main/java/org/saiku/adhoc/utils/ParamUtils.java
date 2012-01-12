@@ -23,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -37,7 +38,7 @@ public class ParamUtils {
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
-		final ArrayList<SaikuParameter> parameters = model.getParameters();
+		final List<SaikuParameter> parameters = model.getParameters();
 		for (SaikuParameter saikuParameter : parameters) {
 
 			final String categoryId = saikuParameter.getCategory();
@@ -45,7 +46,7 @@ public class ParamUtils {
 			final String parameterName = prefix + "F_" + categoryId + "_" + columnId;
 
 			if (saikuParameter.getType().equals("String")) {
-				ArrayList<String> valueList = saikuParameter
+				List<String> valueList = saikuParameter
 				.getParameterValues();
 				String[] values = valueList
 				.toArray(new String[valueList.size()]);
@@ -54,7 +55,7 @@ public class ParamUtils {
 			if (saikuParameter.getType().equals("Date")) {
 				String nameFrom = parameterName + "_FROM";
 				String nameTo = parameterName + "_TO";
-				ArrayList<String> valueList = saikuParameter
+				List<String> valueList = saikuParameter
 				.getParameterValues();
 				String[] values = valueList
 				.toArray(new String[valueList.size()]);
@@ -80,7 +81,7 @@ public class ParamUtils {
 	public static String[] splitFirst(String source, String splitter)
 	  {
 	    // hold the results as we find them
-	    Vector rv = new Vector();
+	    List<String> rv = new Vector<String>();
 	    int last = 0;
 	    int next = 0;
 

@@ -21,6 +21,8 @@ package org.saiku.adhoc.model.master;
 
 public class SaikuReportSettings {
 	
+	private static final int INITIAL_LIMIT = 100;
+	
 	private boolean disableDistinct;
 	private int limit;
 	
@@ -28,7 +30,7 @@ public class SaikuReportSettings {
 	
 	public SaikuReportSettings() {
 		this.disableDistinct = false;
-		this.limit = 100;
+		this.limit = INITIAL_LIMIT;
 	}
 
 	public void setDisableDistinct(boolean disableDistinct) {

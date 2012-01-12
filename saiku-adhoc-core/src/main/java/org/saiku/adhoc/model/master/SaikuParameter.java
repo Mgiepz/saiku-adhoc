@@ -20,6 +20,7 @@
 package org.saiku.adhoc.model.master;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.platform.util.messages.LocaleHelper;
@@ -40,7 +41,7 @@ public class SaikuParameter {
 	
 	private String type;
 	
-	private ArrayList<String> parameterValues;	
+	private List<String> parameterValues;	
 
 	public SaikuParameter(LogicalColumn logicalColumn) {
 		
@@ -83,11 +84,11 @@ public class SaikuParameter {
 		return name;
 	}
 
-	public void setParameterValues(ArrayList<String> parameterValues) {
+	public void setParameterValues(List<String> parameterValues) {
 		this.parameterValues = parameterValues;
 	}
 
-	public ArrayList<String> getParameterValues() {
+	public List<String> getParameterValues() {
 		return parameterValues;
 	}
 

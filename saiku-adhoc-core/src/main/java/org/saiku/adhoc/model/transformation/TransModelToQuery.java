@@ -21,6 +21,7 @@
 package org.saiku.adhoc.model.transformation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.pentaho.metadata.model.Category;
 import org.pentaho.metadata.model.Domain;
@@ -104,7 +105,7 @@ public class TransModelToQuery {
 		query.getConstraints().clear();
 		query.getParameters().clear();
 
-		final ArrayList<SaikuParameter> parameters = smm.getParameters();
+		final List<SaikuParameter> parameters = smm.getParameters();
 
 		for (SaikuParameter param : parameters) {
 			final String filterName = "F_" + param.getCategory() + "_" + param.getId();

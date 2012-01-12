@@ -20,6 +20,7 @@
 package org.saiku.adhoc.model.dto;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Directory {
 	
@@ -30,13 +31,13 @@ public class Directory {
 
 	private String name;
 
-	private ArrayList<File> files;
+	private List<File> files;
 
-	public void setFiles(ArrayList<File> files) {
+	public void setFiles(List<File> files) {
 		this.files = files;
 	}
 
-	public ArrayList<File> getFiles() {
+	public List<File> getFiles() {
 		return files;
 	}
 

@@ -40,13 +40,15 @@ import pt.webdetails.cda.settings.UnknownDataAccessException;
 
 public class LocalCDA {
 
+    final static int DEFAULT_PAGE_SIZE = 20;
+    final static int DEFAULT_START_PAGE = 0;
+	
     private LocalCDA(){
         
     }
     
     public static String localCDAQuery(final Map<String, Object> inputs){
-        final int DEFAULT_PAGE_SIZE = 20;
-        final int DEFAULT_START_PAGE = 0;
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         CdaEngine engine = CdaEngine.getInstance();

@@ -95,7 +95,7 @@ public class TransModelToCda {
 				final String filterName = "F_" + saikuParameter.getCategory() + "_" + saikuParameter.getId();
 				
 				
-				final ArrayList<pt.webdetails.cda.dataaccess.Parameter> parameters = ((AbstractDataAccess) cda.getDataAccess(sessionId))
+				final List<pt.webdetails.cda.dataaccess.Parameter> parameters = ((AbstractDataAccess) cda.getDataAccess(sessionId))
 				.getParameters();
 				if(column.getDataType().getName().equals("String")){
 				
