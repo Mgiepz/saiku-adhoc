@@ -26,10 +26,8 @@ import org.pentaho.reporting.engine.classic.core.ElementAlignment;
 import org.pentaho.reporting.engine.classic.core.style.ElementStyleKeys;
 import org.pentaho.reporting.engine.classic.core.style.ElementStyleSheet;
 import org.pentaho.reporting.engine.classic.core.style.TextStyleKeys;
-import org.pentaho.reporting.engine.classic.core.style.VerticalTextAlign;
 import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
-import org.saiku.adhoc.service.EditorService;
 
 /**
  * This class is used to extract default formatting for a new element from the

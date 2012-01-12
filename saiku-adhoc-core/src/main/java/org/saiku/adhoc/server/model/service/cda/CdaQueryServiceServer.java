@@ -21,11 +21,9 @@
 package org.saiku.adhoc.server.model.service.cda;
 
 import org.saiku.adhoc.exceptions.CdaException;
-import org.saiku.adhoc.exceptions.QueryException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.server.datasource.ICDAManager;
-import org.saiku.adhoc.server.datasource.SaikuCDA;
 import org.saiku.adhoc.service.cda.CdaQueryService;
 
 public class CdaQueryServiceServer extends CdaQueryService {

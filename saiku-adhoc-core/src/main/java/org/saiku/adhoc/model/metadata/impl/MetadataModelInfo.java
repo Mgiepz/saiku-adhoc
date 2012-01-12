@@ -56,7 +56,7 @@ public class MetadataModelInfo implements Serializable {
    * @param domainId
  * @throws UnsupportedEncodingException 
    */
-  public void setDomainId(String domainId) throws UnsupportedEncodingException {
+  public void setDomainId(String domainId) {
     this.domainId = domainId;
   }
 

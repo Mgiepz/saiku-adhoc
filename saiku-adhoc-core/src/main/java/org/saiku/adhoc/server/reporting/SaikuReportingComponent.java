@@ -1,6 +1,5 @@
 package org.saiku.adhoc.server.reporting;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
@@ -33,7 +32,6 @@ import org.pentaho.reporting.engine.classic.core.util.ReportParameterValues;
 import org.pentaho.reporting.engine.classic.extensions.modules.java14print.Java14PrintUtil;
 import org.pentaho.reporting.libraries.base.config.Configuration;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
-import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.reporting.libraries.xmlns.common.ParserUtil;
 import org.pentaho.reporting.platform.plugin.ParameterXmlContentHandler;
 import org.pentaho.reporting.platform.plugin.ReportContentUtil;
@@ -190,7 +188,7 @@ public class SaikuReportingComponent {
     }
 
     public ValidationResult applyInputsToReportParameters(final ParameterContext context,
-            ValidationResult validationResult) throws IOException, ResourceException {
+            ValidationResult validationResult) {
         if (validationResult == null) {
             validationResult = new ValidationResult();
         }
@@ -419,7 +417,7 @@ public class SaikuReportingComponent {
         return null;
     }
 
-    private String computeEffectiveOutputTarget() throws IOException, ResourceException {
+    private String computeEffectiveOutputTarget() {
         final MasterReport report = getReport();
         if (Boolean.TRUE.equals(report.getAttribute(AttributeNames.Core.NAMESPACE,
                 AttributeNames.Core.LOCK_PREFERRED_OUTPUT_TYPE))) {
@@ -522,7 +520,7 @@ public class SaikuReportingComponent {
         return null;
     }
 
-    protected ReportOutputHandler createOutputHandlerForOutputType(final String outputType) throws IOException {
+    protected ReportOutputHandler createOutputHandlerForOutputType(final String outputType) {
         if (inputs == null) {
             throw new IllegalStateException("Inputs are null, this component did not validate properly");
         }

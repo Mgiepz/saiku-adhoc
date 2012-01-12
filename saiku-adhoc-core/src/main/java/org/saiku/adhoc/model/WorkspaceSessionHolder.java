@@ -19,18 +19,11 @@
  */
 package org.saiku.adhoc.model;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.OperationNotSupportedException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-
-import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
-import org.saiku.adhoc.exceptions.QueryException;
 import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuColumn;

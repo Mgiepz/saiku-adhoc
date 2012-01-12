@@ -27,13 +27,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.pentaho.metadata.model.LogicalColumn;
-import org.pentaho.metadata.model.concept.types.DataType;
-import org.pentaho.metadata.query.model.Parameter;
 import org.pentaho.metadata.query.model.Query;
 import org.pentaho.metadata.query.model.Selection;
 import org.pentaho.metadata.query.model.util.QueryXmlHelper;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
-import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
@@ -52,7 +49,7 @@ import pt.webdetails.cda.settings.UnknownDataAccessException;
 
 public class TransModelToCda {
 
-	public CdaSettings doIt(SaikuMasterModel smm) throws SaikuAdhocException, UnsupportedConnectionException, UnsupportedDataAccessException, UnknownDataAccessException {
+	public CdaSettings doIt(SaikuMasterModel smm) throws UnsupportedConnectionException, UnsupportedDataAccessException, UnknownDataAccessException, SaikuAdhocException {
 
 		CdaSettings cda = null;
 

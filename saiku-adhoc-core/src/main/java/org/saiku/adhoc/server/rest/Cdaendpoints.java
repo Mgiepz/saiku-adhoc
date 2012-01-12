@@ -2,8 +2,6 @@ package org.saiku.adhoc.server.rest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,11 +11,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang.StringUtils;
 import org.pentaho.platform.api.engine.IParameterProvider;
-import org.pentaho.platform.engine.core.solution.ActionInfo;
 import org.pentaho.platform.engine.core.solution.SimpleParameterProvider;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

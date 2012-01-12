@@ -7,7 +7,6 @@ import org.pentaho.reporting.engine.classic.core.Element;
 import org.pentaho.reporting.engine.classic.core.ReportElement;
 import org.saiku.adhoc.model.master.SaikuElement;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
-import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.utils.TemplateUtils;
 

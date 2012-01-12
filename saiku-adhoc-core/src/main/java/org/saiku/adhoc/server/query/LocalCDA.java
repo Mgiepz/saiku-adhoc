@@ -1,18 +1,14 @@
 package org.saiku.adhoc.server.query;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentException;
 import org.pentaho.reporting.libraries.base.util.CSVTokenizer;
 
 import pt.webdetails.cda.CdaEngine;
-import pt.webdetails.cda.CdaQueryComponent;
 import pt.webdetails.cda.connections.UnsupportedConnectionException;
 import pt.webdetails.cda.dataaccess.QueryException;
 import pt.webdetails.cda.dataaccess.UnsupportedDataAccessException;
@@ -25,7 +21,7 @@ import pt.webdetails.cda.settings.UnknownDataAccessException;
 
 public class LocalCDA {
 
-    public LocalCDA(){
+    private LocalCDA(){
         
     }
     

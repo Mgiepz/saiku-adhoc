@@ -1,24 +1,18 @@
 package org.saiku.adhoc.server.reporting;
 
-import java.io.File;
-
-import org.pentaho.platform.api.engine.IApplicationContext;
 import org.pentaho.platform.api.engine.IPentahoSession;
 import org.pentaho.platform.api.repository.IContentLocation;
 import org.pentaho.platform.api.repository.IContentRepository;
 import org.pentaho.platform.engine.core.system.PentahoSessionHolder;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
-import org.pentaho.reporting.engine.classic.core.modules.output.table.html.AllItemsHtmlPrinter;
 import org.pentaho.reporting.engine.classic.core.modules.output.table.html.HtmlPrinter;
 import org.pentaho.reporting.libraries.repository.ContentIOException;
 import org.pentaho.reporting.libraries.repository.ContentLocation;
 import org.pentaho.reporting.libraries.repository.DefaultNameGenerator;
-import org.pentaho.reporting.libraries.repository.file.FileRepository;
 import org.pentaho.reporting.libraries.repository.stream.StreamRepository;
 import org.pentaho.reporting.platform.plugin.messages.Messages;
 import org.pentaho.reporting.platform.plugin.output.PageableContentRepoHtmlOutput;
-import org.pentaho.reporting.platform.plugin.output.PageableHTMLOutput;
 import org.pentaho.reporting.platform.plugin.repository.PentahoNameGenerator;
 import org.pentaho.reporting.platform.plugin.repository.ReportContentRepository;
 

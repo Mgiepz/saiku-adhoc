@@ -20,9 +20,6 @@
 package org.saiku.adhoc.model.master;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.platform.util.messages.LocaleHelper;

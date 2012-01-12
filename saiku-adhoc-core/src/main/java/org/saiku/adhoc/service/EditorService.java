@@ -21,7 +21,6 @@
 package org.saiku.adhoc.service;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -32,24 +31,21 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
-import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
-import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.dto.ElementFormat;
 import org.saiku.adhoc.model.dto.FilterValue;
 import org.saiku.adhoc.model.dto.Position;
 import org.saiku.adhoc.model.master.SaikuColumn;
+import org.saiku.adhoc.model.master.SaikuElement;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
-import org.saiku.adhoc.model.master.SaikuElement;
 import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
 import org.saiku.adhoc.service.repository.IMetadataService;
@@ -264,6 +260,9 @@ public class EditorService {
 			String businessColumn, int position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
+
+		//TODO: We need remove by uid here too
+		
 		List<SaikuParameter> parameters = model.getParameters();
 
 		final LogicalModel logicalModel = model.getDerivedModels().getLogicalModel();
@@ -330,6 +329,9 @@ public class EditorService {
 			Position position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
+		
+		removeByUid(model,position.getUid());
+		
 		List<SaikuGroup> groups = model.getGroups();
 
 		final LogicalModel logicalModel = model.getDerivedModels()

@@ -22,38 +22,26 @@ package org.saiku.adhoc.server.model.service.repository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.pentaho.metadata.model.Domain;
-import org.pentaho.platform.api.engine.IFileFilter;
 import org.pentaho.platform.api.engine.IPentahoSession;
 import org.pentaho.platform.api.engine.ISolutionFile;
-import org.pentaho.platform.api.engine.PentahoAccessControlException;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.platform.engine.core.solution.ActionInfo;
 import org.pentaho.platform.engine.core.system.PentahoSessionHolder;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.pentaho.platform.util.messages.LocaleHelper;
-import org.saiku.adhoc.model.dto.Directory;
-import org.saiku.adhoc.model.dto.FileTree;
 import org.saiku.adhoc.model.master.ReportTemplate;
-import org.saiku.adhoc.server.datasource.ClassPathResourcePRPTManager;
 import org.saiku.adhoc.server.datasource.IPRPTManager;
 import org.saiku.adhoc.server.model.master.ReportTemplateServer;
 import org.saiku.adhoc.service.PluginConfig;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
-import org.springframework.core.io.ClassPathResource;
 
 public class ServerRepositoryHelper implements IRepositoryHelper {
 
@@ -131,8 +119,7 @@ public class ServerRepositoryHelper implements IRepositoryHelper {
 
 	private static boolean writeFile(String solution, String path,
 			String artifact, byte[] contents)
-			throws PentahoAccessControlException, UnsupportedEncodingException,
-			Exception {
+			throws Exception{
 
 		String fullPath = ActionInfo
 				.buildSolutionPath(solution, path, artifact);

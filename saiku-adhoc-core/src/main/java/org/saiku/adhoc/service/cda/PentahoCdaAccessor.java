@@ -19,15 +19,11 @@
  */
 package org.saiku.adhoc.service.cda;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.saiku.adhoc.exceptions.CdaException;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
-import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.utils.ParamUtils;
 
 /**

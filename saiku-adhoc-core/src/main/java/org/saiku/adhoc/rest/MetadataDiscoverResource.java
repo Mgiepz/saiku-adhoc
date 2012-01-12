@@ -22,7 +22,6 @@ package org.saiku.adhoc.rest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

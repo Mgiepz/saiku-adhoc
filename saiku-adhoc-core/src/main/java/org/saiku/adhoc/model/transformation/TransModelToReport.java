@@ -20,14 +20,11 @@
 
 package org.saiku.adhoc.model.transformation;
 
-import java.io.IOException;
-import java.sql.Date;
 import java.util.List;
 
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.parameters.DefaultParameterDefinition;
 import org.pentaho.reporting.engine.classic.core.parameters.PlainParameter;
-import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.messages.Messages;

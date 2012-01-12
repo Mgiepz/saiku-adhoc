@@ -20,7 +20,6 @@
 package org.saiku.adhoc.server.model.master;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.pentaho.platform.engine.core.solution.ActionInfo;
 import org.saiku.adhoc.model.master.ReportTemplate;
 
 public class ReportTemplateServer extends ReportTemplate{

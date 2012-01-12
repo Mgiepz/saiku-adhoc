@@ -25,7 +25,6 @@ import java.io.IOException;
 import org.dom4j.Document;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.platform.api.engine.IPentahoSession;
-import org.saiku.adhoc.model.dto.FileTree;
 import org.saiku.adhoc.model.master.ReportTemplate;
 
 public interface IRepositoryHelper {

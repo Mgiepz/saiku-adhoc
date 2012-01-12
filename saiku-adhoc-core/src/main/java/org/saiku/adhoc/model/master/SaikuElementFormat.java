@@ -101,12 +101,14 @@ public class SaikuElementFormat implements Cloneable {
 		this.backgroundColor = backgroundColor;
 	}
 
-	public Object clone() {
-		try {
-			return super.clone();
-		} catch (CloneNotSupportedException e) {
+	public Object clone(){
+			try {
+				return super.clone();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return null;
-		}
 	}
 
 	public void setFontBold(Boolean fontBold) {

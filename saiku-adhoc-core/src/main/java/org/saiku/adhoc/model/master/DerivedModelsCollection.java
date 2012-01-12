@@ -27,7 +27,6 @@ import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.query.model.Query;
 import org.pentaho.metadata.query.model.util.QueryXmlHelper;
-import org.pentaho.platform.engine.core.system.PentahoSessionHolder;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.pentaho.reporting.engine.classic.core.DataFactory;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
@@ -36,7 +35,6 @@ import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaDataFa
 import org.pentaho.reporting.engine.classic.wizard.model.DefaultWizardSpecification;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
-import org.saiku.adhoc.service.SaikuProperties;
 
 import pt.webdetails.cda.connections.Connection;
 import pt.webdetails.cda.connections.metadata.MetadataConnection;
@@ -71,7 +69,7 @@ public class DerivedModelsCollection {
 	protected Map<String,SaikuElementFormat> rptIdToElementFormat;
 
 	public DerivedModelsCollection(String sessionId, Domain domain,
-			LogicalModel model) throws SaikuAdhocException {
+			LogicalModel model) {
 		this.sessionId = sessionId;
 		this.domain = domain;
 		this.logicalModel = model;

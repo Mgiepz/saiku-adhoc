@@ -31,9 +31,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import org.dom4j.Document;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
-import org.saiku.adhoc.model.dto.FileTree;
 import org.saiku.adhoc.model.dto.SavedQuery;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
 import org.slf4j.Logger;

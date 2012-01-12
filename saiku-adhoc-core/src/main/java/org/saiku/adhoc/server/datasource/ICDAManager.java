@@ -3,8 +3,6 @@ package org.saiku.adhoc.server.datasource;
 import java.util.List;
 import java.util.Map;
 
-import org.saiku.adhoc.model.master.ReportTemplate;
-
 
 public interface ICDAManager {
 

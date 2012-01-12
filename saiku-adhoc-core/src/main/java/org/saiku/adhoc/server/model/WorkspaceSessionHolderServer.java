@@ -28,7 +28,6 @@ import javax.naming.OperationNotSupportedException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
-import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.master.ReportTemplate;
@@ -40,7 +39,6 @@ import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.server.datasource.IPRPTManager;
 import org.saiku.adhoc.server.datasource.SaikuCDA;
 import org.saiku.adhoc.server.model.master.ReportTemplateServer;
-import org.saiku.adhoc.server.model.service.repository.ServerRepositoryHelper;
 
 
 /**
