@@ -75,15 +75,10 @@ public class ExportResource {
 						log.debug("REST:GET "+ queryName + " exportXls");
 					}
 					
-					BufferedWriter bw = new BufferedWriter(new PrintWriter(
-							output));
+					//BufferedWriter bw = new BufferedWriter(new PrintWriter(
+					//		output));
 
-					try {
-						bw.write(exportService.exportXls(queryName));
-						bw.flush();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					exportService.writeXls(queryName, output);
 				} catch (Exception e) {
 					throw new WebApplicationException(e);
 				}

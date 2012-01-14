@@ -19,6 +19,7 @@
  */
 package org.saiku.adhoc.service.cda;
 
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,6 +60,28 @@ public class PentahoCdaAccessor implements ICdaAccessor {
 
 		return result;
 
+	}
+
+	@Override
+	public void doQuery(SaikuMasterModel model, String id, String outputType, OutputStream output) {
+		// TODO Auto-generated method stub
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		String path = model.getCdaPath();
+		String daId = id;
+
+		params.put("path", path);
+		params.put("dataAccessId", daId);
+
+		if(outputType!=null){
+			params.put("outputType",outputType);
+		}
+
+		params.putAll(ParamUtils.getReportParameters("param", model));
+		
+		PluginUtils.callPlugin("cda", "doQuery", params, output, null);
+		
+		
 	}
 
 }

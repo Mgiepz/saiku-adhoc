@@ -72,5 +72,13 @@ public class ExportService {
 		return reportGeneratorService;
 	}
 
+	public void writeXls(String sessionId, OutputStream output) {
+		
+		SaikuMasterModel query = sessionHolder.getModel(sessionId);
+		
+	    cdaAccessor.doQuery(query, sessionId, "xls", output);
+		
+	}
+
 
 }

@@ -19,6 +19,8 @@
  */
 package org.saiku.adhoc.service.cda;
 
+import java.io.OutputStream;
+
 import org.saiku.adhoc.exceptions.CdaException;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 
@@ -26,5 +28,7 @@ public interface ICdaAccessor {
 
 	public abstract String doQuery(SaikuMasterModel model, String id,
 			String outputType) throws CdaException;
+
+	public abstract void doQuery(SaikuMasterModel query, String sessionId, String string, OutputStream output);
 
 }
