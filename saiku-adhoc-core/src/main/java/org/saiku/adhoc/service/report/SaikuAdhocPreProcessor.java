@@ -504,6 +504,14 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 				headerElement.setAttribute(AttributeNames.Wizard.NAMESPACE, "CachedWizardFieldData", field);
 			}
 
+			headerElement.setAttribute(AttributeNames.Core.NAMESPACE, AttributeNames.Core.VALUE,
+					field.getDisplayName());
+
+			headerElement.setAttribute(AttributeNames.Wizard.NAMESPACE, AttributeNames.Wizard.ALLOW_METADATA_STYLING,
+					false);
+			headerElement.setAttribute(AttributeNames.Wizard.NAMESPACE, AttributeNames.Wizard.ALLOW_METADATA_ATTRIBUTES,
+					false);
+			
 			detailsHeader.addElement(headerElement);
 		}
 
