@@ -46,7 +46,7 @@ public class MemoryBasedRepository {
     private void createDomain(){
         FileInputStream in = null;
         try {
-            in = new FileInputStream("metadata.xmi");
+            in = new FileInputStream("/tmp/metadata.xmi");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

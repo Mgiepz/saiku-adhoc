@@ -225,6 +225,7 @@ public class SaikuProperties extends Properties{
 		}
 	}
 
+    public static final String baseURL = getPropString("saiku-adhoc.baseurl","http://localhost:8080/saiku-adhoc-webapp/rest/saiku-adhoc");
 
 	public static final String defaultPrptTemplate = getPropString("saiku-adhoc.default.template","jade_4_left_aligned_grid.prpt");
 

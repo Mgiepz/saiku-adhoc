@@ -36,6 +36,7 @@ import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.master.DerivedModelsCollection;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.server.datasource.ICDAManager;
+import org.saiku.adhoc.service.SaikuProperties;
 
 import pt.webdetails.cda.connections.Connection;
 import pt.webdetails.cda.connections.metadata.MetadataConnection;
@@ -98,7 +99,7 @@ public class DerivedModelsCollectionServer extends DerivedModelsCollection{
             String queryString = this.sessionId;
             f.setQuery(name, queryString);          
             //TODO Plugin URL detection
-            String baseUrl = "http://localhost:8080/saiku-adhoc-webapp/rest/saiku-adhoc";
+            String baseUrl = SaikuProperties.baseURL;
             
             
             f.setBaseUrl(baseUrl);
