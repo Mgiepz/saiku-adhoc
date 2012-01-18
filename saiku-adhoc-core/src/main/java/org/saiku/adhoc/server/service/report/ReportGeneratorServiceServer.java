@@ -29,24 +29,11 @@ import javax.naming.OperationNotSupportedException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
-import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
-import org.pentaho.reporting.engine.classic.core.ReportPreProcessor;
-import org.pentaho.reporting.engine.classic.core.cache.CachingDataFactory;
-import org.pentaho.reporting.engine.classic.core.function.ProcessingContext;
-import org.pentaho.reporting.engine.classic.core.layout.output.DefaultProcessingContext;
 import org.pentaho.reporting.engine.classic.core.modules.output.table.html.HtmlTableModule;
-import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.BundleWriter;
-import org.pentaho.reporting.engine.classic.core.parameters.ParameterDefinitionEntry;
-import org.pentaho.reporting.engine.classic.core.states.StateUtilities;
-import org.pentaho.reporting.engine.classic.core.states.datarow.DefaultFlowController;
-import org.pentaho.reporting.engine.classic.core.util.ReportParameterValues;
-import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaDefinition;
-import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
-import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
-import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.ReportException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.dto.HtmlReport;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
@@ -56,7 +43,6 @@ import org.saiku.adhoc.server.datasource.SaikuCDA;
 import org.saiku.adhoc.server.reporting.SaikuReportingComponent;
 import org.saiku.adhoc.service.SaikuProperties;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
-import org.saiku.adhoc.service.report.SaikuAdhocPreProcessor;
 import org.saiku.adhoc.utils.ParamUtils;
 
 public class ReportGeneratorServiceServer extends ReportGeneratorService {

@@ -17,28 +17,16 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  *
  */
-package org.saiku.adhoc.server.datasource;
+package org.saiku.adhoc.exceptions;
 
-import java.util.List;
-import java.util.Map;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.saiku.adhoc.model.master.ReportTemplate;
-
-
-public interface IPRPTManager {
-
-public void load();
-
-public ReportTemplate addDatasource(ReportTemplate datasource);
-
-public ReportTemplate setDatasource(ReportTemplate datasource);
-
-public List<ReportTemplate> addDatasources(List<ReportTemplate> datasources);
-
-public boolean removeDatasource(String datasourceName);
-
-public Map<String, ReportTemplate> getDatasources();
-
-public ReportTemplate getDatasource(String datasourceName);
-
+public class SaikuClientException extends WebApplicationException {
+    public SaikuClientException(String message) {
+        super(Response.status(Status.BAD_REQUEST)
+            .entity(message).type(MediaType.TEXT_PLAIN).build());
+    }
 }

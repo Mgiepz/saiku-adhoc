@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.pentaho.metadata.model.LogicalColumn;
-import org.pentaho.metadata.model.concept.types.DataType;
-import org.pentaho.metadata.query.model.Parameter;
 import org.pentaho.metadata.query.model.Query;
 import org.pentaho.metadata.query.model.Selection;
 import org.pentaho.metadata.query.model.util.QueryXmlHelper;
@@ -39,22 +37,24 @@ import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.utils.XmlUtils;
 
 import pt.webdetails.cda.connections.Connection;
+import pt.webdetails.cda.connections.UnsupportedConnectionException;
 import pt.webdetails.cda.connections.metadata.MetadataConnection;
 import pt.webdetails.cda.dataaccess.AbstractDataAccess;
 import pt.webdetails.cda.dataaccess.ColumnDefinition;
 import pt.webdetails.cda.dataaccess.DataAccess;
 import pt.webdetails.cda.dataaccess.MqlDataAccess;
+import pt.webdetails.cda.dataaccess.UnsupportedDataAccessException;
 import pt.webdetails.cda.settings.CdaSettings;
+import pt.webdetails.cda.settings.UnknownDataAccessException;
 
 public class TransModelToCda {
 
-	public CdaSettings doIt(SaikuMasterModel smm) throws SaikuAdhocException {
+	public CdaSettings doIt(SaikuMasterModel smm) throws UnsupportedConnectionException, UnsupportedDataAccessException, UnknownDataAccessException, SaikuAdhocException {
 
 		CdaSettings cda = null;
 
 		String sessionId = smm.getDerivedModels().getSessionId();
 
-		try {
 			cda = new CdaSettings("cda" + sessionId, null);
 
 			String[] domainInfo = smm.getDerivedModels().getDomain().getId()
@@ -95,7 +95,7 @@ public class TransModelToCda {
 				final String filterName = "F_" + saikuParameter.getCategory() + "_" + saikuParameter.getId();
 				
 				
-				final ArrayList<pt.webdetails.cda.dataaccess.Parameter> parameters = ((AbstractDataAccess) cda.getDataAccess(sessionId))
+				final List<pt.webdetails.cda.dataaccess.Parameter> parameters = ((AbstractDataAccess) cda.getDataAccess(sessionId))
 				.getParameters();
 				if(column.getDataType().getName().equals("String")){
 				
@@ -144,10 +144,6 @@ public class TransModelToCda {
 			cda.getDataAccess(sessionId).getColumnDefinitions().clear();
 			cda.getDataAccess(sessionId).getColumnDefinitions()
 					.addAll(getCdaColumns(smm));
-
-		} catch (Exception e) {
-			throw new SaikuAdhocException("could not derive CDA");
-		}
 
 		return cda;
 	}

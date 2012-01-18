@@ -28,9 +28,9 @@ public class FilterResult {
 	
 	private String availableValues;
 	
-	private ArrayList<String> selectedValues;
+	private List<String> selectedValues;
 
-	public FilterResult(String availableValues, ArrayList<String> selectedValues, String dataType) {
+	public FilterResult(String availableValues, List<String> selectedValues, String dataType) {
 		
 		this.availableValues = availableValues;
 		this.selectedValues = selectedValues;
@@ -45,11 +45,11 @@ public class FilterResult {
 		return availableValues;
 	}
 
-	public void setSelectedValues(ArrayList<String> selectedValues) {
+	public void setSelectedValues(List<String> selectedValues) {
 		this.selectedValues = selectedValues;
 	}
 
-	public ArrayList<String> getSelectedValues() {
+	public List<String> getSelectedValues() {
 		return selectedValues;
 	}
 

@@ -21,6 +21,7 @@
 package org.saiku.adhoc.model.transformation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.pentaho.metadata.model.Category;
 import org.pentaho.metadata.model.Domain;
@@ -90,39 +91,21 @@ public class TransModelToQuery {
 		}
 
 		//We also need the Group Fields to be in the query
+		/*
 		for (SaikuGroup saikuGroup : smm.getGroups()) {
 			Category category = model.findCategory(saikuGroup.getCategory());
 			LogicalColumn column = model.findLogicalColumn(saikuGroup.getColumnId());
 			final AggregationType selectedAggType = AggregationType.NONE;
 			Selection selection = new Selection(category, column, selectedAggType);
 			query.getSelections().add(selection);
-
-			/*
-			Order order =  new Order(selection, Type.ASC);
-			query.getOrders().add(order);
-			 */
-
 		}
+		*/
 
 		//Remove all old filters from query
 		query.getConstraints().clear();
 		query.getParameters().clear();
 
-		//add params
-		//		for (String filter : smm.getDerivedModels().getFilterQueries().keySet()) {
-		//			final String filterName = "F_" + filter.replace(".", "_");
-		//			//add filter to mql
-		//			String formula = "OR(" +
-		//			"IN([" + filter + "]; [param:" + filterName + "]);" +
-		//			"EQUALS(\"\"; [param:" + filterName + "]))";
-		//			Constraint cst = new Constraint(CombinationType.AND , formula);
-		//			query.getConstraints().add(cst);
-		//			//TODO: Dateparams
-		//			Parameter paramMql = new Parameter(filterName, DataType.STRING, "");
-		//			query.getParameters().add(paramMql);
-		//		}
-
-		final ArrayList<SaikuParameter> parameters = smm.getParameters();
+		final List<SaikuParameter> parameters = smm.getParameters();
 
 		for (SaikuParameter param : parameters) {
 			final String filterName = "F_" + param.getCategory() + "_" + param.getId();
@@ -159,7 +142,6 @@ public class TransModelToQuery {
 
 
 		}
-
 
 		query.setDisableDistinct(smm.getSettings().isDisableDistinct());
 		query.setLimit(smm.getSettings().getLimit());

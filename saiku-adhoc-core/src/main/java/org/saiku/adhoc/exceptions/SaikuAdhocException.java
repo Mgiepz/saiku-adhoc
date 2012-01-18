@@ -23,22 +23,18 @@ public class SaikuAdhocException extends Exception {
 
 	public SaikuAdhocException() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public SaikuAdhocException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	public SaikuAdhocException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 	public SaikuAdhocException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

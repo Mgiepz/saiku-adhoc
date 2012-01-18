@@ -27,21 +27,16 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.CdaException;
-import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.QueryException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.dto.FilterResult;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
-import org.saiku.adhoc.service.EditorService;
-import org.saiku.adhoc.service.SaikuProperties;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
 
 public class CdaQueryService {
@@ -72,11 +67,12 @@ public class CdaQueryService {
 	 * 
 	 * @param queryName
 	 * @param sessionId 
+	 * @throws SaikuAdhocException 
 	 * @throws QueryException 
 	 * @throws CdaException 
 	 * @throws QuerybuilderServiceException 
 	 */
-	public String runQuery(String queryName, String sessionId) throws QueryException, CdaException {
+	public String runQuery(String queryName, String sessionId) throws SaikuAdhocException, CdaException {
 
 		
 		sessionHolder.materializeModel(sessionId);
@@ -100,9 +96,9 @@ public class CdaQueryService {
 		//
 		String filterKey = categoryId + "." + columnId; 
 		
-		ArrayList<String> selectedValues = null;
+		List<String> selectedValues = null;
 		
-		final ArrayList<SaikuParameter> parameters = model.getParameters();
+		final List<SaikuParameter> parameters = model.getParameters();
 		for (SaikuParameter saikuParameter : parameters) {
 			if(saikuParameter.getCategory().equals(categoryId)&&
 				saikuParameter.getId().equals(columnId)){

@@ -1,18 +1,33 @@
+/*
+ * Copyright (C) 2011 Marius Giepz
+ *
+ * This program is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU General Public License as published by the Free 
+ * Software Foundation; either version 2 of the License, or (at your option) 
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * 
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along 
+ * with this program; if not, write to the Free Software Foundation, Inc., 
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ *
+ */
 package org.saiku.adhoc.server.query;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentException;
 import org.pentaho.reporting.libraries.base.util.CSVTokenizer;
 
 import pt.webdetails.cda.CdaEngine;
-import pt.webdetails.cda.CdaQueryComponent;
 import pt.webdetails.cda.connections.UnsupportedConnectionException;
 import pt.webdetails.cda.dataaccess.QueryException;
 import pt.webdetails.cda.dataaccess.UnsupportedDataAccessException;
@@ -25,13 +40,15 @@ import pt.webdetails.cda.settings.UnknownDataAccessException;
 
 public class LocalCDA {
 
-    public LocalCDA(){
+    final static int DEFAULT_PAGE_SIZE = 20;
+    final static int DEFAULT_START_PAGE = 0;
+	
+    private LocalCDA(){
         
     }
     
     public static String localCDAQuery(final Map<String, Object> inputs){
-        final int DEFAULT_PAGE_SIZE = 20;
-        final int DEFAULT_START_PAGE = 0;
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         CdaEngine engine = CdaEngine.getInstance();

@@ -17,28 +17,41 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  *
  */
-package org.saiku.adhoc.server.datasource;
+package org.saiku.adhoc.model.dto;
 
-import java.util.List;
-import java.util.Map;
+/**
+ * This DTO wraps any object returned from the server 
+ * to be able to return a meaningfull error on failure.
+ * 
+ * @author mgie
+ *
+ */
+public class SaikuAdhocResponse {
+	
+	public SaikuAdhocResponse(String error, Object data) {
+		super();
+		this.error = error;
+		this.data = data;
+	}
 
-import org.saiku.adhoc.model.master.ReportTemplate;
+	private String error;
+	
+	private Object data;
 
+	public void setError(String error) {
+		this.error = error;
+	}
 
-public interface IPRPTManager {
+	public String getError() {
+		return error;
+	}
 
-public void load();
+	public void setData(Object data) {
+		this.data = data;
+	}
 
-public ReportTemplate addDatasource(ReportTemplate datasource);
-
-public ReportTemplate setDatasource(ReportTemplate datasource);
-
-public List<ReportTemplate> addDatasources(List<ReportTemplate> datasources);
-
-public boolean removeDatasource(String datasourceName);
-
-public Map<String, ReportTemplate> getDatasources();
-
-public ReportTemplate getDatasource(String datasourceName);
+	public Object getData() {
+		return data;
+	}
 
 }

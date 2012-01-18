@@ -23,11 +23,8 @@ package org.saiku.adhoc.service.report;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -37,8 +34,6 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.pentaho.platform.api.util.ITempFileDeleter;
-import org.pentaho.platform.engine.core.solution.ActionInfo;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
@@ -63,16 +58,13 @@ import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.pentaho.reporting.libraries.repository.ContentIOException;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
-import org.pentaho.reporting.platform.plugin.output.PDFOutput;
-import org.saiku.adhoc.exceptions.SaikuAdhocException;
-import org.saiku.adhoc.exceptions.QueryException;
 import org.saiku.adhoc.exceptions.ReportException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
+import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.dto.HtmlReport;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
-import org.saiku.adhoc.model.master.SaikuParameter;
-import org.saiku.adhoc.service.SaikuProperties;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
 import org.saiku.adhoc.utils.ParamUtils;
 
@@ -109,12 +101,21 @@ public class ReportGeneratorService {
 
 		//html
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
+		
+		if(model==null){
+			throw new SaikuAdhocException(				
+				Messages.getErrorString("ReportGeneratorService.ERROR_0001_MASTERMODEL_NOT_FOUND")
+			);
+		}
 
 		sessionHolder.materializeModel(sessionId);
 
-		templateName = templateName.equals("default")? SaikuProperties.defaultPrptTemplate : templateName + ".prpt";
-		ReportTemplate template =  new ReportTemplate("system", "saiku-adhoc/resources/templates", templateName);		
-		model.setReportTemplate(template);
+		//templateName = templateName.equals("default")? SaikuProperties.defaultPrptTemplate : templateName + ".prpt";
+		
+		if(!templateName.equals("default")){
+			ReportTemplate template =  new ReportTemplate("system", "saiku-adhoc/resources/templates", templateName + ".prpt");		
+			model.setReportTemplate(template);
+		}
 
 		MasterReport output = null;
 

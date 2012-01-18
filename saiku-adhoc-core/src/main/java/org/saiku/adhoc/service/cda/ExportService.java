@@ -21,11 +21,7 @@
 package org.saiku.adhoc.service.cda;
 
 import java.io.OutputStream;
-import java.util.Map;
 
-import org.pentaho.platform.api.engine.IContentGenerator;
-import org.pentaho.platform.api.engine.IParameterProvider;
-import org.pentaho.platform.api.engine.IPentahoSession;
 import org.saiku.adhoc.exceptions.CdaException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
@@ -74,6 +70,14 @@ public class ExportService {
 
 	public ReportGeneratorService getReportGeneratorService() {
 		return reportGeneratorService;
+	}
+
+	public void writeXls(String sessionId, OutputStream output) {
+		
+		SaikuMasterModel query = sessionHolder.getModel(sessionId);
+		
+	    cdaAccessor.doQuery(query, sessionId, "xls", output);
+		
 	}
 
 

@@ -26,10 +26,8 @@ import org.pentaho.reporting.engine.classic.core.ElementAlignment;
 import org.pentaho.reporting.engine.classic.core.style.ElementStyleKeys;
 import org.pentaho.reporting.engine.classic.core.style.ElementStyleSheet;
 import org.pentaho.reporting.engine.classic.core.style.TextStyleKeys;
-import org.pentaho.reporting.engine.classic.core.style.VerticalTextAlign;
 import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
-import org.saiku.adhoc.service.EditorService;
 
 /**
  * This class is used to extract default formatting for a new element from the
@@ -260,9 +258,9 @@ public class TemplateUtils {
 		}
 
 		if(saikuFormat.getVerticalAlignment()==null){
-			final String vert = (String) prptFormat.getStyleProperty(
+			final ElementAlignment vert = (ElementAlignment) prptFormat.getStyleProperty(
 					ElementStyleKeys.VALIGNMENT, null);
-			saikuFormat.setVerticalAlignment(vert);
+			saikuFormat.setVerticalAlignment(prptToSaikuAlignment(vert));
 		}else{
 			prptFormat.setStyleProperty(
 					ElementStyleKeys.VALIGNMENT, saikuToPrptAlignment(saikuFormat.getVerticalAlignment()));

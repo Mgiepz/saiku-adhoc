@@ -20,28 +20,36 @@
 
 package org.saiku.adhoc.model.transformation;
 
-import java.io.IOException;
-import java.sql.Date;
 import java.util.List;
 
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.parameters.DefaultParameterDefinition;
 import org.pentaho.reporting.engine.classic.core.parameters.PlainParameter;
-import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
+import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
 
 
 public class TransModelToReport {
 
-	public MasterReport doIt(SaikuMasterModel smm) throws ResourceException, IOException {
+	public MasterReport doIt(SaikuMasterModel smm) throws SaikuAdhocException {
 
 		String fullPath = smm.getReportTemplate().getFullPath();
 
 		final SimpleReportingComponent reportComponent = new SimpleReportingComponent();
 		reportComponent.setReportDefinitionPath(fullPath);
-		final MasterReport reportTemplate = reportComponent.getReport();
+		
+		MasterReport reportTemplate = null;
+		
+		try {
+			reportTemplate = reportComponent.getReport();
+		} catch (Exception e) {
+			throw new SaikuAdhocException(				
+					Messages.getErrorString("Repository.ERROR_0001_PRPT_TEMPLATE_NOT_FOUND")
+			);	
+		}
 
 		DefaultParameterDefinition paramDef = new DefaultParameterDefinition();
 

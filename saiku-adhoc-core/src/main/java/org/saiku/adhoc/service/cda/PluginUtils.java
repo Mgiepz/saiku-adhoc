@@ -58,20 +58,49 @@ public class PluginUtils
   
   
   /**
+   * @param pluginName
+   * @param method
+   * @param params
+   * @param outputStream
+   * @return
+   */
+  public static String callPlugin(String pluginName, String method, Map<String, Object> params, OutputStream outputStream)
+    {
+
+  	IParameterProvider requestParams = new SimpleParameterProvider(params);
+      IPentahoSession userSession = PentahoSessionHolder.getSession();
+      
+      IPluginManager pluginManager = PentahoSystem.get(IPluginManager.class, userSession);
+      IContentGenerator contentGenerator;
+      try
+      {
+        contentGenerator = pluginManager.getContentGenerator(pluginName, userSession);
+      }
+      catch (Exception e)
+      {
+        logger.error("Failed to acquire " + pluginName + " plugin: " + e.toString());
+        return null;
+      }
+      return callPlugin(userSession, contentGenerator, method, params);
+    }  
+
+
+/**
  * @param pluginName
  * @param method
  * @param params
  * @param outputStream
  * @return
  */
-public static String callPlugin(String pluginName, String method, Map<String, Object> params, OutputStream outputStream)
+public static void callPlugin(String pluginName, String method, Map<String, Object> params, OutputStream outputStream, String foo)
   {
 	
 	IParameterProvider requestParams = new SimpleParameterProvider(params);
     IPentahoSession userSession = PentahoSessionHolder.getSession();
     
     IPluginManager pluginManager = PentahoSystem.get(IPluginManager.class, userSession);
-    IContentGenerator contentGenerator;
+    IContentGenerator contentGenerator = null;
+    
     try
     {
       contentGenerator = pluginManager.getContentGenerator(pluginName, userSession);
@@ -79,10 +108,18 @@ public static String callPlugin(String pluginName, String method, Map<String, Ob
     catch (Exception e)
     {
       logger.error("Failed to acquire " + pluginName + " plugin: " + e.toString());
-      return null;
     }
-    return callPlugin(userSession, contentGenerator, method, params);
-  }  
+
+    Map<String, Object> pathMap = new HashMap<String, Object>();
+    pathMap.put("path", "/" + method);
+    IParameterProvider pathParams = new SimpleParameterProvider(pathMap);
+    Map<String, IParameterProvider> paramProvider = new HashMap<String, IParameterProvider>();
+    paramProvider.put(IParameterProvider.SCOPE_REQUEST, requestParams);
+    paramProvider.put("path", pathParams);
+    
+    callPlugin(userSession, contentGenerator, outputStream , paramProvider, null);
+
+  } 
 
 
   
@@ -123,4 +160,21 @@ public static String callPlugin(String pluginName, String method, Map<String, Ob
       return null;
     }
   }
+
+  public static void callPlugin(IPentahoSession userSession, IContentGenerator cda, OutputStream outputStream, Map<String, IParameterProvider> paramProvider, String foo)
+  {
+    IOutputHandler outputHandler = new SimpleOutputHandler(outputStream, false);
+    try
+    {
+      cda.setSession(userSession);
+      cda.setOutputHandler(outputHandler);
+      cda.setParameterProviders(paramProvider);
+      cda.createContent();
+    }
+    catch (Exception e)
+    {
+      logger.error("Failed to execute call to plugin: " + e.toString());
+    }
+  }
+  
 }

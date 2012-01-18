@@ -21,7 +21,6 @@
 package org.saiku.adhoc.service;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -32,24 +31,21 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
-import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
-import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.dto.ElementFormat;
 import org.saiku.adhoc.model.dto.FilterValue;
 import org.saiku.adhoc.model.dto.Position;
 import org.saiku.adhoc.model.master.SaikuColumn;
+import org.saiku.adhoc.model.master.SaikuElement;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
-import org.saiku.adhoc.model.master.SaikuMessage;
 import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
 import org.saiku.adhoc.service.repository.IMetadataService;
@@ -79,7 +75,7 @@ public class EditorService {
 		if(modelInfo.getJson()==null){
 			String domainId;
 			
-				domainId = URLDecoder.decode(modelInfo.getDomainId(), "UTF-8");
+			domainId = URLDecoder.decode(modelInfo.getDomainId(), "UTF-8");
 
 			Domain domain = metadataService.getDomain(domainId);
 			LogicalModel model = metadataService.getLogicalModel(domainId,
@@ -98,10 +94,13 @@ public class EditorService {
 			LogicalModel model = metadataService.getLogicalModel(domainId, split[1]);
 
 			masterModel.init(domain, model, sessionId);
+			
 			masterModel.deriveModels();
 		}
 
 		sessionHolder.initSession(masterModel, sessionId);
+		
+		//masterModel.deriveModels();
 
 		sessionHolder.getModel(sessionId).setClientModelSelection(
 				URLEncoder.encode(masterModel.getDerivedModels().getDomain().getId(), "UTF-8")
@@ -261,6 +260,9 @@ public class EditorService {
 			String businessColumn, int position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
+
+		//TODO: We need remove by uid here too
+		
 		List<SaikuParameter> parameters = model.getParameters();
 
 		final LogicalModel logicalModel = model.getDerivedModels().getLogicalModel();
@@ -327,6 +329,9 @@ public class EditorService {
 			Position position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
+		
+		removeByUid(model,position.getUid());
+		
 		List<SaikuGroup> groups = model.getGroups();
 
 		final LogicalModel logicalModel = model.getDerivedModels()
@@ -424,26 +429,36 @@ public class EditorService {
 	    final Map<String, SaikuElementFormat> rptIdToElementFormat = model.getDerivedModels().getRptIdToElementFormat();
 
 		if(id.contains("dtl")){
-			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			return new ElementFormat(
-					rptIdToElementFormat.get(id),saikuColumn.getName());
+			return getFormat(id, model, rptIdToElementFormat);
 
 		}else if(id.contains("dth")){
-			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			return new ElementFormat(
-					rptIdToElementFormat.get(id),saikuColumn.getName());
+			return getFormat(id, model, rptIdToElementFormat);
 		
 		}else if(id.contains("ghd")){
 			final SaikuGroup saikuGroup = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			return new ElementFormat(
 					rptIdToElementFormat.get(id),saikuGroup.getGroupName());
-		
-		
 		}
-		
+
+		else if(id.contains("gft")){
+			
+			String[] splits = id.split("-");	
+			Integer index = Integer.valueOf(splits[2]);
+			//get the correct group by index
+			SaikuGroup saikuGroup = model.getGroups().get(index);
+
+			final List<SaikuElement> msgs = saikuGroup.getGroupFooterElements();			
+			for (SaikuElement msg : msgs) {
+				if(id.equals(msg.getUid())){
+					return new ElementFormat(
+							rptIdToElementFormat.get(id),msg.getValue());
+				}
+			}	
+		}
+
 		else if(id.contains("rhd")){
-			final List<SaikuMessage> msgs = model.getReportHeaderMessages();			
-			for (SaikuMessage msg : msgs) {
+			final List<SaikuElement> msgs = model.getReportHeaderElements();			
+			for (SaikuElement msg : msgs) {
 				if(id.equals(msg.getUid())){
 					return new ElementFormat(
 							rptIdToElementFormat.get(id),msg.getValue());
@@ -451,26 +466,24 @@ public class EditorService {
 				}
 			}	
 		}else if(id.contains("rft")){
-			final List<SaikuMessage> msgs = model.getReportFooterMessages();			
-			for (SaikuMessage msg : msgs) {
+			final List<SaikuElement> msgs = model.getReportFooterElements();			
+			for (SaikuElement msg : msgs) {
 				if(id.equals(msg.getUid())){
 					return new ElementFormat(
 							rptIdToElementFormat.get(id),msg.getValue());
 				}
 			}			
 		}else if(id.contains("phd")){
-			final List<SaikuMessage> msgs = model.getPageHeaderMessages();			
-			for (SaikuMessage msg : msgs) {
+			final List<SaikuElement> msgs = model.getPageHeaderElements();			
+			for (SaikuElement msg : msgs) {
 				if(id.equals(msg.getUid())){
 					return new ElementFormat(
-
 							rptIdToElementFormat.get(id),msg.getValue());
-
 				}
 			}		
 		}else if(id.contains("pft")){
-			final List<SaikuMessage> msgs = model.getPageFooterMessages();			
-			for (SaikuMessage msg : msgs) {
+			final List<SaikuElement> msgs = model.getPageFooterElements();			
+			for (SaikuElement msg : msgs) {
 				if(id.equals(msg.getUid())){
 					return new ElementFormat(
 							rptIdToElementFormat.get(id),msg.getValue());
@@ -483,63 +496,69 @@ public class EditorService {
 		return null;
 	}
 
+	private ElementFormat getFormat(String id, final SaikuMasterModel model,
+			final Map<String, SaikuElementFormat> rptIdToElementFormat) {
+		final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
+		return new ElementFormat(
+				rptIdToElementFormat.get(id),saikuColumn.getName());
+	}
+
 	public void setElementFormat(String sessionId, ElementFormat format, String id) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-		if(id.contains("dtl")){
+		if (id.contains("dtl")) {
 			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			saikuColumn.setElementFormat(format.getFormat());
 			saikuColumn.setName(format.getValue());
 
-				}
-					
-		else if(id.contains("dth")){
-			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			saikuColumn.setColumnHeaderFormat(format.getFormat());
-			saikuColumn.setName(format.getValue());
-			
-		}else if(id.contains("ghd")){
-			final SaikuGroup saikuGroup = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			saikuGroup.setGroupsHeaderFormat(format.getFormat());
-			saikuGroup.setGroupName(format.getValue());
-
-				}	
-					
-		else if(id.contains("rhd")){
-			final List<SaikuMessage> msgs = model.getReportHeaderMessages();			
-			for (SaikuMessage msg : msgs) {
-				if(id.equals(msg.getUid())){
-					msg.setElementFormat(format.getFormat());
-					msg.setValue(format.getValue());
-				}
-			}		
-		}else if(id.contains("rft")){
-			final List<SaikuMessage> msgs = model.getReportFooterMessages();			
-			for (SaikuMessage msg : msgs) {
-				if(id.equals(msg.getUid())){
-					msg.setElementFormat(format.getFormat());
-					msg.setValue(format.getValue());
-				}
-			}			
-		}else if(id.contains("phd")){
-			final List<SaikuMessage> msgs = model.getPageHeaderMessages();			
-			for (SaikuMessage msg : msgs) {
-				if(id.equals(msg.getUid())){
-					msg.setElementFormat(format.getFormat());
-					msg.setValue(format.getValue());
-				}
-			}		
-		}else if(id.contains("pft")){
-			final List<SaikuMessage> msgs = model.getPageFooterMessages();			
-			for (SaikuMessage msg : msgs) {
-				if(id.equals(msg.getUid())){
-					msg.setElementFormat(format.getFormat());
-					msg.setValue(format.getValue());
-				}
-			}				
 		}
 
+		else if (id.contains("dth")) {
+			final SaikuColumn m = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
+			m.setColumnHeaderFormat(format.getFormat());
+			m.setName(format.getValue());
+
+		} else if (id.contains("ghd")) {
+			final SaikuGroup m = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
+			m.setGroupsHeaderFormat(format.getFormat());
+			m.setGroupName(format.getValue());
+
+		} else if (id.contains("gft") || id.contains("rhd")) {
+			final SaikuElement m = (SaikuElement) model.getDerivedModels().getRptIdToSaikuElement().get(id);
+			m.setElementFormat(format.getFormat());
+			m.setValue(format.getValue());
+
+		}
+		// Merge as much as possible
+		/*
+		 * else if(id.contains("rhd")){ final SaikuElement m = (SaikuElement)
+		 * model.getDerivedModels().getRptIdToSaikuElement().get(id);
+		 * m.setElementFormat(format.getFormat());
+		 * m.setValue(format.getValue());
+		 * 
+		 * }
+		 */
+		else if (id.contains("rft")) {
+			final List<SaikuElement> msgs = model.getReportFooterElements();
+			setFormat(format, id, msgs);
+		} else if (id.contains("phd")) {
+			final List<SaikuElement> msgs = model.getPageHeaderElements();
+			setFormat(format, id, msgs);
+		} else if (id.contains("pft")) {
+			final List<SaikuElement> msgs = model.getPageFooterElements();
+			setFormat(format, id, msgs);
+		}
+
+	}
+
+	private void setFormat(ElementFormat format, String id, final List<SaikuElement> msgs) {
+		for (SaikuElement msg : msgs) {
+			if(id.equals(msg.getUid())){
+				msg.setElementFormat(format.getFormat());
+				msg.setValue(format.getValue());
+			}
+		}
 	}
 
 	public void setColumnConfig(String sessionId, String category,

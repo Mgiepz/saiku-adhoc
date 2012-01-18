@@ -27,7 +27,6 @@ import java.lang.reflect.Method;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.platform.api.engine.IParameterProvider;
-import org.pentaho.platform.api.repository.IContentItem;
 import org.pentaho.platform.engine.services.solution.SimpleContentGenerator;
 import org.saiku.adhoc.service.repository.FileExplorer;
 

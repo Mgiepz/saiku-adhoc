@@ -19,7 +19,7 @@
  */
 package org.saiku.adhoc.model.master;
 
-public class SaikuMessage {
+public class SaikuElement {
 	
 	private String uid;
 

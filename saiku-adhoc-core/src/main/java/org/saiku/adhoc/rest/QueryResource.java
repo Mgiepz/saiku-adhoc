@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.UUID;
 
-import javax.servlet.ServletException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -38,14 +37,14 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.pentaho.platform.engine.core.system.PentahoBase;
-import org.saiku.adhoc.exceptions.CdaException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
-import org.saiku.adhoc.exceptions.QueryException;
+import org.saiku.adhoc.exceptions.SaikuClientException;
 import org.saiku.adhoc.model.dto.ElementFormat;
 import org.saiku.adhoc.model.dto.FilterResult;
 import org.saiku.adhoc.model.dto.FilterValue;
@@ -54,7 +53,6 @@ import org.saiku.adhoc.model.dto.Position;
 import org.saiku.adhoc.model.dto.SavedQuery;
 import org.saiku.adhoc.model.dto.SolutionFileInfo;
 import org.saiku.adhoc.model.master.SaikuColumn;
-import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
 import org.saiku.adhoc.service.EditorService;
 import org.saiku.adhoc.service.cda.CdaQueryService;
@@ -119,15 +117,17 @@ public class QueryResource extends PentahoBase {
 	@GET
 	@Produces({ "application/json" })
 	@Path("/{queryname}/result")
-	public String executeQuery(@PathParam("queryname") String sessionId) throws QueryException, CdaException {
+	public String executeQuery(@PathParam("queryname") String sessionId) {
 
+		try{
+			return queryService.runQuery(sessionId, sessionId);
 
-		if (log.isDebugEnabled()) {
-			log.debug("REST:GET " + sessionId + " executeQuery");
+		}catch (Exception e) {
+			log.error("Cannot generate report (" + sessionId + ")",e);
+			String error = ExceptionUtils.getRootCauseMessage(e);
+
+			throw new SaikuClientException(error);
 		}
-
-		return queryService.runQuery(sessionId, sessionId);
-
 
 	}
 
@@ -135,7 +135,7 @@ public class QueryResource extends PentahoBase {
 	@Consumes({ "application/json" })
 	@Path("/{queryname}")
 	public Status createQuery(MetadataModelInfo modelInfo,
-			@PathParam("queryname") String sessionId) throws ServletException {
+			@PathParam("queryname") String sessionId) {
 
 		if (log.isDebugEnabled()) {
 			log.debug("REST:POST " + sessionId + " createQuery");
@@ -243,7 +243,7 @@ public class QueryResource extends PentahoBase {
 	@GET
 	@Produces({ "application/json" })
 	@Path("/{queryname}/report/{template}/{page}")
-	public HtmlReport generate(
+	public HtmlReport generateReport(
 			@PathParam("queryname") String sessionId,
 			@PathParam("template") String template,
 			@PathParam("page") String page){
@@ -259,13 +259,13 @@ public class QueryResource extends PentahoBase {
 
 			return report;
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		}catch (Exception e) {
+				log.error("Cannot generate report (" + sessionId + ")",e);
+				String error = ExceptionUtils.getRootCauseMessage(e);
 
-			log.error("Cannot generate Report", e);
+				throw new SaikuClientException(error);
 		}
 
-		return null;
 	}
 
 	@GET
