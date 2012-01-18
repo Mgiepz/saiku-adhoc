@@ -79,14 +79,11 @@ public class SaikuMasterModelServer extends SaikuMasterModel {
 			this.parameters = new ArrayList<SaikuParameter>();
 			this.sortColumns = new ArrayList<String>();
 			
-			this.reportHeaderElements = new ArrayList<SaikuElement>();
-
-			this.reportFooterElements = new ArrayList<SaikuElement>();
-			
-			this.pageHeaderElements = new ArrayList<SaikuElement>();
-			
-			this.pageFooterElements = new ArrayList<SaikuElement>();
-			
+            this.reportHeaderElements = new ArrayList<SaikuElement>();
+            this.reportFooterElements = new ArrayList<SaikuElement>();
+            this.reportSummaryElements = new ArrayList<SaikuElement>();
+            this.pageHeaderElements = new ArrayList<SaikuElement>();
+            this.pageFooterElements = new ArrayList<SaikuElement>();
 		}
 
 	}
