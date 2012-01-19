@@ -21,6 +21,10 @@ public class PluginResourceCDAManager implements ICDAManager{
 
     private IRepositoryHelper repository;
     
+    public void setRepositoryHelper(IRepositoryHelper repository) {
+        this.repository = repository;
+    }
+
     @Override
     public void load() {
         // TODO Auto-generated method stub
