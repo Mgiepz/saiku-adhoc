@@ -21,6 +21,7 @@
 package org.saiku.adhoc.service.report;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -482,6 +483,17 @@ public class ReportGeneratorService {
 
 
 	}
+	
+    public MasterReport getMasterReport(String fullPath, SimpleReportingComponent reportComponent) throws SaikuAdhocException {
+        try {
+            reportComponent.setReportDefinitionPath(fullPath);
+            return reportComponent.getReport();
+            } catch (Exception e) {
+            throw new SaikuAdhocException(
+            Messages.getErrorString("Repository.ERROR_0001_PRPT_TEMPLATE_NOT_FOUND")
+            );
+         }
+    }
 
 
 }

@@ -48,6 +48,8 @@ import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
+import org.saiku.adhoc.server.datasource.ICDAManager;
+import org.saiku.adhoc.service.report.ReportGeneratorService;
 import org.saiku.adhoc.service.repository.IMetadataService;
 
 /**
@@ -66,6 +68,26 @@ public class EditorService {
 
 	}
 
+    private ICDAManager cdaManager;
+
+    public void setCDAManager(ICDAManager manager){
+        this.cdaManager = manager;
+        
+    }
+
+    public ICDAManager getCDAManager(){
+        return cdaManager;
+    }
+    
+    private ReportGeneratorService reportGeneratorService;
+    
+    public void setReportGeneratorService(
+            ReportGeneratorService reportGeneratorService) {
+        this.reportGeneratorService = reportGeneratorService;
+    }
+    
+
+    
 	public void createNewModel(String sessionId, MetadataModelInfo modelInfo) throws SaikuAdhocException{
 
 		SaikuMasterModel masterModel = null;
@@ -82,7 +104,7 @@ public class EditorService {
 					modelInfo.getModelId());
 
 			masterModel = new SaikuMasterModel();
-			masterModel.init(domain, model, sessionId);
+			masterModel.init(domain, model, sessionId, cdaManager, reportGeneratorService);
 		}else{
 			ObjectMapper mapper = new ObjectMapper();
 			masterModel = mapper.readValue(modelInfo.getJson(), SaikuMasterModel.class);
@@ -93,7 +115,7 @@ public class EditorService {
 			Domain domain = metadataService.getDomain(domainId);
 			LogicalModel model = metadataService.getLogicalModel(domainId, split[1]);
 
-			masterModel.init(domain, model, sessionId);
+			masterModel.init(domain, model, sessionId, cdaManager, reportGeneratorService);
 			
 			masterModel.deriveModels();
 		}
@@ -193,7 +215,7 @@ public class EditorService {
 		final List<SaikuColumn> columns = model.getColumns();
 
 		SaikuColumn saikuColumn = null;
-		for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
+		for (Iterator<SaikuColumn> iterator = columns.iterator(); iterator.hasNext();) {
 			SaikuColumn col = (SaikuColumn) iterator.next();
 			if(col.getUid().equals(uid)){
 				saikuColumn = col;
@@ -207,7 +229,7 @@ public class EditorService {
 		final List<SaikuGroup> groups = model.getGroups();
 
 		SaikuGroup saikuGroup = null;
-		for (Iterator iterator2 = groups.iterator(); iterator2.hasNext();) {
+		for (Iterator<SaikuGroup> iterator2 = groups.iterator(); iterator2.hasNext();) {
 			SaikuGroup group = (SaikuGroup) iterator2.next();
 			if(group.getUid().equals(uid)){			
 				saikuGroup = group;
