@@ -1,8 +1,12 @@
 package org.saiku.adhoc.datasource;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.pentaho.reporting.engine.classic.core.MasterReport;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
+import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.server.datasource.IPRPTManager;
 
@@ -63,6 +67,32 @@ public class PluginResourcePRPTManager implements IPRPTManager{
     @Override
     public String getTemplatePath() {
         return "saiku-adhoc/resources/templates/";
+    }
+
+    @Override
+    public ReportTemplate getTemplate(String path, String solution, String templateName) {
+        return new ReportTemplate("system", "saiku-adhoc/resources/templates", templateName + ".prpt");     
+    }
+
+    @Override
+    public SimpleReportingComponent getReportingComponent() {
+        return new SimpleReportingComponent();
+    }
+
+    @Override
+    public MasterReport getMasterReport(String fullPath, SimpleReportingComponent reportComponent) {
+        reportComponent.setReportDefinitionPath(fullPath);
+        try {
+            return reportComponent.getReport();
+        } catch (ResourceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+        
     }
 
 }

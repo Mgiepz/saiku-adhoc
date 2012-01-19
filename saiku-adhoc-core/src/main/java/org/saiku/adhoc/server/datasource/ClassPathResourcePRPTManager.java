@@ -20,6 +20,7 @@
 package org.saiku.adhoc.server.datasource;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -30,8 +31,13 @@ import java.util.Map;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
+import org.pentaho.reporting.engine.classic.core.MasterReport;
+import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
+import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.server.model.master.ReportTemplateServer;
+import org.saiku.adhoc.server.reporting.SaikuReportingComponent;
     
 public class ClassPathResourcePRPTManager implements IPRPTManager {
 
@@ -210,5 +216,30 @@ public class ClassPathResourcePRPTManager implements IPRPTManager {
     public String getTemplatePath() {
         // TODO Auto-generated method stub
         return repoURL.getPath();
+    }
+
+    @Override
+    public ReportTemplate getTemplate(String path, String solution, String templateName) {
+        return this.getDatasource(templateName);
+
+    }
+
+    @Override
+    public SimpleReportingComponent getReportingComponent() {
+        return new SaikuReportingComponent();
+    }
+
+    @Override
+    public MasterReport getMasterReport(String fullPath, SimpleReportingComponent reportComponent) throws SaikuAdhocException {
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(fullPath);
+            reportComponent.setReportDefinitionInputStream(in);
+            return reportComponent.getReport();
+        } catch (Exception e) {
+            throw new SaikuAdhocException(              
+                    Messages.getErrorString("Repository.ERROR_0001_PRPT_TEMPLATE_NOT_FOUND")
+            );  
+        }
     }
 }
