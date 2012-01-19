@@ -36,6 +36,11 @@
 									<fileset dir="${basedir}/../saiku-adhoc-plugin/src/main/plugin/resources/templates/">
 									</fileset>
 							</copy>
+                                                     	<copy todir="target/${project.artifactId}-${project.version}/resources" overwrite="true">
+                                                                        <fileset dir="${basedir}/../saiku-adhoc-plugin/src/main/plugin/resources/templates/">
+										<include name="*.png" />
+                                                                        </fileset>
+                                                        </copy>
 			<!--					<zip destfile="target/${project.artifactId}-${project.version}.war">
 									<zipfileset dir="target/${project.artifactId}-${project.version}/" />
 								</zip>

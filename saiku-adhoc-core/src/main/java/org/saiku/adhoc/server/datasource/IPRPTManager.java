@@ -41,4 +41,9 @@ public Map<String, ReportTemplate> getDatasources();
 
 public ReportTemplate getDatasource(String datasourceName);
 
+public String getPath();
+
+public String getSolution();
+
+public String getTemplatePath();
 }

@@ -69,8 +69,6 @@ public class ServerMetadataService extends PentahoBase implements IMetadataServi
     protected IRepositoryHelper repositoryHelper;
 	
     MemoryBasedRepository mbr;
-
-    private IPRPTManager prptManager;
 	
 	public ServerMetadataService() {
 	    super();

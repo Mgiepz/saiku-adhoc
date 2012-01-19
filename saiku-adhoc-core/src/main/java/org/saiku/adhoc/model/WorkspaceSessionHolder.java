@@ -30,6 +30,8 @@ import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
+import org.saiku.adhoc.server.datasource.ICDAManager;
+import org.saiku.adhoc.server.datasource.IPRPTManager;
 import org.saiku.adhoc.service.SaikuProperties;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
 
@@ -44,30 +46,42 @@ import org.saiku.adhoc.service.repository.IRepositoryHelper;
  */
 public class WorkspaceSessionHolder {
 
-	private IRepositoryHelper repository;
+    private IPRPTManager prptManager;
+    private ICDAManager cdaManager;
+   
+    private Map<String, SaikuMasterModel> models = new HashMap<String, SaikuMasterModel>();
 
-	private static final String solution = "system";
+    
+    public void setPRPTManager(IPRPTManager manager){
+        this.prptManager = manager;
+        
+    }
 
-	protected static final String path = "saiku-adhoc/temp";
+    public IPRPTManager getPRPTManager(){
+        return prptManager;
+    }
+    
+    public void setCDAManager(ICDAManager manager){
+        this.cdaManager = manager;
+        
+    }
 
-	private Map<String, SaikuMasterModel> models = new HashMap<String, SaikuMasterModel>();
+    public ICDAManager getCDAManager(){
+        return cdaManager;
+    }
 
 	public void initSession(SaikuMasterModel masterModel, String sessionId) {
 
 		// TODO: Move and make configurable
 		if(masterModel.getReportTemplate()==null){
-			String path = "saiku-adhoc/resources/templates/";
 			String name = SaikuProperties.defaultPrptTemplate;
-			masterModel.setReportTemplate(new ReportTemplate(solution, path, name));
+			masterModel.setReportTemplate(new ReportTemplate(prptManager.getSolution(), prptManager.getTemplatePath(), name));
 		}
 		
 		models.put(sessionId, masterModel);
 
 	}
 
-	public void setRepositoryHelper(IRepositoryHelper repository) {
-		this.repository = repository;
-	}
 
 	public Map<String, SaikuMasterModel> getModels() {
 		return models;
@@ -115,7 +129,7 @@ public class WorkspaceSessionHolder {
 		model.deriveModels();
 
 		try {
-			repository.writeFile(solution, path, action, model.getCdaSettings().asXML());
+		    cdaManager.addDatasource(prptManager.getSolution(), prptManager.getPath(), action, model.getCdaSettings().asXML());
 		} catch (Exception e) {
 			throw new SaikuAdhocException(				
 					Messages.getErrorString("Repository.ERROR_0001_COULD_NOT_PUBLISH_FILE")

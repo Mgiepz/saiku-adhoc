@@ -37,15 +37,20 @@ import org.pentaho.reporting.engine.classic.wizard.model.DefaultWizardSpecificat
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.messages.Messages;
+import org.saiku.adhoc.server.datasource.ICDAManager;
+import org.saiku.adhoc.service.SaikuProperties;
 
 import pt.webdetails.cda.connections.Connection;
+import pt.webdetails.cda.connections.UnsupportedConnectionException;
 import pt.webdetails.cda.connections.metadata.MetadataConnection;
 import pt.webdetails.cda.dataaccess.DataAccess;
 import pt.webdetails.cda.dataaccess.MqlDataAccess;
+import pt.webdetails.cda.dataaccess.UnsupportedDataAccessException;
 import pt.webdetails.cda.settings.CdaSettings;
 
 public class DerivedModelsCollection {
-	
+    protected ICDAManager cdaManager;
+
 	//These are the derived models, they are 
 	//transformed from the master model and stored here whenever
 	//necessary
@@ -69,13 +74,14 @@ public class DerivedModelsCollection {
 	
 	protected Map<String,SaikuElementFormat> rptIdToElementFormat;
 
-	public DerivedModelsCollection(String sessionId, Domain domain,
-			LogicalModel model) {
-		this.sessionId = sessionId;
-		this.domain = domain;
-		this.logicalModel = model;
-	}
-
+	
+	   public DerivedModelsCollection(String sessionId, Domain domain,
+	            LogicalModel model, ICDAManager cdaManager) {
+	        this.sessionId = sessionId;
+	        this.domain = domain;
+	        this.logicalModel = model;
+	        this.setCdaManager(cdaManager);
+	    }
 	public void init() throws SaikuAdhocException{
 	    //init all the stuff
         this.query = new Query(domain, logicalModel);      
@@ -90,12 +96,7 @@ public class DerivedModelsCollection {
 
         try{
             //init cda
-            this.cda = new CdaSettings("cda" + sessionId, null);
-            String[] domainInfo = domain.getId().split("/");
-            Connection connection = new MetadataConnection("1", domainInfo[0], domainInfo[1]);
-            DataAccess dataAccess = new MqlDataAccess(sessionId, sessionId, "1", "") ;
-            cda.addConnection(connection);
-            cda.addDataAccess(dataAccess);
+            initCDA();
 
             //init the wizard-spec
             this.wizardSpec = new DefaultWizardSpecification();     
@@ -110,29 +111,30 @@ public class DerivedModelsCollection {
         }
 	}
 
+	protected void initCDA() throws UnsupportedConnectionException, UnsupportedDataAccessException{
+	    this.cda = cdaManager.initCDA(sessionId, domain.getId());
+	    
+	}
+	
 	/**
 	 * This method creates the CDA-Datafactory for the report
 	 * and should not stay hardcoded like that.
 	 * 
 	 */
 	private void initDatafactory() {
-		//Init the Data Factory
-		String solution = "system";
-		String path = "saiku-adhoc/temp";
-		
 		CdaDataFactory f = new CdaDataFactory();        
 		String baseUrlField = null;
 		f.setBaseUrlField(baseUrlField);
 		String name = this.sessionId;
 		String queryString = this.sessionId;
 		f.setQuery(name, queryString);          
-		String baseUrl = PentahoSystem.getApplicationContext().getFullyQualifiedServerURL();
+		String baseUrl = SaikuProperties.baseURL;
 		
 		//Use this for the login
 		//PentahoSessionHolder.getSession().getId();          
 		f.setBaseUrl(baseUrl);
-		f.setSolution(solution);
-		f.setPath(path);
+		f.setSolution(this.cdaManager.getSolution());
+        f.setPath(this.cdaManager.getPath());
 		String file =  this.sessionId + ".cda";
 		f.setFile(file);        
 		String username = "joe";
@@ -261,6 +263,16 @@ public class DerivedModelsCollection {
 	public Map<String,SaikuElementFormat> getRptIdToElementFormat() {
 		return rptIdToElementFormat;
 	}
+
+
+    public void setCdaManager(ICDAManager cdaManager) {
+        this.cdaManager = cdaManager;
+    }
+
+
+    public ICDAManager getCdaManager() {
+        return cdaManager;
+    }
 
  
 }

@@ -29,6 +29,7 @@ import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,7 +226,18 @@ public class SaikuProperties extends Properties{
 		}
 	}
 
-    public static final String baseURL = getPropString("saiku-adhoc.baseurl","http://localhost:8080/saiku-adhoc-webapp/rest/saiku-adhoc");
+    public static final String baseURL = setupBaseURL();
+        
+    private static String setupBaseURL(){
+        boolean test = PentahoSystem.getInitializedOK();
+        if (test){
+            return PentahoSystem.getApplicationContext().getFullyQualifiedServerURL();
+        }
+        else{
+            return  getPropString("saiku-adhoc.baseurl","http://localhost:8080/saiku-adhoc-webapp/rest/saiku-adhoc");
+        }
+
+    }
 
 	public static final String defaultPrptTemplate = getPropString("saiku-adhoc.default.template","jade_4_left_aligned_grid.prpt");
 

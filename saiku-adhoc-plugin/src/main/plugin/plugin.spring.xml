@@ -34,15 +34,24 @@ value="com.sun.jersey.api.container.filter.PostReplaceFilter" />
 
 <!-- beans -->
 <bean id="sessionHolder" class="org.saiku.adhoc.model.WorkspaceSessionHolder">
-<property name="repositoryHelper" ref="repositoryHelper" />
+<property name="PRPTManager" ref="classpathPrptManager" />
+<property name="CDAManager" ref="classpathCdaManager" />
 </bean>
 <bean id="repositoryHelper"
 class="org.saiku.adhoc.service.repository.PentahoRepositoryHelper">
 </bean>
-<bean id="cdaAccessor" class="org.saiku.adhoc.service.cda.PentahoCdaAccessor"></bean>
-
+<bean id="cdaAccessor" class="org.saiku.adhoc.service.cda.PentahoCdaAccessor">
+<property name="CDAManager" ref="classpathCdaManager" />
+</bean>
 
 <!-- services -->
+<bean id="classpathPrptManager" class="org.saiku.adhoc.datasource.PluginResourcePRPTManager">
+</bean>
+
+<bean id="classpathCdaManager" class="org.saiku.adhoc.datasource.PluginResourceCDAManager">
+<property name="repositoryHelper" ref="repositoryHelper" />
+</bean>
+
 <bean id="metadataService"
 class="org.saiku.adhoc.service.repository.PentahoMetadataService">
 <property name="repositoryHelper" ref="repositoryHelper" />
@@ -51,11 +60,14 @@ class="org.saiku.adhoc.service.repository.PentahoMetadataService">
 <bean id="queryService" class="org.saiku.adhoc.service.cda.CdaQueryService">
 <property name="sessionHolder" ref="sessionHolder" />
 <property name="cdaAccessor" ref="cdaAccessor" />
+<property name="repositoryHelper" ref="repositoryHelper" />
 </bean>
 
 <bean id="editorService" class="org.saiku.adhoc.service.EditorService">
 <property name="sessionHolder" ref="sessionHolder" />
 <property name="metadataService" ref="metadataService" />
+<property name="CDAManager" ref="classpathCdaManager" />
+<property name="reportGeneratorService" ref="reportGeneratorService" />
 </bean>
 
 <bean id="reportGeneratorService" class="org.saiku.adhoc.service.report.ReportGeneratorService">
