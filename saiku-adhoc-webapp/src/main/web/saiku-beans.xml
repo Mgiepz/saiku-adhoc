@@ -42,15 +42,14 @@
 		<property name="exportService" ref="exportServiceBean" />
 	</bean>
 	
-	<bean id="queryServiceBean" class="org.saiku.adhoc.server.model.service.cda.CdaQueryServiceServer">
+	<bean id="queryServiceBean" class="org.saiku.adhoc.service.cda.CdaQueryService">
 		<property name="RepositoryHelper" ref="repositoryHelperBean" />
 		<property name="SessionHolder" ref="workspaceSessionHolderBean" />
 		<property name="CdaAccessor" ref="cdaAccessorBean" />
-		<property name="CDAManager" ref="classpathCdaManager" />
 		
  	</bean>
  	
- 	<bean id="reportGeneratorServiceBean" class="org.saiku.adhoc.server.service.report.ReportGeneratorServiceServer">
+ 	<bean id="reportGeneratorServiceBean" class="org.saiku.adhoc.service.report.ReportGeneratorService">
  		<property name="PRPTManager" ref="classpathPrptManager" />
  		<property name="RepositoryHelper" ref="repositoryHelperBean" />
 		<property name="SessionHolder" ref="workspaceSessionHolderBean" />

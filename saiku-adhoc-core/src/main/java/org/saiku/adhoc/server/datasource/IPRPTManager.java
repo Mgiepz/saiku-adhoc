@@ -22,6 +22,9 @@ package org.saiku.adhoc.server.datasource;
 import java.util.List;
 import java.util.Map;
 
+import org.pentaho.reporting.engine.classic.core.MasterReport;
+import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.master.ReportTemplate;
 
 
@@ -46,4 +49,10 @@ public String getPath();
 public String getSolution();
 
 public String getTemplatePath();
+
+public ReportTemplate getTemplate(String path, String solution, String templateName);
+
+public SimpleReportingComponent getReportingComponent();
+
+public MasterReport getMasterReport(String fullPath, SimpleReportingComponent reportComponent) throws SaikuAdhocException;
 }
