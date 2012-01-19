@@ -41,6 +41,7 @@ import org.saiku.adhoc.model.transformation.TransModelToReport;
 import org.saiku.adhoc.model.transformation.TransModelToWizard;
 import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.server.datasource.SaikuCDA;
+import org.saiku.adhoc.service.report.ReportGeneratorService;
 
 import pt.webdetails.cda.settings.CdaSettings;
 
@@ -53,7 +54,33 @@ public class SaikuMasterModel {
 	public void setReportSummaryElements(List<SaikuElement> reportSummaryElements) {
 		this.reportSummaryElements = reportSummaryElements;
 	}
+    
+	@JsonIgnore
+	protected ICDAManager cdaManager;
 
+	@JsonIgnore
+    public void setCDAManager(ICDAManager manager){
+        this.cdaManager = manager;
+        
+    }
+
+	@JsonIgnore
+    public ICDAManager getCDAManager(){
+        return cdaManager;
+    }
+    
+    @JsonIgnore
+    TransModelToReport transReport;
+    
+    @JsonIgnore
+    public void setTransReport(TransModelToReport transReport){
+        this.transReport = transReport;
+        
+    }
+    @JsonIgnore
+    public TransModelToReport getTransReport(){
+        return transReport;
+    }
 
 	protected List<SaikuColumn> columns;
 
@@ -84,10 +111,13 @@ public class SaikuMasterModel {
 	@JsonIgnore
 	protected DerivedModelsCollection derivedModels;
 
+    private ReportGeneratorService reportingManager;
 
-	public void init(Domain domain, LogicalModel model, String sessionId) throws SaikuAdhocException{
 
-		this.derivedModels = new DerivedModelsCollection(sessionId, domain, model);
+	public void init(Domain domain, LogicalModel model, String sessionId, ICDAManager manager, ReportGeneratorService reportGeneratorService) throws SaikuAdhocException{
+        this.cdaManager = manager;
+        this.reportingManager = reportGeneratorService;
+		this.derivedModels = new DerivedModelsCollection(sessionId, domain, model, cdaManager);
 		derivedModels.init();
 
 		if(this.settings==null){
@@ -196,7 +226,7 @@ public class SaikuMasterModel {
 		//CDA
 		TransModelToCda transCda = new TransModelToCda();
 		try {
-		final CdaSettings cda = transCda.doIt(this);
+		final CdaSettings cda = transCda.doIt(this, cdaManager);
 		this.derivedModels.setCda(cda);
 		} catch (Exception e) {
 			//TODO: move that into transformation.doIt
@@ -219,8 +249,8 @@ public class SaikuMasterModel {
 		}
 
 		//Prpt
-			TransModelToReport transReport = new TransModelToReport();
 			MasterReport reportTemplate;
+			transReport = new TransModelToReport(reportingManager);
 			reportTemplate = transReport.doIt(this);
 			this.derivedModels.setReportTemplate(reportTemplate);
 
@@ -329,12 +359,9 @@ public class SaikuMasterModel {
 
 	@JsonIgnore
 	public SaikuCDA getCda(){
-		return null;
-	}
+        String action = this.derivedModels.getSessionId() + ".cda";
+        
+        return cdaManager.getDatasource(action);	
+    }
 
-
-	public void init(Domain domain, LogicalModel model, String sessionId, ICDAManager cdaManager) throws SaikuAdhocException {
-		// Empty class for SaikuMasterModelServer
-
-	}
 }

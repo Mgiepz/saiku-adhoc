@@ -19,8 +19,12 @@
  */
 package org.saiku.adhoc.server.datasource;
 
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
+
+import pt.webdetails.cda.settings.CdaSettings;
 
 
 public interface ICDAManager {
@@ -40,4 +44,15 @@ public Map<String, SaikuCDA> getDatasources();
 public SaikuCDA getDatasource(String datasourceName);
 
 public String getPath();
+
+public String getSolution();
+
+public void callCDA(String pluginName, String method, Map<String, Object> params, OutputStream outputStream, String foo);
+
+public String callCDA(String pluginName, String method, Map<String, Object> params);
+
+public void addDatasource(String solution, String path, String action, String asXML);
+
+CdaSettings initCDA(String sessionId, String domain);
+
 }

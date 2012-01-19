@@ -27,29 +27,25 @@ import org.pentaho.reporting.engine.classic.core.parameters.DefaultParameterDefi
 import org.pentaho.reporting.engine.classic.core.parameters.PlainParameter;
 import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
-import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
+import org.saiku.adhoc.service.report.ReportGeneratorService;
 
 
 public class TransModelToReport {
 
+    ReportGeneratorService reportManager;
+    
+    
+    public TransModelToReport(ReportGeneratorService reportingManager){
+        reportManager = reportingManager;
+    }
 	public MasterReport doIt(SaikuMasterModel smm) throws SaikuAdhocException {
 
 		String fullPath = smm.getReportTemplate().getFullPath();
 
 		final SimpleReportingComponent reportComponent = new SimpleReportingComponent();
-		reportComponent.setReportDefinitionPath(fullPath);
 		
-		MasterReport reportTemplate = null;
-		
-		try {
-			reportTemplate = reportComponent.getReport();
-		} catch (Exception e) {
-			throw new SaikuAdhocException(				
-					Messages.getErrorString("Repository.ERROR_0001_PRPT_TEMPLATE_NOT_FOUND")
-			);	
-		}
 
 		DefaultParameterDefinition paramDef = new DefaultParameterDefinition();
 
@@ -80,6 +76,8 @@ public class TransModelToReport {
 			}
 		}
 
+		MasterReport reportTemplate = reportManager.getMasterReport(fullPath, reportComponent);
+		
 		reportTemplate.setParameterDefinition(paramDef);
 
 		return reportTemplate;

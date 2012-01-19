@@ -21,6 +21,7 @@
 package org.saiku.adhoc.server.service.report;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
@@ -32,8 +33,10 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.modules.output.table.html.HtmlTableModule;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
+import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
 import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
+import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.dto.HtmlReport;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
@@ -144,5 +147,20 @@ public class ReportGeneratorServiceServer extends ReportGeneratorService {
 
     public ICDAManager getCDAManager(){
         return cdaManager;
+    }
+    
+    @Override
+    public MasterReport getMasterReport(String fullPath, SimpleReportingComponent reportComponent) throws SaikuAdhocException {
+
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(fullPath);
+            reportComponent.setReportDefinitionInputStream(in);
+            return reportComponent.getReport();
+        } catch (Exception e) {
+            throw new SaikuAdhocException(              
+                    Messages.getErrorString("Repository.ERROR_0001_PRPT_TEMPLATE_NOT_FOUND")
+            );  
+        }
     }
 }
