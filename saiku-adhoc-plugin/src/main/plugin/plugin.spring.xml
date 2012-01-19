@@ -73,6 +73,8 @@ class="org.saiku.adhoc.service.repository.PentahoMetadataService">
 <bean id="reportGeneratorService" class="org.saiku.adhoc.service.report.ReportGeneratorService">
 <property name="sessionHolder" ref="sessionHolder" />
 <property name="repositoryHelper" ref="repositoryHelper" />
+<property name="CDAManager" ref="classpathCdaManager" />
+<property name="PRPTManager" ref="classpathPrptManager" />
 </bean>
 
 <bean id="exportService" class="org.saiku.adhoc.service.cda.ExportService">

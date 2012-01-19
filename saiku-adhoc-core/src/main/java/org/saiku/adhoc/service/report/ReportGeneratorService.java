@@ -66,6 +66,8 @@ import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.dto.HtmlReport;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
+import org.saiku.adhoc.server.datasource.ICDAManager;
+import org.saiku.adhoc.server.datasource.IPRPTManager;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
 import org.saiku.adhoc.utils.ParamUtils;
 
@@ -75,9 +77,33 @@ public class ReportGeneratorService {
 
 	protected IRepositoryHelper repository;
 
+	private IPRPTManager prptManager;
+	
+	private ICDAManager cdaManager;
+	
 	protected static final Log log = LogFactory
 	.getLog(ReportGeneratorService.class);
 
+	
+    
+    public void setPRPTManager(IPRPTManager manager){
+        this.prptManager = manager;
+        
+    }
+
+    public IPRPTManager getPRPTManager(){
+        return prptManager;
+    }
+    
+    public void setCDAManager(ICDAManager manager){
+        this.cdaManager = manager;
+        
+    }
+
+    public ICDAManager getCDAManager(){
+        return cdaManager;
+    }
+    
 	public void setSessionHolder(WorkspaceSessionHolder sessionHolder) {
 		this.sessionHolder = sessionHolder;
 	}
@@ -112,10 +138,15 @@ public class ReportGeneratorService {
 		sessionHolder.materializeModel(sessionId);
 
 		//templateName = templateName.equals("default")? SaikuProperties.defaultPrptTemplate : templateName + ".prpt";
+		String path = prptManager.getTemplatePath();
+		String solution = prptManager.getSolution();
+		
+		
 		
 		if(!templateName.equals("default")){
-			ReportTemplate template =  new ReportTemplate("system", "saiku-adhoc/resources/templates", templateName + ".prpt");		
-			model.setReportTemplate(template);
+		    ReportTemplate template = prptManager.getTemplate(path, solution, templateName);
+	        model.setReportTemplate(template);
+
 		}
 
 		MasterReport output = null;
@@ -328,7 +359,7 @@ public class ReportGeneratorService {
 	private void generateHtmlReport(MasterReport output, OutputStream stream,
 			Map<String, Object> reportParameters, HtmlReport report, Integer acceptedPage) throws Exception{
 
-		final SimpleReportingComponent reportComponent = new SimpleReportingComponent();
+		final SimpleReportingComponent reportComponent = prptManager.getReportingComponent();
 		reportComponent.setReport(output);
 		reportComponent.setPaginateOutput(true);
 		reportComponent.setInputs(reportParameters);
@@ -479,15 +510,16 @@ public class ReportGeneratorService {
 
 		String[] splits = ParamUtils.splitFirst(path.substring(1),"/");
 
-		repository.writeFile(splits[0], splits[1], file, model.getCdaSettings().asXML());
+		cdaManager.addDatasource(splits[0], splits[1], file, model.getCdaSettings().asXML());
+//		repository.writeFile(splits[0], splits[1], file, model.getCdaSettings().asXML());
 
 
 	}
 	
     public MasterReport getMasterReport(String fullPath, SimpleReportingComponent reportComponent) throws SaikuAdhocException {
         try {
-            reportComponent.setReportDefinitionPath(fullPath);
-            return reportComponent.getReport();
+            return prptManager.getMasterReport(fullPath, reportComponent);
+            
             } catch (Exception e) {
             throw new SaikuAdhocException(
             Messages.getErrorString("Repository.ERROR_0001_PRPT_TEMPLATE_NOT_FOUND")

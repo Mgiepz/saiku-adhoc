@@ -54,6 +54,7 @@ import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.reporting.libraries.xmlns.common.ParserUtil;
 import org.pentaho.reporting.platform.plugin.ParameterXmlContentHandler;
 import org.pentaho.reporting.platform.plugin.ReportContentUtil;
+import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
 import org.pentaho.reporting.platform.plugin.cache.NullReportCache;
 import org.pentaho.reporting.platform.plugin.cache.ReportCache;
 import org.pentaho.reporting.platform.plugin.cache.ReportCacheKey;
@@ -61,7 +62,7 @@ import org.pentaho.reporting.platform.plugin.messages.Messages;
 import org.pentaho.reporting.platform.plugin.output.ReportOutputHandler;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
 
-public class SaikuReportingComponent {
+public class SaikuReportingComponent extends SimpleReportingComponent{
     private static final Log log = LogFactory
     .getLog(ReportGeneratorService.class);
     
@@ -660,5 +661,9 @@ public class SaikuReportingComponent {
         org.pentaho.reporting.platform.plugin.output.ReportOutputHandler roh;
         roh = (org.pentaho.reporting.platform.plugin.output.ReportOutputHandler) reportOutputHandler;
         return cache.put(reportCacheKey, roh);
+    }
+    
+    public boolean validate(){
+        return true;
     }
 }
