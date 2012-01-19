@@ -55,24 +55,29 @@ public class SaikuMasterModel {
 		this.reportSummaryElements = reportSummaryElements;
 	}
     
+	@JsonIgnore
 	protected ICDAManager cdaManager;
 
+	@JsonIgnore
     public void setCDAManager(ICDAManager manager){
         this.cdaManager = manager;
         
     }
 
+	@JsonIgnore
     public ICDAManager getCDAManager(){
         return cdaManager;
     }
     
+    @JsonIgnore
     TransModelToReport transReport;
     
+    @JsonIgnore
     public void setTransReport(TransModelToReport transReport){
         this.transReport = transReport;
         
     }
-
+    @JsonIgnore
     public TransModelToReport getTransReport(){
         return transReport;
     }
