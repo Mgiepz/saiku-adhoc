@@ -34,11 +34,10 @@ import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
+import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.utils.XmlUtils;
 
-import pt.webdetails.cda.connections.Connection;
 import pt.webdetails.cda.connections.UnsupportedConnectionException;
-import pt.webdetails.cda.connections.metadata.MetadataConnection;
 import pt.webdetails.cda.dataaccess.AbstractDataAccess;
 import pt.webdetails.cda.dataaccess.ColumnDefinition;
 import pt.webdetails.cda.dataaccess.DataAccess;
@@ -49,24 +48,13 @@ import pt.webdetails.cda.settings.UnknownDataAccessException;
 
 public class TransModelToCda {
 
-	public CdaSettings doIt(SaikuMasterModel smm) throws UnsupportedConnectionException, UnsupportedDataAccessException, UnknownDataAccessException, SaikuAdhocException {
+	public CdaSettings doIt(SaikuMasterModel smm, ICDAManager cdaManager) throws UnsupportedConnectionException, UnsupportedDataAccessException, UnknownDataAccessException, SaikuAdhocException {
 
 		CdaSettings cda = null;
 
 		String sessionId = smm.getDerivedModels().getSessionId();
-
-			cda = new CdaSettings("cda" + sessionId, null);
-
-			String[] domainInfo = smm.getDerivedModels().getDomain().getId()
-					.split("/");
-
-			Connection connection = new MetadataConnection("1", domainInfo[0],
-					domainInfo[1]);
-			DataAccess dataAccess = new MqlDataAccess(sessionId, sessionId,
-					"1", "");
-
-			cda.addConnection(connection);
-			cda.addDataAccess(dataAccess);
+	    String domainInfo = smm.getDerivedModels().getDomain().getId();
+			cda = cdaManager.initCDA(sessionId, domainInfo);
 			
 			final QueryXmlHelper xmlHelper = smm.getDerivedModels().getXmlHelper();
 			

@@ -17,13 +17,14 @@
 	</bean>
 
 
-	<bean id="workspaceSessionHolderBean" class="org.saiku.adhoc.server.model.WorkspaceSessionHolderServer">
+	<bean id="workspaceSessionHolderBean" class="org.saiku.adhoc.model.WorkspaceSessionHolder">
 	 		<property name="PRPTManager" ref="classpathPrptManager" />
 	 		<property name="CDAManager" ref="classpathCdaManager" />
  	</bean>
  	
  	
-  	<bean id="cdaAccessorBean" class="org.saiku.adhoc.server.model.service.cda.PentahoCdaAccessorServer">
+  	<bean id="cdaAccessorBean" class="org.saiku.adhoc.service.cda.PentahoCdaAccessor">
+	                <property name="CDAManager" ref="classpathCdaManager" />
  	</bean>
 	
  	<bean id="repositoryHelperBean" class="org.saiku.adhoc.server.model.service.repository.ServerRepositoryHelper">
@@ -49,20 +50,19 @@
 		
  	</bean>
  	
- 	<bean id="editorServiceBean" class="org.saiku.adhoc.server.service.EditorServiceServer">
- 		<property name="SessionHolder" ref="workspaceSessionHolderBean" />
- 		<property name="MetadataService" ref="metadataServiceBean" />
- 		<property name="CDAManager" ref="classpathCdaManager" />
- 		
- 		
- 	</bean>
- 	
  	<bean id="reportGeneratorServiceBean" class="org.saiku.adhoc.server.service.report.ReportGeneratorServiceServer">
  		<property name="PRPTManager" ref="classpathPrptManager" />
  		<property name="RepositoryHelper" ref="repositoryHelperBean" />
 		<property name="SessionHolder" ref="workspaceSessionHolderBean" />
 		<property name="CDAManager" ref="classpathCdaManager" />
  	</bean>		
+
+        <bean id="editorServiceBean" class="org.saiku.adhoc.service.EditorService">
+                <property name="SessionHolder" ref="workspaceSessionHolderBean" />
+                <property name="MetadataService" ref="metadataServiceBean" />
+                <property name="CDAManager" ref="classpathCdaManager" />
+                <property name="ReportGeneratorService" ref="reportGeneratorServiceBean" />
+        </bean>
 	
 	<bean id="queryResourceBean" class="org.saiku.adhoc.rest.QueryResource">
 		<property name="QueryService" ref="queryServiceBean" />

@@ -195,4 +195,20 @@ public class ClassPathResourcePRPTManager implements IPRPTManager {
     public ReportTemplate getDatasource(String datasourceName) {
         return datasources.get(datasourceName);
     }
+
+    @Override
+    public String getPath() {
+        return repoURL.getPath();
+    }
+
+    @Override
+    public String getSolution() {
+        return "";
+    }
+
+    @Override
+    public String getTemplatePath() {
+        // TODO Auto-generated method stub
+        return repoURL.getPath();
+    }
 }

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.saiku.adhoc.exceptions.CdaException;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
+import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.utils.ParamUtils;
 
 /**
@@ -36,6 +37,17 @@ import org.saiku.adhoc.utils.ParamUtils;
  */
 public class PentahoCdaAccessor implements ICdaAccessor {
 
+    
+    private ICDAManager cdaManager;
+
+    public void setCDAManager(ICDAManager manager){
+        this.cdaManager = manager;
+        
+    }
+
+    public ICDAManager getCDAManager(){
+        return cdaManager;
+    }
 	/* (non-Javadoc)
 	 * @see refac.saiku.adhoc.service.cda.ICdaAccessor#doQuery(org.saiku.adhoc.model.AdhocReportModel, java.lang.String, java.lang.String)
 	 */
@@ -56,7 +68,7 @@ public class PentahoCdaAccessor implements ICdaAccessor {
 
 		params.putAll(ParamUtils.getReportParameters("param", model));
 
-		final String result = PluginUtils.callPlugin("cda", "doQuery", params);
+		final String result = cdaManager.callCDA("cda", "doQuery", params); 
 
 		return result;
 
@@ -79,8 +91,7 @@ public class PentahoCdaAccessor implements ICdaAccessor {
 
 		params.putAll(ParamUtils.getReportParameters("param", model));
 		
-		PluginUtils.callPlugin("cda", "doQuery", params, output, null);
-		
+		cdaManager.callCDA("cda", "doQuery", params, output, null);
 		
 	}
 

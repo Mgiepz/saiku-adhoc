@@ -24,6 +24,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
@@ -33,6 +35,15 @@ import java.util.Map;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
+import org.saiku.adhoc.server.query.LocalCDA;
+
+import pt.webdetails.cda.connections.Connection;
+import pt.webdetails.cda.connections.UnsupportedConnectionException;
+import pt.webdetails.cda.connections.metadata.MetadataConnection;
+import pt.webdetails.cda.dataaccess.DataAccess;
+import pt.webdetails.cda.dataaccess.MqlDataAccess;
+import pt.webdetails.cda.dataaccess.UnsupportedDataAccessException;
+import pt.webdetails.cda.settings.CdaSettings;
     
 public class ClassPathResourceCDAManager implements ICDAManager {
 
@@ -216,5 +227,50 @@ public class ClassPathResourceCDAManager implements ICDAManager {
 
     public SaikuCDA getDatasource(String datasourceName) {
         return datasources.get(datasourceName);
+    }
+    
+    public String getSolution(){
+        return "";
+    }
+
+    public void callCDA(String pluginName, String method, Map<String, Object> params, OutputStream outputStream,
+            String foo) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public String callCDA(String pluginName, String method, Map<String, Object> params) {
+        return LocalCDA.localCDAQuery(params);
+    }
+
+    @Override
+    public void addDatasource(String solution, String path, String action, String asXML) {
+        try {
+            this.addDatasource(new SaikuCDA(action, asXML.getBytes("UTF-8")));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+
+    @Override
+    public CdaSettings initCDA(String sessionId, String domain) {
+        CdaSettings cda = null;
+        try {
+            cda = new CdaSettings("cda" + sessionId, null);
+        } catch (UnsupportedConnectionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (UnsupportedDataAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        String[] domainInfo = domain.split("/");
+        Connection connection = new MetadataConnection("1", domainInfo[0]+"/"+domainInfo[1], domainInfo[1]);
+        DataAccess dataAccess = new MqlDataAccess(sessionId, sessionId, "1", "") ;
+        cda.addConnection(connection);
+        cda.addDataAccess(dataAccess);
+        return cda;
     }
 }
