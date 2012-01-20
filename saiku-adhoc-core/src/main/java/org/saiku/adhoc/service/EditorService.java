@@ -57,7 +57,7 @@ import org.saiku.adhoc.service.repository.IMetadataService;
  *
  */
 public class EditorService {
-	
+
 	protected Log log = LogFactory.getLog(EditorService.class);
 
 	protected WorkspaceSessionHolder sessionHolder;
@@ -68,65 +68,65 @@ public class EditorService {
 
 	}
 
-    private ICDAManager cdaManager;
+	private ICDAManager cdaManager;
 
-    public void setCDAManager(ICDAManager manager){
-        this.cdaManager = manager;
-        
-    }
+	public void setCDAManager(ICDAManager manager){
+		this.cdaManager = manager;
 
-    public ICDAManager getCDAManager(){
-        return cdaManager;
-    }
-    
-    private ReportGeneratorService reportGeneratorService;
-    
-    public void setReportGeneratorService(
-            ReportGeneratorService reportGeneratorService) {
-        this.reportGeneratorService = reportGeneratorService;
-    }
-    
+	}
 
-    
+	public ICDAManager getCDAManager(){
+		return cdaManager;
+	}
+
+	private ReportGeneratorService reportGeneratorService;
+
+	public void setReportGeneratorService(
+			ReportGeneratorService reportGeneratorService) {
+		this.reportGeneratorService = reportGeneratorService;
+	}
+
+
+
 	public void createNewModel(String sessionId, MetadataModelInfo modelInfo) throws SaikuAdhocException{
 
 		SaikuMasterModel masterModel = null;
 
 		try {
-		
-		if(modelInfo.getJson()==null){
-			String domainId;
-			
-			domainId = URLDecoder.decode(modelInfo.getDomainId(), "UTF-8");
 
-			Domain domain = metadataService.getDomain(domainId);
-			LogicalModel model = metadataService.getLogicalModel(domainId,
-					modelInfo.getModelId());
+			if(modelInfo.getJson()==null){
+				String domainId;
 
-			masterModel = new SaikuMasterModel();
-			masterModel.init(domain, model, sessionId, cdaManager, reportGeneratorService);
-		}else{
-			ObjectMapper mapper = new ObjectMapper();
-			masterModel = mapper.readValue(modelInfo.getJson(), SaikuMasterModel.class);
+				domainId = URLDecoder.decode(modelInfo.getDomainId(), "UTF-8");
 
-			String[] split = masterModel.getClientModelSelection().split("/");
+				Domain domain = metadataService.getDomain(domainId);
+				LogicalModel model = metadataService.getLogicalModel(domainId,
+						modelInfo.getModelId());
 
-			String domainId = URLDecoder.decode(split[0], "UTF-8");
-			Domain domain = metadataService.getDomain(domainId);
-			LogicalModel model = metadataService.getLogicalModel(domainId, split[1]);
+				masterModel = new SaikuMasterModel();
+				masterModel.init(domain, model, sessionId, cdaManager, reportGeneratorService);
+			}else{
+				ObjectMapper mapper = new ObjectMapper();
+				masterModel = mapper.readValue(modelInfo.getJson(), SaikuMasterModel.class);
 
-			masterModel.init(domain, model, sessionId, cdaManager, reportGeneratorService);
-			
-			masterModel.deriveModels();
-		}
+				String[] split = masterModel.getClientModelSelection().split("/");
 
-		sessionHolder.initSession(masterModel, sessionId);
-		
-		//masterModel.deriveModels();
+				String domainId = URLDecoder.decode(split[0], "UTF-8");
+				Domain domain = metadataService.getDomain(domainId);
+				LogicalModel model = metadataService.getLogicalModel(domainId, split[1]);
 
-		sessionHolder.getModel(sessionId).setClientModelSelection(
-				URLEncoder.encode(masterModel.getDerivedModels().getDomain().getId(), "UTF-8")
-				+ "/" + masterModel.getDerivedModels().getLogicalModel().getId());
+				masterModel.init(domain, model, sessionId, cdaManager, reportGeneratorService);
+
+				masterModel.deriveModels();
+			}
+
+			sessionHolder.initSession(masterModel, sessionId);
+
+			//masterModel.deriveModels();
+
+			sessionHolder.getModel(sessionId).setClientModelSelection(
+					URLEncoder.encode(masterModel.getDerivedModels().getDomain().getId(), "UTF-8")
+					+ "/" + masterModel.getDerivedModels().getLogicalModel().getId());
 
 		} catch (Exception e) {
 			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - " + e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
@@ -167,40 +167,21 @@ public class EditorService {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-
-		removeByUid(model,position.getUid());
-
+		SaikuColumn column = findAndRemoveByUid(model,position.getUid());
 
 		List<SaikuColumn> columns = model.getColumns();
 
 		final LogicalModel logicalModel = model.getDerivedModels().getLogicalModel();
 		LogicalColumn logicalColumn = logicalModel.findLogicalColumn(columnId);
 
-		SaikuColumn column = null;
-
-		// see if column is allready in the selection
-		//TODO: why that? shouldnt we be able to add a column twice?
-		/*
-		for (SaikuColumn saikuColumn : columns) {
-			if (saikuColumn.getUid().equals(position.getUid())) {
-				column = saikuColumn;				
-			}
+		if(column==null){
+			column = new SaikuColumn(logicalColumn);
+			column.setCategory(category);
+			column.setId(columnId);
+			column.setSelectedAggType(column.getDefaultAggType());
+			column.setSelectedSummaryType("NONE");
+			column.setUid(position.getUid());
 		}
-
-		if(column!=null){
-			columns.remove(column);
-		}else {
-		 */
-
-		// TODO: set all other properties derived from the metadata-model
-		column = new SaikuColumn(logicalColumn);
-		column.setCategory(category);
-		column.setId(columnId);
-		column.setSelectedAggType(column.getDefaultAggType());
-		column.setSelectedSummaryType("NONE");
-		column.setUid(position.getUid());
-
-		//}
 
 		columns.add(position.getPosition(), column);
 
@@ -210,7 +191,7 @@ public class EditorService {
 
 	}
 
-	private void removeByUid(SaikuMasterModel model, String uid) {
+	private SaikuColumn findAndRemoveByUid(SaikuMasterModel model, String uid) {
 
 		final List<SaikuColumn> columns = model.getColumns();
 
@@ -224,6 +205,7 @@ public class EditorService {
 		}
 		if(saikuColumn!=null){
 			columns.remove(saikuColumn);
+			return saikuColumn;
 		}
 
 		final List<SaikuGroup> groups = model.getGroups();
@@ -239,6 +221,8 @@ public class EditorService {
 		if(saikuGroup!=null){
 			groups.remove(saikuGroup);
 		}
+
+		return null;
 
 		/*
 		 * Doesnt work with parameters yet
@@ -284,12 +268,12 @@ public class EditorService {
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
 		//TODO: We need remove by uid here too
-		
+
 		List<SaikuParameter> parameters = model.getParameters();
 
 		final LogicalModel logicalModel = model.getDerivedModels().getLogicalModel();
 		LogicalColumn logicalColumn = logicalModel.findLogicalColumn(businessColumn);
-		
+
 
 
 		SaikuParameter parameter = new SaikuParameter(logicalColumn);
@@ -309,14 +293,14 @@ public class EditorService {
 			String businessColumn, int position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
-		
+
 		List<SaikuParameter> parameters = model
-				.getParameters();
-		
+		.getParameters();
+
 		String filterKey = category + "." + businessColumn;
 
 		parameters.remove(position);
-		
+
 		//model.getDerivedModels().getFilterValues().remove(filterKey);
 		model.getDerivedModels().getFilterQueries().remove(filterKey);
 
@@ -351,17 +335,17 @@ public class EditorService {
 			Position position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
-		
-		removeByUid(model,position.getUid());
-		
+
+		findAndRemoveByUid(model,position.getUid());
+
 		List<SaikuGroup> groups = model.getGroups();
 
 		final LogicalModel logicalModel = model.getDerivedModels()
-				.getLogicalModel();
+		.getLogicalModel();
 		LogicalColumn column = logicalModel.findLogicalColumn(columnId);
 
 		SaikuGroup group = null;
-		
+
 		// see if group is allready in the selection
 		for (SaikuGroup saikuGroup : groups) {
 			if (saikuGroup.getUid().equals(position.getUid())) {
@@ -384,7 +368,7 @@ public class EditorService {
 
 			// Group name gets overwritten with the message format
 			//group.setGroupName(column.getName(locale));
-			
+
 
 			group.setGroupTotalsLabel("Total " + column.getName(locale));
 		}
@@ -431,11 +415,11 @@ public class EditorService {
 		return null;
 	}
 
-	
+
 	public void setColumnConfig(String sessionId, SaikuColumn config) {
 
 		final List<SaikuColumn> columns = sessionHolder.getModel(sessionId).getColumns();
-		
+
 		for (SaikuColumn saikuColumn : columns) {
 			if(config.getUid().equals(saikuColumn.getUid())){
 				columns.set(columns.indexOf(saikuColumn), config);
@@ -447,15 +431,15 @@ public class EditorService {
 	public ElementFormat getElementFormat(String sessionId, String id) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
-	
-	    final Map<String, SaikuElementFormat> rptIdToElementFormat = model.getDerivedModels().getRptIdToElementFormat();
+
+		final Map<String, SaikuElementFormat> rptIdToElementFormat = model.getDerivedModels().getRptIdToElementFormat();
 
 		if(id.contains("dtl")){
 			return getFormat(id, model, rptIdToElementFormat);
 
 		}else if(id.contains("dth")){
 			return getFormat(id, model, rptIdToElementFormat);
-		
+
 		}else if(id.contains("ghd")){
 			final SaikuGroup saikuGroup = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			return new ElementFormat(
@@ -463,7 +447,7 @@ public class EditorService {
 		}
 
 		else if(id.contains("gft")){
-			
+
 			String[] splits = id.split("-");	
 			Integer index = Integer.valueOf(splits[2]);
 			//get the correct group by index
