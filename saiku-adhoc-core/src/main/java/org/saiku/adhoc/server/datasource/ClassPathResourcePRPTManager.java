@@ -199,7 +199,12 @@ public class ClassPathResourcePRPTManager implements IPRPTManager {
     }
 
     public ReportTemplate getDatasource(String datasourceName) {
-        return datasources.get(datasourceName);
+    	if(!datasourceName.substring(datasourceName.length()-4).equals("PRPT"))
+    	{
+    		return datasources.get(datasourceName+".prpt");
+    	}else{
+    		return datasources.get(datasourceName);
+    	}
     }
 
     @Override

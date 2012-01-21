@@ -155,9 +155,9 @@ public class SaikuMasterModel {
 
 	@JsonIgnore
 	public String getCdaPath() {
-
-		String solution = "system";
-		String path = "saiku-adhoc/temp";
+		
+		String solution = cdaManager.getSolution();
+		String path = cdaManager.getPath();
 
 		String action = this.derivedModels.getSessionId() + ".cda";
 
