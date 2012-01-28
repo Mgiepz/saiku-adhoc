@@ -60,12 +60,12 @@ public class SaikuColumn {
 
 	private String sort;
 	
-	private boolean forGroupOnly;
+	//private boolean forGroupOnly;
 
 	private boolean hideRepeating;
 	
 	public SaikuColumn() {
-		this.forGroupOnly = false;
+		//this.forGroupOnly = false;
 		this.hideRepeating = false;
 		this.sort = "NONE";
 	}
@@ -99,7 +99,7 @@ public class SaikuColumn {
 		this.columnFormat = new SaikuElementFormat();		
 		this.columnHeaderFormat = new SaikuElementFormat();		
 		this.fieldType = logicalColumn.getDataType().getName();		
-		this.forGroupOnly = false;
+		//this.forGroupOnly = false;
 
 		this.sort = "NONE";
 		
@@ -185,6 +185,7 @@ public class SaikuColumn {
 		this.formatMask = formatMask;
 	}
 
+	/*
 	public void setForGroupOnly(boolean forGroupOnly) {
 		this.forGroupOnly = forGroupOnly;
 	}
@@ -192,6 +193,8 @@ public class SaikuColumn {
 	public boolean isForGroupOnly() {
 		return forGroupOnly;
 	}
+	*/
+
 
 	public void setUid(String uid) {
 		this.uid = uid;

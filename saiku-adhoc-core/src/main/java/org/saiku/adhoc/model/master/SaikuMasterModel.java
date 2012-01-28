@@ -364,4 +364,27 @@ public class SaikuMasterModel {
         return cdaManager.getDatasource(action);	
     }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cdaManager == null) ? 0 : cdaManager.hashCode());
+		result = prime * result + ((clientModelSelection == null) ? 0 : clientModelSelection.hashCode());
+		result = prime * result + ((columns == null) ? 0 : columns.hashCode());
+		result = prime * result + ((derivedModels == null) ? 0 : derivedModels.hashCode());
+		result = prime * result + ((groups == null) ? 0 : groups.hashCode());
+		result = prime * result + ((pageFooterElements == null) ? 0 : pageFooterElements.hashCode());
+		result = prime * result + ((pageHeaderElements == null) ? 0 : pageHeaderElements.hashCode());
+		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result + ((reportFooterElements == null) ? 0 : reportFooterElements.hashCode());
+		result = prime * result + ((reportHeaderElements == null) ? 0 : reportHeaderElements.hashCode());
+		result = prime * result + ((reportSummaryElements == null) ? 0 : reportSummaryElements.hashCode());
+		result = prime * result + ((reportTitle == null) ? 0 : reportTitle.hashCode());
+		result = prime * result + ((reportingManager == null) ? 0 : reportingManager.hashCode());
+		result = prime * result + ((settings == null) ? 0 : settings.hashCode());
+		result = prime * result + ((sortColumns == null) ? 0 : sortColumns.hashCode());
+		result = prime * result + ((transReport == null) ? 0 : transReport.hashCode());
+		return result;
+	}
+
 }

@@ -45,6 +45,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.pentaho.platform.engine.core.system.PentahoBase;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.SaikuClientException;
+import org.saiku.adhoc.model.dto.DisplayName;
 import org.saiku.adhoc.model.dto.ElementFormat;
 import org.saiku.adhoc.model.dto.FilterResult;
 import org.saiku.adhoc.model.dto.FilterValue;
@@ -286,7 +287,7 @@ public class QueryResource extends PentahoBase {
 
 	@POST
 	@Path("/{queryname}/COLUMNS/CATEGORY/{category}/COLUMN/{column}/POSITION/{position}")
-	public Status addColumn(
+	public DisplayName addColumn(
 			Position position,
 			@PathParam("queryname") String sessionId,
 			@PathParam("category") String category,
@@ -299,12 +300,12 @@ public class QueryResource extends PentahoBase {
 		}
 
 		try {
-			editorService.addColumn(sessionId, category, businessColumn, position);
-			return Status.OK;
+			return editorService.addColumn(sessionId, category, businessColumn, position);
 		} catch (Exception e) {
 			log.error("Cannot add column " + businessColumn + " to query ("
 					+ sessionId + ")", e);
-			return Status.INTERNAL_SERVER_ERROR;
+			String error = ExceptionUtils.getRootCauseMessage(e);
+			throw new SaikuClientException(error);		
 		}
 	}
 
@@ -485,7 +486,7 @@ public class QueryResource extends PentahoBase {
 	@POST
 	@Consumes({ "application/json" })
 	@Path("/{queryname}/COLUMNS/CATEGORY/{category}/COLUMN/{column}/POSITION/{position}/config")
-	public Status setColumnConfig(SaikuColumn config,
+	public DisplayName setColumnConfig(SaikuColumn config,
 			@PathParam("queryname") String sessionId,
 			@PathParam("category") String category,
 			@PathParam("column") String column,
@@ -497,19 +498,21 @@ public class QueryResource extends PentahoBase {
 		}
 
 		try {
+			
+		/*
 			if(category.equals("CALCULATED") && config.getId().equals("NEW")){
 				//TODO: We need a more meaningfull uid				
-				config.setId(UUID.randomUUID().toString());				
-				editorService.addCalulatedColumn(sessionId, position, config);	
+				config.setId(UUID.randomUUID().toString());	
+				//config.setId(id);
+				return editorService.addCalulatedColumn(sessionId, position, config);	
 			}else{
-				editorService.setColumnConfig(sessionId, category, column, position, config);	
-			}
-			return Status.OK;
+		*/
+				return editorService.setColumnConfig(sessionId, category, column, position, config);	
+			//}
 		} catch (Exception e) {
-
-			e.printStackTrace();
-
-			return Status.INTERNAL_SERVER_ERROR;
+			log.error("Cannot add config column", e);
+			String error = ExceptionUtils.getRootCauseMessage(e);
+			throw new SaikuClientException(error);		
 		}
 	}
 
@@ -606,15 +609,16 @@ public class QueryResource extends PentahoBase {
 	@POST
 	@Consumes({ "application/json" })
 	@Path("/{queryname}/FORMAT/ELEMENT/{id}")
-	public Status setElementFormat(ElementFormat format,
+	public DisplayName setElementFormat(ElementFormat format,
 			@PathParam("queryname") String sessionId,
 			@PathParam("id") String id) {
 
 		try {
-			editorService.setElementFormat(sessionId, format, id);
-			return Status.OK;
+			return editorService.setElementFormat(sessionId, format, id);
 		} catch (Exception e) {
-			return Status.INTERNAL_SERVER_ERROR;
+			log.error("Cannot set element format", e);
+			String error = ExceptionUtils.getRootCauseMessage(e);
+			throw new SaikuClientException(error);		
 		}
 	}
 	

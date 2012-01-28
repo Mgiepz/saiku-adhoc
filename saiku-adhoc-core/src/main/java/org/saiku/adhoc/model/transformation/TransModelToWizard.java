@@ -68,12 +68,13 @@ public class TransModelToWizard {
 		Double widthCumul = Double.valueOf(0);
 		for (SaikuColumn saikuColumn : columns) {
 			
-			LogicalColumn column = model.findLogicalColumn(saikuColumn.getId());
-			String name = column!=null ? column.getName(locale) : saikuColumn.getName();
+			//LogicalColumn column = model.findLogicalColumn(saikuColumn.getId());
+			//String name = column!=null ? column.getName(locale) : saikuColumn.getName();	
+			String name = saikuColumn.getName();
 			
 			DefaultDetailFieldDefinition detailFieldDef = new DefaultDetailFieldDefinition(name);		
 
-			detailFieldDef.setDisplayName(saikuColumn.getName());
+			detailFieldDef.setDisplayName(name);
 			//ElementAlignmentValueConverter converter = new ElementAlignmentValueConverter();
 	
 			detailFieldDef.setAggregationFunction(TemplateUtils.strToAggfunctionClass(saikuColumn.getSelectedSummaryType()));

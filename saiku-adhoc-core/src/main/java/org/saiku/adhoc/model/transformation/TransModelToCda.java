@@ -138,9 +138,6 @@ public class TransModelToCda {
 
 	protected Collection<ColumnDefinition> getCdaColumns(SaikuMasterModel smm) {
 
-		// TODO: This should work without using the mql columns
-		// should be created directly from the MasterModel
-
 		final Query query = smm.getDerivedModels().getQuery();
 		final int columnCount = query.getSelections().size();
 
@@ -153,7 +150,15 @@ public class TransModelToCda {
 			Selection sel = query.getSelections().get(i);
 			ColumnDefinition columnDef = new ColumnDefinition();
 			columnDef.setIndex(i);
-			columnDef.setName(sel.getLogicalColumn().getName(locale));
+
+			String name = sel.getLogicalColumn().getName(locale);
+
+			SaikuColumn saikuColumn = smm.getDerivedModels().getSelectionToSaikuColumn().get(sel);
+			if(saikuColumn!=null){
+				name = saikuColumn.getName();
+			}
+
+			columnDef.setName(name);
 			columnDef.setType(ColumnDefinition.TYPE.COLUMN);
 			cdaColumns.add(columnDef);
 			

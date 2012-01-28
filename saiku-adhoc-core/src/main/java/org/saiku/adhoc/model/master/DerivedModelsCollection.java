@@ -27,6 +27,7 @@ import java.util.Map;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.query.model.Query;
+import org.pentaho.metadata.query.model.Selection;
 import org.pentaho.metadata.query.model.util.QueryXmlHelper;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.pentaho.reporting.engine.classic.core.DataFactory;
@@ -49,7 +50,8 @@ import pt.webdetails.cda.dataaccess.UnsupportedDataAccessException;
 import pt.webdetails.cda.settings.CdaSettings;
 
 public class DerivedModelsCollection {
-    protected ICDAManager cdaManager;
+
+	protected ICDAManager cdaManager;
 
 	//These are the derived models, they are 
 	//transformed from the master model and stored here whenever
@@ -69,6 +71,8 @@ public class DerivedModelsCollection {
 	protected LogicalModel logicalModel;
 	protected QueryXmlHelper xmlHelper; 
 	protected DataFactory cdaDataFactory;
+	
+	protected Map<Selection,SaikuColumn> selectionToSaikuColumn;
 	
 	protected Map<String,Object> rptIdToSaikuElement;
 	
@@ -92,7 +96,8 @@ public class DerivedModelsCollection {
         this.paramDef = new DefaultParameterDefinition();
         
         this.rptIdToSaikuElement = new HashMap<String, Object>();
-        this.rptIdToElementFormat = new HashMap<String,SaikuElementFormat>();       
+        this.rptIdToElementFormat = new HashMap<String,SaikuElementFormat>();  
+        this.selectionToSaikuColumn = new HashMap<Selection,SaikuColumn>();
 
         try{
             //init cda
@@ -144,6 +149,11 @@ public class DerivedModelsCollection {
 		this.cdaDataFactory = f;
 	}
 
+	
+    public Map<Selection, SaikuColumn> getSelectionToSaikuColumn() {
+		return selectionToSaikuColumn;
+	}
+	
 	public Query getQuery() {
 		return query;
 	}

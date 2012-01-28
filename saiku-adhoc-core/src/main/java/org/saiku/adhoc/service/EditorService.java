@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +39,7 @@ import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
+import org.saiku.adhoc.model.dto.DisplayName;
 import org.saiku.adhoc.model.dto.ElementFormat;
 import org.saiku.adhoc.model.dto.FilterValue;
 import org.saiku.adhoc.model.dto.Position;
@@ -51,6 +53,7 @@ import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
 import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
 import org.saiku.adhoc.service.repository.IMetadataService;
+import org.saiku.adhoc.utils.StringUtils;
 
 /**
  * @author mgiepz
@@ -162,7 +165,7 @@ public class EditorService {
 	 * 
 	 */
 
-	public void addColumn(String sessionId, String category, String columnId,
+	public DisplayName addColumn(String sessionId, String category, String columnId,
 			Position position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
@@ -176,6 +179,7 @@ public class EditorService {
 
 		if(column==null){
 			column = new SaikuColumn(logicalColumn);
+			column.setName(StringUtils.getUniqueColumnName(column.getName(),columns));
 			column.setCategory(category);
 			column.setId(columnId);
 			column.setSelectedAggType(column.getDefaultAggType());
@@ -188,6 +192,8 @@ public class EditorService {
 		if (log.isDebugEnabled()) {
 			log.debug("SERVICE:EditorService " + sessionId + " addColumn\n" + sessionHolder.logModel(sessionId));
 		}
+
+		return new DisplayName(column.getName(),position.getUid());
 
 	}
 
@@ -238,13 +244,16 @@ public class EditorService {
 
 	}
 
-
-	public void addCalulatedColumn(String sessionId, Integer position, SaikuColumn config) {
+/*
+	public DisplayName addCalulatedColumn(String sessionId, Integer position, SaikuColumn config) {
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 		List<SaikuColumn> columns = model.getColumns();	
-		columns.add(config);	
+		columns.add(config);
+		
+		return new DisplayName(config.getUid(),config.getName());
 	}
 
+*/
 
 	public void removeColumn(String sessionId, String category,
 			String businessColumn, Integer position) {
@@ -274,8 +283,6 @@ public class EditorService {
 		final LogicalModel logicalModel = model.getDerivedModels().getLogicalModel();
 		LogicalColumn logicalColumn = logicalModel.findLogicalColumn(businessColumn);
 
-
-
 		SaikuParameter parameter = new SaikuParameter(logicalColumn);
 		parameter.setCategory(category);
 		parameter.setId(businessColumn);
@@ -301,7 +308,6 @@ public class EditorService {
 
 		parameters.remove(position);
 
-		//model.getDerivedModels().getFilterValues().remove(filterKey);
 		model.getDerivedModels().getFilterQueries().remove(filterKey);
 
 		if (log.isDebugEnabled()) {
@@ -415,7 +421,7 @@ public class EditorService {
 		return null;
 	}
 
-
+/*
 	public void setColumnConfig(String sessionId, SaikuColumn config) {
 
 		final List<SaikuColumn> columns = sessionHolder.getModel(sessionId).getColumns();
@@ -427,7 +433,7 @@ public class EditorService {
 		}
 
 	}
-
+*/
 	public ElementFormat getElementFormat(String sessionId, String id) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
@@ -509,42 +515,50 @@ public class EditorService {
 				rptIdToElementFormat.get(id),saikuColumn.getName());
 	}
 
-	public void setElementFormat(String sessionId, ElementFormat format, String id) {
+	public DisplayName setElementFormat(String sessionId, ElementFormat format, String id) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
+
+		String displayName = format.getValue();
 
 		if (id.contains("dtl")) {
 			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			saikuColumn.setElementFormat(format.getFormat());
-			saikuColumn.setName(format.getValue());
+			//saikuColumn.setName(displayName);
 
 		}
 
 		else if (id.contains("dth")) {
 			final SaikuColumn m = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
+			
+			Double oldWidth = m.getColumnHeaderFormat().getWidth();
+			Double newWidth = format.getFormat().getWidth();
+			Double widthChange = oldWidth + newWidth;
+			
+			List<SaikuColumn> columns = model.getColumns();
+			
+			SaikuColumn nextCol = columns.get(columns.indexOf(m)+1);
+			Double nextColWidth = nextCol.getColumnHeaderFormat().getWidth();
+			nextCol.getColumnHeaderFormat().setWidth(nextColWidth - widthChange);
+			
 			m.setColumnHeaderFormat(format.getFormat());
-			m.setName(format.getValue());
+			if(!m.getName().equals(displayName)){
+				m.setName(StringUtils.getUniqueColumnName(displayName, columns));
+			}
+			return new DisplayName(m.getName(), m.getUid());
 
 		} else if (id.contains("ghd")) {
 			final SaikuGroup m = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			m.setGroupsHeaderFormat(format.getFormat());
-			m.setGroupName(format.getValue());
+			m.setGroupName(displayName);
 
 		} else if (id.contains("gft") || id.contains("rhd")) {
 			final SaikuElement m = (SaikuElement) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			m.setElementFormat(format.getFormat());
-			m.setValue(format.getValue());
+			m.setValue(displayName);
 
 		}
-		// Merge as much as possible
-		/*
-		 * else if(id.contains("rhd")){ final SaikuElement m = (SaikuElement)
-		 * model.getDerivedModels().getRptIdToSaikuElement().get(id);
-		 * m.setElementFormat(format.getFormat());
-		 * m.setValue(format.getValue());
-		 * 
-		 * }
-		 */
+
 		else if (id.contains("rft")) {
 			final List<SaikuElement> msgs = model.getReportFooterElements();
 			setFormat(format, id, msgs);
@@ -555,6 +569,8 @@ public class EditorService {
 			final List<SaikuElement> msgs = model.getPageFooterElements();
 			setFormat(format, id, msgs);
 		}
+
+		return null;
 
 	}
 
@@ -567,11 +583,50 @@ public class EditorService {
 		}
 	}
 
-	public void setColumnConfig(String sessionId, String category,
+	public DisplayName setColumnConfig(String sessionId, String category,
 			String businessColumn, Integer position, SaikuColumn config) {
 
-		sessionHolder.getModel(sessionId).getColumns().set(position, config);
+		List<SaikuColumn> columns = sessionHolder.getModel(sessionId).getColumns();
+		
+		//The new name must be unique among the columns (excluding itself);
+		List<String> colNames = new ArrayList<String>();
+		
+		for (SaikuColumn col : columns) {
+			if(columns.indexOf(col)!=position){
+				colNames.add(col.getName());
+			}	
+		}
+		
 
+		String newName = StringUtils.getUniqueName(config.getName(), colNames);
+		config.setName(newName);
+
+		if(category.equals("CALCULATED") && config.getId().equals("NEW")){		
+			config.setId(UUID.randomUUID().toString());	
+			columns.add(config);
+		}else{
+			SaikuColumn oldCol = columns.set(position, config);	
+			//if we changed the name we need to replace it in all formulas
+			String oldName = oldCol.getName();
+			if(!oldName.equals(newName)){
+				replaceInFormulas(oldName,newName,columns);	
+			}
+		}
+
+		return new DisplayName(config.getName(), config.getUid());
+		
+	}
+
+	private void replaceInFormulas(String oldName, String newName, List<SaikuColumn> columns) {
+		
+		String tokenOld = "\\[" + oldName + "\\]";
+		String tokenNew = "[" + newName + "]";
+		
+		for (SaikuColumn saikuColumn : columns) {
+			String formula = saikuColumn.getFormula();
+			if(formula!=null) saikuColumn.setFormula(formula.replaceAll(tokenOld, tokenNew));
+		}
+		
 	}
 
 	public void setColumnSort(String sessionId, String category, String column,

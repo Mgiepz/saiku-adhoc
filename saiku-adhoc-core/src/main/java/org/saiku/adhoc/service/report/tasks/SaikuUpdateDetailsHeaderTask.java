@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.ReportElement;
+import org.pentaho.reporting.engine.classic.core.style.ElementStyleKeys;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
@@ -58,7 +59,7 @@ public class SaikuUpdateDetailsHeaderTask implements UpdateTask {
 
 		//final String htmlClass = "saiku " + columns.get(index).getUid().replace("rpt-dtl-", "rpt-dth-");;
 
-		final String htmlClass = "saiku " + rptId;
+		final String htmlClass = "saiku col-header " + rptId;
 
 		model.getDerivedModels().getRptIdToSaikuElement().put(rptId, saikuColumn);
 
@@ -73,7 +74,15 @@ public class SaikuUpdateDetailsHeaderTask implements UpdateTask {
 		SaikuElementFormat tempFormat = (SaikuElementFormat) saikuColumn.getColumnHeaderFormat().clone();
 
 		TemplateUtils.mergeElementFormats(e.getStyle(), tempFormat);
-
+		
+		/*
+		 * TODO: this should be done elswhere
+		 */
+		final Float width = (Float) e.getStyle().getStyleProperty(
+				ElementStyleKeys.MIN_WIDTH, null);
+		saikuColumn.getColumnHeaderFormat().setWidth(new Double(-width));
+		//---
+		
 		model.getDerivedModels().getRptIdToElementFormat().put(rptId, tempFormat);
 
 	}

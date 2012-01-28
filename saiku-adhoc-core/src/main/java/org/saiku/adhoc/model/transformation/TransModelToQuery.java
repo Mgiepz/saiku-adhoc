@@ -78,7 +78,8 @@ public class TransModelToQuery {
 							AggregationType.valueOf(saikuColumn.getSelectedAggType()): AggregationType.NONE;
 							Selection selection = new Selection(category, column, selectedAggType);
 							query.getSelections().add(selection);
-
+							smm.getDerivedModels().getSelectionToSaikuColumn().put(selection, saikuColumn);
+							
 							if(saikuColumn.getSort().equals("ASC")){
 								Order order =  new Order(selection, Type.ASC);
 								query.getOrders().add(order);
