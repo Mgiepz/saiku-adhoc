@@ -531,16 +531,16 @@ public class EditorService {
 		else if (id.contains("dth")) {
 			final SaikuColumn m = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			
-			Double oldWidth = m.getColumnHeaderFormat().getWidth();
-			Double newWidth = format.getFormat().getWidth();
-			Double widthChange = oldWidth + newWidth;
-			
 			List<SaikuColumn> columns = model.getColumns();
-			
+			/*
+			Float oldWidth = m.getColumnHeaderFormat().getWidth();
+			Float newWidth = format.getFormat().getWidth();
+			Float widthChange = oldWidth + newWidth;
+
 			SaikuColumn nextCol = columns.get(columns.indexOf(m)+1);
-			Double nextColWidth = nextCol.getColumnHeaderFormat().getWidth();
+			Float nextColWidth = nextCol.getColumnHeaderFormat().getWidth();
 			nextCol.getColumnHeaderFormat().setWidth(nextColWidth - widthChange);
-			
+			*/
 			m.setColumnHeaderFormat(format.getFormat());
 			if(!m.getName().equals(displayName)){
 				m.setName(StringUtils.getUniqueColumnName(displayName, columns));

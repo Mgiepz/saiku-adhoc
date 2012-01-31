@@ -78,9 +78,7 @@ public class SaikuUpdateDetailsHeaderTask implements UpdateTask {
 		/*
 		 * TODO: this should be done elswhere
 		 */
-		final Float width = (Float) e.getStyle().getStyleProperty(
-				ElementStyleKeys.MIN_WIDTH, null);
-		saikuColumn.getColumnHeaderFormat().setWidth(new Double(-width));
+		//saikuColumn.getColumnHeaderFormat().setWidth(tempFormat.getWidth());
 		//---
 		
 		model.getDerivedModels().getRptIdToElementFormat().put(rptId, tempFormat);

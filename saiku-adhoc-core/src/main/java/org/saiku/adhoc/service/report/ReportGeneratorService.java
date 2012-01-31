@@ -20,7 +20,9 @@
 
 package org.saiku.adhoc.service.report;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -156,7 +158,27 @@ public class ReportGeneratorService {
 
 		generateHtmlReport(output, stream, ParamUtils.getReportParameters("", model), report, acceptedPage);
 
-		report.setData(stream.toString());		
+		String string = stream.toString();
+		
+		writeHtmlFile(string);
+		
+		report.setData(string);		
+
+	}
+
+	
+	private void writeHtmlFile(String string) {
+
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter("c:/tmp/report.html"));
+			out.write(string);
+			out.close();
+		} 
+		catch (IOException e) 
+		{ 
+			System.out.println("Exception ");
+
+		}
 
 	}
 

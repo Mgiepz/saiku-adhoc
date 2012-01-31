@@ -80,13 +80,13 @@ public class TransModelToWizard {
 			detailFieldDef.setAggregationFunction(TemplateUtils.strToAggfunctionClass(saikuColumn.getSelectedSummaryType()));
 	
 			//TODO: Wann ist die breite hier 0?
-			Double colWidth = saikuColumn.getColumnHeaderFormat().getWidth();
+			Float colWidth = saikuColumn.getColumnHeaderFormat().getWidth();
 			if(colWidth!=null){		
 				
 				if(columns.indexOf(saikuColumn) == columnCount -1){
 				//	colWidth = Double.valueOf(100) - widthCumul;
 				}
-				Length width = new Length(LengthUnit.PERCENTAGE,colWidth);
+				Length width = new Length(LengthUnit.PERCENTAGE, Math.round(colWidth.doubleValue()));
 				log.info("col["+i+"]:" + colWidth);
 				detailFieldDef.setWidth(width);				
 				widthCumul+=colWidth;

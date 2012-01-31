@@ -183,7 +183,7 @@ public class TemplateUtils {
 		if(saikuFormat.getWidth()==null){
 			final Float width = (Float) prptFormat.getStyleProperty(
 					ElementStyleKeys.MIN_WIDTH, null);
-			saikuFormat.setWidth(new Double(-width));
+			saikuFormat.setWidth(-width);
 		}else{	
 		//	prptFormat.setStyleProperty(ElementStyleKeys.MIN_WIDTH,
 		//			-(new Float(saikuFormat.getWidth())));

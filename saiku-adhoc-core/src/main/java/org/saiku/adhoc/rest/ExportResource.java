@@ -21,15 +21,20 @@
 package org.saiku.adhoc.rest;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.logging.Log;
@@ -39,6 +44,7 @@ import org.saiku.adhoc.service.cda.ExportService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.sun.jersey.api.core.HttpContext;
 
 /**
  * This is the endpoint for exporting all sorts of content, like xls, csv pdf...
@@ -52,33 +58,33 @@ import org.springframework.stereotype.Component;
 public class ExportResource {
 
 	private ExportService exportService;
-	
+
 	private Log log = LogFactory.getLog(ExportResource.class);
 
-	//Spring
+	// Spring
 	public void setExportService(ExportService exportService) {
 		this.exportService = exportService;
 	}
 
+	/*
 	@GET
 	@Produces({ "application/vnd.ms-excel" })
 	@Path("/{queryname}/xls")
-	public StreamingOutput exportXls(
-			@PathParam("queryname") final String queryName){
-
+	public StreamingOutput exportXls(@PathParam("queryname") final String queryName, final @Context HttpContext hc) {
+		String name = "export";
+		hc.getResponse().getHttpHeaders()
+		.putSingle("content-disposition", "attachment; filename = " + name + ".xls");
+		
 		return new StreamingOutput() {
-			public void write(OutputStream output) throws IOException,
-			WebApplicationException {
+			public void write(OutputStream output) throws IOException, WebApplicationException {
 				try {
 
 					if (log.isDebugEnabled()) {
-						log.debug("REST:GET "+ queryName + " exportXls");
+						log.debug("REST:GET " + queryName + " exportXls");
 					}
-					
-					//BufferedWriter bw = new BufferedWriter(new PrintWriter(
-					//		output));
 
 					exportService.writeXls(queryName, output);
+				
 				} catch (Exception e) {
 					throw new WebApplicationException(e);
 				}
@@ -86,51 +92,63 @@ public class ExportResource {
 		};
 
 	}
+*/
 	
+	@GET
+	@Produces({ "application/vnd.ms-excel" })
+	@Path("/{queryname}/xls")
+	public Response exportXls(
+		@PathParam("queryname") String queryName) {
+
+		try {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			exportService.writeXls(queryName, output);
+			String name = "export";
+			
+			byte[] doc = output.toByteArray();
+			
+			return Response.ok(doc, MediaType.APPLICATION_OCTET_STREAM).header(
+					"content-disposition",
+					"attachment; filename = " + name + ".xls").header(
+							"content-length",doc.length).build();
+			
+		} catch (Exception e) {
+			throw new WebApplicationException(e);
+		}
+	}
+
 	@GET
 	@Produces({ "application/vnd.pdf" })
 	@Path("/{queryname}/pdf")
-	public StreamingOutput exportPdf(
-			@PathParam("queryname") final String queryName){
+	public Response exportPdf(
+		@PathParam("queryname") String queryName) {
 
-		return new StreamingOutput() {
-			public void write(OutputStream output) throws IOException,
-			WebApplicationException {
-				try {
-
-					if (log.isDebugEnabled()) {
-						log.debug("REST:GET "+ queryName + " exportXls");
-					}
-					
-					exportService.exportPdf(queryName, output);
-					
-//					BufferedWriter bw = new BufferedWriter(new PrintWriter(
-//							output));
-//
-//					try {
-//						bw.write(exportService.exportXls(queryName));
-//						bw.flush();
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-				} catch (Exception e) {
-					throw new WebApplicationException(e);
-				}
-			}
-		};
-
+		try {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			exportService.exportPdf(queryName, output);
+			String name = "export";
+			
+			byte[] doc = output.toByteArray();
+			
+			return Response.ok(doc, MediaType.APPLICATION_OCTET_STREAM).header(
+					"content-disposition",
+					"attachment; filename = " + name + ".pdf").header(
+							"content-length",doc.length).build();
+			
+		} catch (Exception e) {
+			throw new WebApplicationException(e);
+		}
 	}
-
+	 
 	@GET
 	@Produces({ "text/csv" })
 	@Path("/{queryname}/csv")
-	public String exportCsv(@PathParam("queryname") String queryName)
-	throws CdaException {
+	public String exportCsv(@PathParam("queryname") String queryName) throws CdaException {
 
 		if (log.isDebugEnabled()) {
-			log.debug("REST:GET "+ queryName + " exportCsv");
+			log.debug("REST:GET " + queryName + " exportCsv");
 		}
-		
+
 		return exportService.exportCsv(queryName);
 
 	}

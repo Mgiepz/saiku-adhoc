@@ -76,6 +76,7 @@ import org.pentaho.reporting.engine.classic.wizard.model.RootBandDefinition;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
+import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.service.report.tasks.SaikuUpdateDetailsHeaderTask;
@@ -409,8 +410,19 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 			detailsFooter.getStyle().setStyleProperty(BandStyleKeys.LAYOUT, "row");
 		}
 
+		/*
+		 * TODO: This kinda breaks the concept of the PreProcessor
+		 */
+		List<SaikuColumn> columns = model.getColumns();
+				
+		log.debug("Column Width");
+		
 		for (int i = 0; i < detailFieldDefinitions.length; i++) {
 			final DetailFieldDefinition detailFieldDefinition = detailFieldDefinitions[i];
+			//
+			//columns.get(i).getColumnHeaderFormat().setWidth(computedWidth[i]);
+			//
+			//log.debug("WIZARD: " + detailFieldDefinition.getWidth().getValue() + " Calculated " + computedWidth[i]);
 			setupField(detailsHeader, detailsFooter, itemBand, detailFieldDefinition, computedWidth[i], i);
 		}
 

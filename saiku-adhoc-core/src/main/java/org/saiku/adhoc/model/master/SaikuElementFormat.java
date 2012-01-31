@@ -36,7 +36,7 @@ public class SaikuElementFormat implements Cloneable {
 
 	private int fontSize;
 
-	private Double width;
+	private Float width;
 
 	private Boolean fontBold;
 
@@ -135,11 +135,11 @@ public class SaikuElementFormat implements Cloneable {
 		return fontUnderlined;
 	}
 
-	public void setWidth(Double width) {
+	public void setWidth(Float width) {
 		this.width = width;
 	}
 
-	public Double getWidth() {
+	public Float getWidth() {
 		return width;
 	}
 
