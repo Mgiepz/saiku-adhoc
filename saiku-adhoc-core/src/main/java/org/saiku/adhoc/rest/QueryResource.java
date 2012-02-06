@@ -54,6 +54,8 @@ import org.saiku.adhoc.model.dto.Position;
 import org.saiku.adhoc.model.dto.SavedQuery;
 import org.saiku.adhoc.model.dto.SolutionFileInfo;
 import org.saiku.adhoc.model.master.SaikuColumn;
+import org.saiku.adhoc.model.master.SaikuMasterModel;
+import org.saiku.adhoc.model.master.SaikuReportSettings;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
 import org.saiku.adhoc.service.EditorService;
 import org.saiku.adhoc.service.cda.CdaQueryService;
@@ -243,10 +245,10 @@ public class QueryResource extends PentahoBase {
 
 	@GET
 	@Produces({ "application/json" })
-	@Path("/{queryname}/report/{template}/{page}")
+	@Path("/{queryname}/report/{page}")
 	public HtmlReport generateReport(
 			@PathParam("queryname") String sessionId,
-			@PathParam("template") String template,
+			//@PathParam("template") String template,
 			@PathParam("page") String page){
 
 		if (log.isDebugEnabled()) {
@@ -256,7 +258,7 @@ public class QueryResource extends PentahoBase {
 		try {
 			HtmlReport report = new HtmlReport();
 			Integer acceptedPage = Integer.parseInt(page) - 1;
-			reportGeneratorService.renderReportHtml(sessionId, template, report, acceptedPage);
+			reportGeneratorService.renderReportHtml(sessionId, null, report, acceptedPage);
 
 			return report;
 
@@ -587,6 +589,41 @@ public class QueryResource extends PentahoBase {
 		this.reportGeneratorService = reportGeneratorService;
 	}
 
+	@GET
+	@Produces({ "application/json" })
+	@Path("/{queryname}/SETTINGS")
+	public SaikuReportSettings getReportSettings(
+			@PathParam("queryname") String sessionId) {
+
+		try {
+			return editorService.getReportSettings(sessionId);
+
+		} catch (Exception e) {
+			log.error("Cannot get settings", e);
+			String error = ExceptionUtils.getRootCauseMessage(e);
+			throw new SaikuClientException(error);
+		}
+
+	}
+	
+	@POST
+	@Consumes({ "application/json" })
+	@Path("/{queryname}/SETTINGS")
+	public void setReportSettings(
+			SaikuReportSettings settings,
+			@PathParam("queryname") String sessionId) {
+
+		try {
+			 editorService.setReportSettings(sessionId,settings);
+
+		} catch (Exception e) {
+			log.error("Cannot set settings", e);
+			String error = ExceptionUtils.getRootCauseMessage(e);
+			throw new SaikuClientException(error);
+		}
+
+	}
+	
 	@GET
 	@Produces({ "application/json" })
 	@Path("/{queryname}/FORMAT/ELEMENT/{id}")

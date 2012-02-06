@@ -20,6 +20,9 @@
 
 package org.saiku.adhoc.service.report;
 
+import java.awt.geom.Rectangle2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
@@ -39,8 +42,10 @@ import org.apache.commons.logging.LogFactory;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
+import org.pentaho.reporting.engine.classic.core.PageDefinition;
 import org.pentaho.reporting.engine.classic.core.ReportPreProcessor;
 import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
+import org.pentaho.reporting.engine.classic.core.SimplePageDefinition;
 import org.pentaho.reporting.engine.classic.core.cache.CachingDataFactory;
 import org.pentaho.reporting.engine.classic.core.function.ProcessingContext;
 import org.pentaho.reporting.engine.classic.core.function.StructureFunction;
@@ -52,6 +57,8 @@ import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.Bu
 import org.pentaho.reporting.engine.classic.core.parameters.ParameterDefinitionEntry;
 import org.pentaho.reporting.engine.classic.core.states.StateUtilities;
 import org.pentaho.reporting.engine.classic.core.states.datarow.DefaultFlowController;
+import org.pentaho.reporting.engine.classic.core.util.PageFormatFactory;
+import org.pentaho.reporting.engine.classic.core.util.PageSize;
 import org.pentaho.reporting.engine.classic.core.util.ReportParameterValues;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaDefinition;
 import org.pentaho.reporting.engine.classic.wizard.WizardOverrideFormattingFunction;
@@ -127,7 +134,6 @@ public class ReportGeneratorService {
 	 */
 	public void renderReportHtml(String sessionId, String templateName, HtmlReport report, Integer acceptedPage) throws Exception {
 
-		//html
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 		
 		if(model==null){
@@ -137,17 +143,14 @@ public class ReportGeneratorService {
 		}
 
 		sessionHolder.materializeModel(sessionId);
-
-		//templateName = templateName.equals("default")? SaikuProperties.defaultPrptTemplate : templateName + ".prpt";
 		String path = prptManager.getTemplatePath();
 		String solution = prptManager.getSolution();
 		
 		
-		
-		if(!templateName.equals("default")){
+		//TODO: remove this later!
+		if(templateName != null && !templateName.equals("default")){
 		    ReportTemplate template = prptManager.getTemplate(path, solution, templateName);
 	        model.setReportTemplate(template);
-
 		}
 
 		MasterReport output = null;
@@ -160,7 +163,10 @@ public class ReportGeneratorService {
 
 		String string = stream.toString();
 		
-		writeHtmlFile(string);
+//		if(log.isDebugEnabled()){
+//			writeHtmlFile(string);	
+//		}
+		
 		
 		report.setData(string);		
 
@@ -170,7 +176,7 @@ public class ReportGeneratorService {
 	private void writeHtmlFile(String string) {
 
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter("c:/tmp/report.html"));
+			BufferedWriter out = new BufferedWriter(new FileWriter("report.html"));
 			out.write(string);
 			out.close();
 		} 
@@ -288,6 +294,14 @@ public class ReportGeneratorService {
 			output.setAttribute(AttributeNames.Wizard.NAMESPACE,
 					AttributeNames.Wizard.ENABLE, Boolean.FALSE);
 
+			Paper paper = PageFormatFactory.getInstance().createPaper(PageSize.A4);
+			int orientation = model.getSettings().getOrientation();
+			PageFormat pageFormat = PageFormatFactory.getInstance().createPageFormat(paper, orientation);
+			PageDefinition format = new SimplePageDefinition(pageFormat);
+
+			output.setPageDefinition(format);
+			
+
 		} finally {
 			dataFactory.close();
 		}
@@ -381,6 +395,7 @@ public class ReportGeneratorService {
 			Map<String, Object> reportParameters, HtmlReport report, Integer acceptedPage) throws Exception{
 
 		final SimpleReportingComponent reportComponent = prptManager.getReportingComponent();
+
 		reportComponent.setReport(output);
 		reportComponent.setPaginateOutput(true);
 		reportComponent.setInputs(reportParameters);

@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Image;
 import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -88,14 +89,16 @@ import org.saiku.adhoc.service.report.tasks.SaikuUpdateReportHeaderTask;
 import org.saiku.adhoc.service.report.tasks.UpdateTask;
 
 public class SaikuAdhocPreProcessor implements ReportPreProcessor {
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6383038273801168593L;
-	
+
+	private static final int MIN_WIDTH = 1;
+
 	private Log log = LogFactory.getLog(SaikuAdhocPreProcessor.class);
-	
+
 	private String RPT_HEADER_MSG = "rpt-rhd-";
 	private String PAGE_HEADER_MSG = "rpt-phd-";
 	private String RPT_SUMMARY_MSG = "rpt-sum-";
@@ -109,12 +112,12 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 	private WizardSpecification wizardSpecification;
 
 	private DefaultDataAttributeContext attributeContext;
-	
+
 
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-	
+
 	public void setSaikuMasterModel(SaikuMasterModel model) {
 		this.model = model;
 
@@ -122,21 +125,21 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 
 	@Override
 	public MasterReport performPreProcessing(final MasterReport definition, final DefaultFlowController flowController)
-			throws ReportProcessingException {
+	throws ReportProcessingException {
 
 		try {
 			return (MasterReport) performCommonPreProcessing(definition, flowController, definition.getResourceManager());
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		
+
 		return definition;
-		
+
 	}
-	
+
 	@Override
 	public SubReport performPreProcessing(SubReport paramSubReport, DefaultFlowController paramDefaultFlowController)
-			throws ReportProcessingException {
+	throws ReportProcessingException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -189,54 +192,44 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 			this.attributeContext = null;
 		}
 
-		
+
 	}
 
 	private void setupPageFooter() {
 		final Section pageFooter = definition.getPageFooter();
 		if (pageFooter == null)
 			return;
-		
+
 		iterateSection(pageFooter, new SaikuUpdateMessagesTask(model.getPageFooterElements(), PAGE_FOOTER_MSG, model));	
-		
+
 	}
 
 	private void setupPageHeader() {
 		final Section pageHeader = definition.getPageHeader();
 		if (pageHeader == null)
 			return;
-		
+
 		iterateSection(pageHeader, new SaikuUpdateMessagesTask(model.getPageHeaderElements(), PAGE_HEADER_MSG, model));	
-		
+
 	}
 
 	private void setupReportFooter() {
 
 		final ReportFooter footer = definition.getReportFooter();
 
-		
+
 		/*
 		 * The report footer consists of two parts that need to be processed differently
 		 * - The summary band
 		 * - The message labels outside of the summary band
 		 */
-		
+
 		final Band itemBand = AutoGeneratorUtility.findGeneratedContent(footer);
 		itemBand.getStyle().setStyleProperty(BandStyleKeys.LAYOUT, "row");
 
 		final DetailFieldDefinition[] detailFieldDefinitions = wizardSpecification.getDetailFieldDefinitions();
-		
-		final Float[] widthSpecs = new Float[detailFieldDefinitions.length];
-		for (int i = 0; i < detailFieldDefinitions.length; i++) {
-			final DetailFieldDefinition fieldDefinition = detailFieldDefinitions[i];
-			final Length length = fieldDefinition.getWidth();
-			if (length == null) {
-				continue;
-			}
-			widthSpecs[i] = length.getNormalizedValue();
-		}
-		final float[] computedWidth = AutoGeneratorUtility.computeFieldWidths(widthSpecs, definition.getPageDefinition()
-				.getWidth());
+
+		final float[] computedWidth = correctFieldWidths(detailFieldDefinitions);
 
 		for (int i = 0; i < detailFieldDefinitions.length; i++) {
 			final DetailFieldDefinition field = detailFieldDefinitions[i];
@@ -250,7 +243,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 				footerElement = AutoGeneratorUtility.generateFooterElement(aggFunctionClass, computeElementType(field),
 						null, field.getField());
 			}
-			
+
 			// otherwise we show a messagelabel where the user can enter
 			// additional info
 			else {
@@ -273,9 +266,9 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 			itemBand.addElement(footerElement);
 
 			iterateSection(itemBand, new SaikuUpdateMessagesTask(model.getReportSummaryElements(), RPT_SUMMARY_MSG, model));
-			
+
 		}
-			
+
 		//This is the whole report footer. we just need to update everything except the item band
 		//We need to filter out by parent-has-generated-content-marker
 		iterateSection(footer, new SaikuUpdateMessagesTask(model.getReportFooterElements(), RPT_FOOTER_MSG, model));
@@ -286,13 +279,13 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 		final Section reportHeader = definition.getReportHeader();
 		if (reportHeader == null)
 			return;
-		
+
 		//In the report header we just need to tag every element
 		iterateSection(reportHeader, new SaikuUpdateReportHeaderTask(model.getReportHeaderElements(), RPT_HEADER_MSG, model));	
 	}
 
 	private void setupWizardRelationalGroups() throws ReportProcessingException, CloneNotSupportedException {
-		
+
 		final Group rootgroup = definition.getRootGroup();
 		RelationalGroup group;
 		if (rootgroup instanceof RelationalGroup == false) {
@@ -304,7 +297,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 		final RelationalGroup template = findInnermostRelationalGroup(definition);
 
 		final List<SaikuGroup> saikuGroups = model.getGroups();
-		
+
 		final GroupDefinition[] groupDefinitions = wizardSpecification.getGroupDefinitions();
 		for (int i = 0; i < groupDefinitions.length; i++) {
 			final GroupDefinition groupDefinition = groupDefinitions[i];
@@ -327,10 +320,10 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 				}
 				configureRelationalGroup(relationalGroup, groupDefinition, i);
 				insertGroup(relationalGroup);
-				
+
 				SaikuGroup saikuGroup = saikuGroups.get(i);
 				iterateSection(relationalGroup.getHeader(), new SaikuUpdateGroupHeaderTask(model, saikuGroup, i));	
-				
+
 			} else {
 				// modify the existing group
 				configureRelationalGroup(group, groupDefinition, i);
@@ -338,13 +331,13 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 				SaikuGroup saikuGroup = saikuGroups.get(i);
 				iterateSection(group.getHeader(), new SaikuUpdateGroupHeaderTask(model, saikuGroup, i));
 				iterateSection(group.getFooter(), new SaikuUpdateGroupFooterTask(saikuGroup.getGroupFooterElements(), model));
-				
+
 				final GroupBody body = group.getBody();
 				if (body instanceof SubGroupBody) {
 					final SubGroupBody sgBody = (SubGroupBody) body;
 					if (sgBody.getGroup() instanceof RelationalGroup) {
 						group = (RelationalGroup) sgBody.getGroup();
-							
+
 					} else {
 						group = null;
 					}
@@ -352,19 +345,19 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 					group = null;
 				}
 			}
-	
-				//do the groupfooter stuff
-				//TODO:
-				//iterateSection(group, new SaikuUpdateGroupFooterTask(saikuGroup.getGroupFooterMessages(), GRP_FOOTER_MSG + i
-				//		+ "-", model));
 
-		
+			//do the groupfooter stuff
+			//TODO:
+			//iterateSection(group, new SaikuUpdateGroupFooterTask(saikuGroup.getGroupFooterMessages(), GRP_FOOTER_MSG + i
+			//		+ "-", model));
+
+
 		}
 		// Remove any group bands are not being used ie. groups with no fields
 		removedUnusedTemplateGroups(groupDefinitions.length);
-		
+
 	}
-	
+
 	protected void setupWizardDetails() throws ReportProcessingException {
 		final DetailFieldDefinition[] detailFieldDefinitions = wizardSpecification.getDetailFieldDefinitions();
 		if (detailFieldDefinitions.length == 0) {
@@ -390,17 +383,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 			return;
 		}
 
-		final Float[] widthSpecs = new Float[detailFieldDefinitions.length];
-		for (int i = 0; i < detailFieldDefinitions.length; i++) {
-			final DetailFieldDefinition fieldDefinition = detailFieldDefinitions[i];
-			final Length length = fieldDefinition.getWidth();
-			if (length == null) {
-				continue;
-			}
-			widthSpecs[i] = length.getNormalizedValue();
-		}
-		final float[] computedWidth = AutoGeneratorUtility.computeFieldWidths(widthSpecs, definition.getPageDefinition()
-				.getWidth());
+		final float[] computedWidth = correctFieldWidths(detailFieldDefinitions);
 
 		itemBand.getStyle().setStyleProperty(BandStyleKeys.LAYOUT, "row");
 		if (detailsHeader != null) {
@@ -414,9 +397,9 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 		 * TODO: This kinda breaks the concept of the PreProcessor
 		 */
 		List<SaikuColumn> columns = model.getColumns();
-				
+
 		log.debug("Column Width");
-		
+
 		for (int i = 0; i < detailFieldDefinitions.length; i++) {
 			final DetailFieldDefinition detailFieldDefinition = detailFieldDefinitions[i];
 			//
@@ -444,10 +427,10 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 		//Saiku Specific stuff
 		iterateSection(detailsHeader, new SaikuUpdateDetailsHeaderTask(model));
 		iterateSection(itemBand, new SaikuUpdateDetailsTask(model));
-	
+
 	}
 
-	
+
 	/**
 	 * We iterate through all Elements of a section. A section is a group-band
 	 * or a header...
@@ -468,14 +451,14 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 			}
 		}
 	}
-	
-	
+
+
 	/*
 	 * UTIL STUFF
 	 * 
 	 * 
 	 */
-	
+
 	protected void setupField(final Band detailsHeader, final Band detailsFooter, final Band itemBand,
 			final DetailFieldDefinition field, final float width, final int fieldIdx) throws ReportProcessingException {
 		if (StringUtils.isEmpty(field.getField())) {
@@ -523,7 +506,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 					false);
 			headerElement.setAttribute(AttributeNames.Wizard.NAMESPACE, AttributeNames.Wizard.ALLOW_METADATA_ATTRIBUTES,
 					false);
-			
+
 			detailsHeader.addElement(headerElement);
 		}
 
@@ -548,7 +531,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 			// detailsFooter.addElement(footerElement);
 		}
 	}
-	
+
 	private RelationalGroup findInnermostRelationalGroup(final AbstractReportDefinition definition) {
 		RelationalGroup retval = null;
 		Group existingGroup = definition.getRootGroup();
@@ -564,7 +547,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 
 		return retval;
 	}
-	
+
 	/**
 	 * Removes the unusedTemplateGroups based on the assumption that if a group
 	 * doesn't have any fields assigned to it that it is empty.
@@ -577,7 +560,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 			definition.removeGroup(templateRelationalGroup);
 		}
 	}
-	
+
 	private void insertGroup(final RelationalGroup group) {
 		Group lastGroup = null;
 		Group insertGroup = definition.getRootGroup();
@@ -689,7 +672,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 	}
 
 	protected void configureRelationalGroupFooter(final Group group, final GroupDefinition groupDefinition, final int index)
-			throws ReportProcessingException {
+	throws ReportProcessingException {
 
 		final RootBandDefinition footerDefinition = groupDefinition.getFooter();
 		final DetailFieldDefinition[] detailFieldDefinitions = wizardSpecification.getDetailFieldDefinitions();
@@ -707,25 +690,153 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 		final Band itemBand = AutoGeneratorUtility.findGeneratedContent(footer);
 		itemBand.getStyle().setStyleProperty(BandStyleKeys.LAYOUT, "row");
 
-		final Float[] widthSpecs = new Float[detailFieldDefinitions.length];
-		for (int i = 0; i < detailFieldDefinitions.length; i++) {
-			final DetailFieldDefinition fieldDefinition = detailFieldDefinitions[i];
-			final Length length = fieldDefinition.getWidth();
-			if (length == null) {
-				continue;
-			}
-			widthSpecs[i] = length.getNormalizedValue();
-		}
-		final float[] computedWidth = AutoGeneratorUtility.computeFieldWidths(widthSpecs, definition.getPageDefinition()
-				.getWidth());
-
+		final float[] computedWidth = correctFieldWidths(detailFieldDefinitions);
+		
 		for (int i = 0; i < detailFieldDefinitions.length; i++) {
 			final DetailFieldDefinition detailFieldDefinition = detailFieldDefinitions[i];
 			setupGroupsummaryField(itemBand, detailFieldDefinition, computedWidth[i], i);
 		}
 
 	}
-	
+
+	/**
+	 * @param detailFieldDefinitions
+	 * @return
+	 */
+	private float[] correctFieldWidths(final DetailFieldDefinition[] detailFieldDefinitions) {
+		final Float[] widthSpecs = new Float[detailFieldDefinitions.length];
+
+		Float userDefinedWidths = Float.valueOf(0);
+		int numberOfUnsetWidths = 0;
+		for (int i = 0; i < detailFieldDefinitions.length; i++) {
+			final DetailFieldDefinition fieldDefinition = detailFieldDefinitions[i];
+			final Length length = fieldDefinition.getWidth();
+			if (length == null) {
+				widthSpecs[i] = null;
+				numberOfUnsetWidths++;
+				continue;
+			}
+			widthSpecs[i] = length.getNormalizedValue();
+			userDefinedWidths += widthSpecs[i];
+		}
+
+		if(userDefinedWidths - (numberOfUnsetWidths * MIN_WIDTH) < -100){
+			Float diff = -100 - (userDefinedWidths - (numberOfUnsetWidths * MIN_WIDTH));
+			for (int i = detailFieldDefinitions.length -1; i > 0; i--) {
+				if(!(widthSpecs[i]==null)){
+					widthSpecs[i] += diff;
+				}
+			}
+		}
+		
+//		if(numberOfUnsetWidths>0){
+//			Float unsetWidth = (-100F - userDefinedWidths) / numberOfUnsetWidths;			
+//
+//			for (int i = 0; i < widthSpecs.length; i++) {
+//				if(widthSpecs[i] == null){
+//					widthSpecs[i] = unsetWidth;
+//				}
+//			}	
+//		}
+//
+//		if(log.isDebugEnabled()){
+//			log.debug("WIDTH->");
+//		for (int i = 0; i < widthSpecs.length; i++) {
+//			log.debug(widthSpecs[i]);
+//		}
+//		}
+
+		final float[] computedWidth = computeFieldWidths(widthSpecs, definition.getPageDefinition()
+				.getWidth());
+		
+		float total = 0;
+		
+		for (int i = 0; i < computedWidth.length; i++) {
+			total+=computedWidth[i];
+			log.debug("width: " + computedWidth[i]);
+			
+		}
+		log.debug(total);
+		
+		return computedWidth;
+	}
+
+	  /**
+	   * Computes a set of field widths. The input-width definitions can be a mix of absolute and relative values; the
+	   * resulting widths are always relative values. If the input width is null or zero, it is assumed that the field wants
+	   * to have a generic width.
+	   *
+	   * @param fieldDescriptions
+	   * @param pageWidth
+	   * @return
+	   */
+	  public static float[] computeFieldWidths(final Float[] fieldDescriptions, final float pageWidth)
+	  {
+	    final float[] resultWidths = new float[fieldDescriptions.length];
+
+	    float definedWidth = 0;
+	    int definedNumberOfFields = 0;
+	    for (int i = 0; i < fieldDescriptions.length; i++)
+	    {
+	      final Number number = fieldDescriptions[i];
+	      if (number != null && number.floatValue() != 0)
+	      {
+	        if (number.floatValue() < 0)
+	        {
+	          // a fixed value ..
+	          resultWidths[i] = number.floatValue();
+	          definedNumberOfFields += 1;
+	          definedWidth += number.floatValue();
+	        }
+	        else
+	        {
+	          final float absValue = number.floatValue();
+	          final float relativeValue = -absValue * 100 / pageWidth;
+	          resultWidths[i] = relativeValue;
+	          definedNumberOfFields += 1;
+	          definedWidth += relativeValue;
+	        }
+	      }
+	    }
+
+	    if (definedNumberOfFields == fieldDescriptions.length)
+	    {
+	      // we are done, all fields are defined.
+	      return resultWidths;
+	    }
+
+
+	    if (definedNumberOfFields == 0)
+	    {
+	      // the worst case, no element provides a weight ..
+	      // therefore all fields have the same proportional width.
+	      Arrays.fill(resultWidths, -(100 / fieldDescriptions.length));
+	      return resultWidths;
+	    }
+
+	    final float availableSpace = -100 - definedWidth;
+	    if (availableSpace > 0)
+	    {
+	      // all predefined fields already fill the complete page. There is no space left for the
+	      // extra columns.
+	      return resultWidths;
+	    }
+
+	    final float avgSpace = availableSpace / (fieldDescriptions.length - definedNumberOfFields);
+	    for (int i = 0; i < resultWidths.length; i++)
+	    {
+	      final float width = resultWidths[i];
+	      if (width == 0)
+	      {
+	        resultWidths[i] = avgSpace;
+	      }
+	    }
+	    return resultWidths;
+	  }
+
+
+
+
 	protected void setupGroupsummaryField(final Band groupSummaryBand, final DetailFieldDefinition field, final float width,
 			final int fieldIdx) throws ReportProcessingException {
 		if (StringUtils.isEmpty(field.getField())) {
@@ -764,7 +875,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 		groupSummaryBand.addElement(footerElement);
 
 	}
-	
+
 	protected void setupDefaultGrid(final Band band, final Element detailElement) {
 		setupDefaultPadding(band, detailElement);
 		final ElementStyleSheet styleSheet = detailElement.getStyle();
@@ -802,7 +913,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 		styleSheet.setStyleProperty(ElementStyleKeys.BORDER_RIGHT_COLOR, color);
 		styleSheet.setStyleProperty(ElementStyleKeys.BORDER_RIGHT_STYLE, style);
 	}
-	
+
 	protected void setupDefaultPadding(final Band band, final Element detailElement) {
 		final Object maybePaddingTop = band.getAttribute(AttributeNames.Wizard.NAMESPACE, AttributeNames.Wizard.PADDING_TOP);
 		final Object maybePaddingLeft = band.getAttribute(AttributeNames.Wizard.NAMESPACE,

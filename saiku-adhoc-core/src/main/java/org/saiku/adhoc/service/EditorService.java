@@ -49,6 +49,7 @@ import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
+import org.saiku.adhoc.model.master.SaikuReportSettings;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
 import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
@@ -658,4 +659,12 @@ public class EditorService {
 		model.getSettings().setLimit(Integer.parseInt(rowlimit));
 	}
 
+	public SaikuReportSettings getReportSettings(String sessionId) {
+		return sessionHolder.getModel(sessionId).getSettings();
+	}
+
+	public void setReportSettings(String sessionId, SaikuReportSettings settings) {
+		sessionHolder.getModel(sessionId).setSettings(settings);
+	}
+	
 }

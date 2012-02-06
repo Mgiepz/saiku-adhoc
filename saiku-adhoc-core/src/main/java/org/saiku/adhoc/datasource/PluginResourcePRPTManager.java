@@ -71,7 +71,7 @@ public class PluginResourcePRPTManager implements IPRPTManager{
 
     @Override
     public ReportTemplate getTemplate(String path, String solution, String templateName) {
-        return new ReportTemplate("system", "saiku-adhoc/resources/templates", templateName + ".prpt");     
+        return new ReportTemplate("system", "saiku-adhoc/resources/templates", templateName);     
     }
 
     @Override

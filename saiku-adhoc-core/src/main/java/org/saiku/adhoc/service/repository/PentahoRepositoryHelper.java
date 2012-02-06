@@ -171,7 +171,7 @@ public class PentahoRepositoryHelper implements IRepositoryHelper {
 				.getSolutionPath("system/saiku-adhoc/resources/templates"));
 		for (String entry : templateDir.list(new PrptFilter())) {
 			templates.add(new ReportTemplate("system",
-					"saiku-adhoc/resources/templates", entry));
+					"saiku-adhoc/resources/templates", entry.replace(".prpt", "")));
 		}
 
 		return templates.toArray(new ReportTemplate[templates.size()]);

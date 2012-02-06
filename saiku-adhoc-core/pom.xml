@@ -459,11 +459,18 @@
 			<version>1.0</version>
 		</dependency>
 		<dependency>
-		<groupId>org.mockito</groupId>
-		<artifactId>mockito-core</artifactId>
-		<version>1.9.0</version>
-		<scope>test</scope>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.9.0</version>
+			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>0.10.8</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 
 </project>

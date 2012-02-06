@@ -25,12 +25,14 @@ public class SaikuReportSettings {
 	
 	private boolean disableDistinct;
 	private int limit;
+	private int orientation;
 	
 	private ReportTemplate reportTemplate;
 	
 	public SaikuReportSettings() {
 		this.disableDistinct = false;
 		this.limit = INITIAL_LIMIT;
+		this.orientation = 0;
 	}
 
 	public void setDisableDistinct(boolean disableDistinct) {
@@ -52,6 +54,14 @@ public class SaikuReportSettings {
 
 	public ReportTemplate getReportTemplate() {
 		return reportTemplate;
+	}
+
+	public void setOrientation(int orientation) {
+		this.orientation = orientation;
+	}
+
+	public int getOrientation() {
+		return orientation;
 	}
 
 }

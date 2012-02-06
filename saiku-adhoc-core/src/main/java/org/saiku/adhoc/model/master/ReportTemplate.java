@@ -69,7 +69,7 @@ public class ReportTemplate {
 
 	@JsonIgnore
 	public String getFullPath() {
-		return ActionInfo.buildSolutionPath(solution, path, name);
+		return ActionInfo.buildSolutionPath(solution, path, name + ".prpt");
 	}
 
 	public void setDescription(String description) {
