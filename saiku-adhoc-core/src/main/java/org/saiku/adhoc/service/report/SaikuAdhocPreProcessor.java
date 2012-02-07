@@ -330,7 +330,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 
 				SaikuGroup saikuGroup = saikuGroups.get(i);
 				iterateSection(group.getHeader(), new SaikuUpdateGroupHeaderTask(model, saikuGroup, i));
-				iterateSection(group.getFooter(), new SaikuUpdateGroupFooterTask(saikuGroup.getGroupFooterElements(), model));
+				iterateSection(group.getFooter(), new SaikuUpdateGroupFooterTask(saikuGroup.getGroupFooterElements(), model, i));
 
 				final GroupBody body = group.getBody();
 				if (body instanceof SubGroupBody) {
@@ -729,25 +729,13 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 			}
 		}
 		
-//		if(numberOfUnsetWidths>0){
-//			Float unsetWidth = (-100F - userDefinedWidths) / numberOfUnsetWidths;			
-//
-//			for (int i = 0; i < widthSpecs.length; i++) {
-//				if(widthSpecs[i] == null){
-//					widthSpecs[i] = unsetWidth;
-//				}
-//			}	
-//		}
-//
-//		if(log.isDebugEnabled()){
-//			log.debug("WIDTH->");
-//		for (int i = 0; i < widthSpecs.length; i++) {
-//			log.debug(widthSpecs[i]);
-//		}
-//		}
-
+		
 		final float[] computedWidth = computeFieldWidths(widthSpecs, definition.getPageDefinition()
 				.getWidth());
+		
+		
+		//if summ is now < 100% we need to resize the last one again
+		
 		
 		float total = 0;
 		

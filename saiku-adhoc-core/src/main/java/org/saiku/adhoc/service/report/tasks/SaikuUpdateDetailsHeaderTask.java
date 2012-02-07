@@ -55,7 +55,7 @@ public class SaikuUpdateDetailsHeaderTask implements UpdateTask {
 		 */
 		final SaikuColumn saikuColumn = columns.get(index);
 
-		final String rptId = "rpt-dth-" + index;
+		final String rptId = "rpt-dth-0-" + index;
 
 		//final String htmlClass = "saiku " + columns.get(index).getUid().replace("rpt-dtl-", "rpt-dth-");;
 

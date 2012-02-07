@@ -24,18 +24,19 @@ import java.util.List;
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.Element;
 import org.pentaho.reporting.engine.classic.core.ReportElement;
-import org.saiku.adhoc.model.master.SaikuElement;
+import org.saiku.adhoc.model.master.SaikuGroup;
+import org.saiku.adhoc.model.master.SaikuLabel;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.utils.TemplateUtils;
 
 public class SaikuUpdateGroupFooterTask implements UpdateTask {
 
-	private List<SaikuElement> elements;
+	private List<SaikuLabel> elements;
 	private int groupIndex;
 	private SaikuMasterModel model;
 	
-	public SaikuUpdateGroupFooterTask(List<SaikuElement> elements, SaikuMasterModel model) {
+	public SaikuUpdateGroupFooterTask(List<SaikuLabel> elements, SaikuMasterModel model, int groupIndex) {
 		this.elements = elements;
 		this.model = model;
 	}
@@ -45,7 +46,7 @@ public class SaikuUpdateGroupFooterTask implements UpdateTask {
 
 		Element el = (Element) e;
 
-		final String uid = "rpt-gft-" + index;
+		final String uid = "rpt-gft-" + groupIndex + "-" + index;
 
 		//markup the element
 		if(el.getElementTypeName().equals("message") ||
@@ -54,16 +55,16 @@ public class SaikuUpdateGroupFooterTask implements UpdateTask {
 			final String htmlClass = "saiku " + uid;
 			e.setAttribute(AttributeNames.Html.NAMESPACE, AttributeNames.Html.STYLE_CLASS, htmlClass);
 
-			SaikuElement m = null;
+			SaikuLabel m = null;
 
-			for (SaikuElement msg : this.elements) {
+			for (SaikuLabel msg : this.elements) {
 				if(uid.equals(msg.getUid())){
 					m = msg;
 					break;
 				}
 			}
 			if(m==null){
-				m = new SaikuElement();
+				m = new SaikuLabel();
 				m.setElementFormat(new SaikuElementFormat());
 				m.setUid(uid);
 				String val =(String) e.getAttribute(AttributeNames.Core.NAMESPACE, AttributeNames.Core.VALUE);

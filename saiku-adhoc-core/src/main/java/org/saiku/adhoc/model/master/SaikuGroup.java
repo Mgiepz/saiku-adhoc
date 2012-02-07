@@ -26,20 +26,20 @@ import java.util.List;
  * @author mgie
  * 
  */
-public class SaikuGroup {
+public class SaikuGroup implements SaikuElement{
 
-	public List<SaikuElement> getGroupFooterElements() {
+	public List<SaikuLabel> getGroupFooterElements() {
 		return groupFooterElements;
 	}
 
-	public void setGroupFooterElements(List<SaikuElement> groupFooterMessages) {
+	public void setGroupFooterElements(List<SaikuLabel> groupFooterMessages) {
 		this.groupFooterElements = groupFooterMessages;
 	}
 
 	public SaikuGroup() {
 		this.sort = "NONE";
 		this.groupsHeaderFormat = new SaikuElementFormat();	
-		this.groupFooterElements = new ArrayList<SaikuElement>();
+		this.groupFooterElements = new ArrayList<SaikuLabel>();
 	}
 	
 	private SaikuElementFormat groupsHeaderFormat;
@@ -61,7 +61,7 @@ public class SaikuGroup {
 	//TODO: Do we really need that label?
 	private String groupTotalsLabel;
 	
-	private List<SaikuElement> groupFooterElements;
+	private List<SaikuLabel> groupFooterElements;
 
 	private String uid;
 

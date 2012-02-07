@@ -24,7 +24,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
@@ -39,19 +42,23 @@ import org.saiku.adhoc.model.transformation.TransModelToParams;
 import org.saiku.adhoc.model.transformation.TransModelToQuery;
 import org.saiku.adhoc.model.transformation.TransModelToReport;
 import org.saiku.adhoc.model.transformation.TransModelToWizard;
+import org.saiku.adhoc.rest.ExportResource;
 import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.server.datasource.SaikuCDA;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import pt.webdetails.cda.settings.CdaSettings;
 
 public class SaikuMasterModel {
 
-	public List<SaikuElement> getReportSummaryElements() {
+	public List<SaikuLabel> getReportSummaryElements() {
 		return reportSummaryElements;
 	}
 
-	public void setReportSummaryElements(List<SaikuElement> reportSummaryElements) {
+	public void setReportSummaryElements(List<SaikuLabel> reportSummaryElements) {
 		this.reportSummaryElements = reportSummaryElements;
 	}
     
@@ -84,16 +91,16 @@ public class SaikuMasterModel {
 
 	protected List<SaikuColumn> columns;
 
-	protected List<SaikuElement> reportHeaderElements;
+	protected List<SaikuLabel> reportHeaderElements;
 
 	//These are the elements that are NOT in the Summary Row
-	protected List<SaikuElement> reportFooterElements;
+	protected List<SaikuLabel> reportFooterElements;
 
-	protected List<SaikuElement> reportSummaryElements;
+	protected List<SaikuLabel> reportSummaryElements;
 	
-	protected List<SaikuElement> pageHeaderElements;
+	protected List<SaikuLabel> pageHeaderElements;
 
-	protected List<SaikuElement> pageFooterElements;
+	protected List<SaikuLabel> pageFooterElements;
 
 	protected List<SaikuGroup> groups;
 
@@ -113,6 +120,9 @@ public class SaikuMasterModel {
 
     private ReportGeneratorService reportingManager;
 
+    @JsonIgnore
+	private Log log = LogFactory.getLog(SaikuMasterModel.class);
+    
 
 	public void init(Domain domain, LogicalModel model, String sessionId, ICDAManager manager, ReportGeneratorService reportGeneratorService) throws SaikuAdhocException{
         this.cdaManager = manager;
@@ -132,11 +142,11 @@ public class SaikuMasterModel {
 			this.parameters = new ArrayList<SaikuParameter>();
 			this.sortColumns = new ArrayList<String>();
 
-			this.reportHeaderElements = new ArrayList<SaikuElement>();
-			this.reportFooterElements = new ArrayList<SaikuElement>();
-			this.reportSummaryElements = new ArrayList<SaikuElement>();
-			this.pageHeaderElements = new ArrayList<SaikuElement>();
-			this.pageFooterElements = new ArrayList<SaikuElement>();
+			this.reportHeaderElements = new ArrayList<SaikuLabel>();
+			this.reportFooterElements = new ArrayList<SaikuLabel>();
+			this.reportSummaryElements = new ArrayList<SaikuLabel>();
+			this.pageHeaderElements = new ArrayList<SaikuLabel>();
+			this.pageFooterElements = new ArrayList<SaikuLabel>();
 
 		}
 
@@ -211,6 +221,10 @@ public class SaikuMasterModel {
 			throw new SaikuAdhocException(				
         			Messages.getErrorString("MasterModel.ERROR_0002_SELECTION_IS_EMPTY")
         	);
+		}
+		
+		if(log.isDebugEnabled()){
+			logModel();
 		}
 
 		//Query -> ok!
@@ -318,42 +332,42 @@ public class SaikuMasterModel {
 	}
 
 
-	public void setReportHeaderElements(List<SaikuElement> reportHeaderMessages) {
+	public void setReportHeaderElements(List<SaikuLabel> reportHeaderMessages) {
 		this.reportHeaderElements = reportHeaderMessages;
 	}
 
 
-	public List<SaikuElement> getReportHeaderElements() {
+	public List<SaikuLabel> getReportHeaderElements() {
 		return reportHeaderElements;
 	}
 
 
-	public void setPageHeaderElements(List<SaikuElement> pageHeaderMessages) {
+	public void setPageHeaderElements(List<SaikuLabel> pageHeaderMessages) {
 		this.pageHeaderElements = pageHeaderMessages;
 	}
 
 
-	public List<SaikuElement> getPageHeaderElements() {
+	public List<SaikuLabel> getPageHeaderElements() {
 		return pageHeaderElements;
 	}
 
 
-	public void setPageFooterElements(List<SaikuElement> pageFooterMessages) {
+	public void setPageFooterElements(List<SaikuLabel> pageFooterMessages) {
 		this.pageFooterElements = pageFooterMessages;
 	}
 
 
-	public List<SaikuElement> getPageFooterElements() {
+	public List<SaikuLabel> getPageFooterElements() {
 		return pageFooterElements;
 	}
 
 
-	public void setReportFooterElements(List<SaikuElement> reportFooterMessages) {
+	public void setReportFooterElements(List<SaikuLabel> reportFooterMessages) {
 		this.reportFooterElements = reportFooterMessages;
 	}
 
 
-	public List<SaikuElement> getReportFooterElements() {
+	public List<SaikuLabel> getReportFooterElements() {
 		return reportFooterElements;
 	}
 
@@ -387,4 +401,22 @@ public class SaikuMasterModel {
 		return result;
 	}
 
+
+	private void logModel() {
+
+		Set<Entry<String,SaikuElement>> rptIdToElementFormat = this.getDerivedModels().getRptIdToSaikuElement().entrySet();
+		
+		log.debug("Model description: ");
+		
+		for (Entry<String, SaikuElement> entry : rptIdToElementFormat) {
+			String object = "Element: " + entry.getKey() + "->" + entry.getValue().getUid() + ":";
+			if(entry.getValue() instanceof SaikuLabel){
+				object += ((SaikuLabel) entry.getValue()).getValue();	
+			}
+			
+			log.debug(object);
+		}
+
+	}
+	
 }

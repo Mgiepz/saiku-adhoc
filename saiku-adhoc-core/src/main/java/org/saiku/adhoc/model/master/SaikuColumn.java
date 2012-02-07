@@ -32,7 +32,7 @@ import org.pentaho.metadata.model.concept.types.AggregationType;
  *         DetailFieldDefinition.class
  * 
  */
-public class SaikuColumn {
+public class SaikuColumn implements SaikuElement{
 
 	private SaikuElementFormat columnHeaderFormat;
 

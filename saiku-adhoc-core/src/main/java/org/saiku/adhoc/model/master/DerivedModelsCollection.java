@@ -74,7 +74,7 @@ public class DerivedModelsCollection {
 	
 	protected Map<Selection,SaikuColumn> selectionToSaikuColumn;
 	
-	protected Map<String,Object> rptIdToSaikuElement;
+	protected Map<String,SaikuElement> rptIdToSaikuElement;
 	
 	protected Map<String,SaikuElementFormat> rptIdToElementFormat;
 
@@ -95,7 +95,7 @@ public class DerivedModelsCollection {
         this.filterQueries = new HashMap<String,Query>(); 
         this.paramDef = new DefaultParameterDefinition();
         
-        this.rptIdToSaikuElement = new HashMap<String, Object>();
+        this.rptIdToSaikuElement = new HashMap<String, SaikuElement>();
         this.rptIdToElementFormat = new HashMap<String,SaikuElementFormat>();  
         this.selectionToSaikuColumn = new HashMap<Selection,SaikuColumn>();
 
@@ -258,11 +258,11 @@ public class DerivedModelsCollection {
 		return cdaDataFactory;
 	}
 
-	public void setRptIdToSaikuElement(Map<String,Object> rptIdToSaikuElement) {
+	public void setRptIdToSaikuElement(Map<String,SaikuElement> rptIdToSaikuElement) {
 		this.rptIdToSaikuElement = rptIdToSaikuElement;
 	}
 
-	public Map<String,Object> getRptIdToSaikuElement() {
+	public Map<String,SaikuElement> getRptIdToSaikuElement() {
 		return rptIdToSaikuElement;
 	}
 

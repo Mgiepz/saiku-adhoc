@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.Element;
 import org.pentaho.reporting.engine.classic.core.ReportElement;
-import org.saiku.adhoc.model.master.SaikuElement;
+import org.saiku.adhoc.model.master.SaikuLabel;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.utils.TemplateUtils;
@@ -35,14 +35,14 @@ import org.saiku.adhoc.utils.TemplateUtils;
 public class SaikuUpdateReportHeaderTask implements UpdateTask {
 
 	private Log log = LogFactory.getLog(SaikuUpdateMessagesTask.class);
-	private List<SaikuElement> messages;
+	private List<SaikuLabel> messages;
 	private String prefix;
 	private SaikuMasterModel model;
 
-	public SaikuUpdateReportHeaderTask(List<SaikuElement> messages, String prefix, SaikuMasterModel model) {
+	public SaikuUpdateReportHeaderTask(List<SaikuLabel> messages, String prefix, SaikuMasterModel model) {
 
 		this.messages = messages;
-		this.prefix = prefix;
+		this.prefix = prefix + "0-";;
 		this.model = model;
 
 	}
@@ -57,16 +57,16 @@ public class SaikuUpdateReportHeaderTask implements UpdateTask {
 			final String htmlClass = "saiku " + uid;
 			e.setAttribute(AttributeNames.Html.NAMESPACE, AttributeNames.Html.STYLE_CLASS, htmlClass);
 
-			SaikuElement m = null;
+			SaikuLabel m = null;
 
-			for (SaikuElement msg : this.messages) {
+			for (SaikuLabel msg : this.messages) {
 				if (uid.equals(msg.getUid())) {
 					m = msg;
 					break;
 				}
 			}
 			if (m == null) {
-				m = new SaikuElement();
+				m = new SaikuLabel();
 				m.setElementFormat(new SaikuElementFormat());
 				m.setUid(uid);
 				String val = (String) e.getAttribute(AttributeNames.Core.NAMESPACE, AttributeNames.Core.VALUE);
