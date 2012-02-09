@@ -485,7 +485,15 @@ public class EditorService {
 					return new ElementFormat(
 							rptIdToElementFormat.get(id),msg.getValue());
 				}
-			}			
+			}	
+		}else if(id.contains("sum")){
+			final List<SaikuLabel> msgs = model.getReportSummaryElements();			
+			for (SaikuLabel msg : msgs) {
+				if(id.equals(msg.getUid())){
+					return new ElementFormat(
+							rptIdToElementFormat.get(id),msg.getValue());
+				}
+			}	
 		}else if(id.contains("phd")){
 			final List<SaikuLabel> msgs = model.getPageHeaderElements();			
 			for (SaikuLabel msg : msgs) {

@@ -85,7 +85,9 @@ import org.saiku.adhoc.service.report.tasks.SaikuUpdateDetailsTask;
 import org.saiku.adhoc.service.report.tasks.SaikuUpdateGroupFooterTask;
 import org.saiku.adhoc.service.report.tasks.SaikuUpdateGroupHeaderTask;
 import org.saiku.adhoc.service.report.tasks.SaikuUpdateMessagesTask;
+import org.saiku.adhoc.service.report.tasks.SaikuUpdateReportFooterTask;
 import org.saiku.adhoc.service.report.tasks.SaikuUpdateReportHeaderTask;
+import org.saiku.adhoc.service.report.tasks.SaikuUpdateSummaryTask;
 import org.saiku.adhoc.service.report.tasks.UpdateTask;
 
 public class SaikuAdhocPreProcessor implements ReportPreProcessor {
@@ -265,13 +267,14 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 
 			itemBand.addElement(footerElement);
 
-			iterateSection(itemBand, new SaikuUpdateMessagesTask(model.getReportSummaryElements(), RPT_SUMMARY_MSG, model));
+			iterateSection(itemBand, new SaikuUpdateSummaryTask(model.getReportSummaryElements(), RPT_SUMMARY_MSG, model));
 
 		}
 
 		//This is the whole report footer. we just need to update everything except the item band
 		//We need to filter out by parent-has-generated-content-marker
-		iterateSection(footer, new SaikuUpdateMessagesTask(model.getReportFooterElements(), RPT_FOOTER_MSG, model));
+		
+		iterateSection(footer, new SaikuUpdateReportFooterTask(model.getReportFooterElements(), RPT_FOOTER_MSG, model));
 
 	}
 
