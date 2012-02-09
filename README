@@ -11,4 +11,14 @@ In the resulting "target" directory you will find a saiku-adhoc-plugin-2.2-SNAPS
 
 Extract this into pentaho-solutions/system
 
+There might be some confusion with the libraries responsible for CDA-Access. 
+Have a look at you pentaho/web-inf/lib directory and check if there is a file that begins with
+pentaho-reporting-engine-classic-extensions-cda-...
+Also look at the version number of the reporting engine. If the reporting-engine has a version 3.8.x
+download the jar file from
+http://github.com/Mgiepz/saiku-adhoc/tree/master/lib
+and put it in the lib-folder
+if the reporting engine is a newer trunk-version, copy the jar file from the plugin's lib folder to 
+web-inf/lib
+
 For questions join us at ##saiku on freenode
