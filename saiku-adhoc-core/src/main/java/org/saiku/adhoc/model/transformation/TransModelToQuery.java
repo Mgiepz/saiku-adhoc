@@ -91,17 +91,6 @@ public class TransModelToQuery {
 
 		}
 
-		//We also need the Group Fields to be in the query
-		/*
-		for (SaikuGroup saikuGroup : smm.getGroups()) {
-			Category category = model.findCategory(saikuGroup.getCategory());
-			LogicalColumn column = model.findLogicalColumn(saikuGroup.getColumnId());
-			final AggregationType selectedAggType = AggregationType.NONE;
-			Selection selection = new Selection(category, column, selectedAggType);
-			query.getSelections().add(selection);
-		}
-		*/
-
 		//Remove all old filters from query
 		query.getConstraints().clear();
 		query.getParameters().clear();

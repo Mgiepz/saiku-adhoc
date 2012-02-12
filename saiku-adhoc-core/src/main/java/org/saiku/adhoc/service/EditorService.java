@@ -58,7 +58,7 @@ import org.saiku.adhoc.utils.StringUtils;
 
 /**
  * @author mgiepz
- *
+ * 
  */
 public class EditorService {
 
@@ -74,42 +74,38 @@ public class EditorService {
 
 	private ICDAManager cdaManager;
 
-	public void setCDAManager(ICDAManager manager){
+	public void setCDAManager(ICDAManager manager) {
 		this.cdaManager = manager;
 
 	}
 
-	public ICDAManager getCDAManager(){
+	public ICDAManager getCDAManager() {
 		return cdaManager;
 	}
 
 	private ReportGeneratorService reportGeneratorService;
 
-	public void setReportGeneratorService(
-			ReportGeneratorService reportGeneratorService) {
+	public void setReportGeneratorService(ReportGeneratorService reportGeneratorService) {
 		this.reportGeneratorService = reportGeneratorService;
 	}
 
-
-
-	public void createNewModel(String sessionId, MetadataModelInfo modelInfo) throws SaikuAdhocException{
+	public void createNewModel(String sessionId, MetadataModelInfo modelInfo) throws SaikuAdhocException {
 
 		SaikuMasterModel masterModel = null;
 
 		try {
 
-			if(modelInfo.getJson()==null){
+			if (modelInfo.getJson() == null) {
 				String domainId;
 
 				domainId = URLDecoder.decode(modelInfo.getDomainId(), "UTF-8");
 
 				Domain domain = metadataService.getDomain(domainId);
-				LogicalModel model = metadataService.getLogicalModel(domainId,
-						modelInfo.getModelId());
+				LogicalModel model = metadataService.getLogicalModel(domainId, modelInfo.getModelId());
 
 				masterModel = new SaikuMasterModel();
 				masterModel.init(domain, model, sessionId, cdaManager, reportGeneratorService);
-			}else{
+			} else {
 				ObjectMapper mapper = new ObjectMapper();
 				masterModel = mapper.readValue(modelInfo.getJson(), SaikuMasterModel.class);
 
@@ -126,14 +122,13 @@ public class EditorService {
 
 			sessionHolder.initSession(masterModel, sessionId);
 
-			//masterModel.deriveModels();
-
 			sessionHolder.getModel(sessionId).setClientModelSelection(
-					URLEncoder.encode(masterModel.getDerivedModels().getDomain().getId(), "UTF-8")
-					+ "/" + masterModel.getDerivedModels().getLogicalModel().getId());
+					URLEncoder.encode(masterModel.getDerivedModels().getDomain().getId(), "UTF-8") + "/"
+							+ masterModel.getDerivedModels().getLogicalModel().getId());
 
 		} catch (Exception e) {
-			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - " + e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
+			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - "
+					+ e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
 			log.error(message, e);
 			throw new SaikuAdhocException("Encoding not supported", e);
 		}
@@ -144,43 +139,20 @@ public class EditorService {
 
 	}
 
-
-	/*add column/group/filter need to call a method that removes the element with that uid-from any of the
-	 * other dropzones first
-	 * 
-	 * We could do this by putting the object into a hashmap uid2SaikuElement after creation
-	 * and then removing it like
-	 * 
-	 * columns.remove(hasmap.get(uid));
-	 * 
-	 * filters.add(element)
-	 * hashmap.put(uid,element)
-	 * 
-	 * by removing the elements the indexes should be corrected automatically
-	 * 
-	 * the rpt-xxx ids should only be asigned by the report-processor tasks
-	 * here we also need to create a hashmap (rpt-xxx,saikuelement); 
-	 * so that when ElementFormat is requested from the client
-	 * we can get the correct element format by casting depending on rpt-xxx's type.
-	 * we have to see if the hashmap needs to be cleared on every render the hashmap  (rpt-xxx,saikuelement); 
-	 * 
-	 */
-
-	public DisplayName addColumn(String sessionId, String category, String columnId,
-			Position position) {
+	public DisplayName addColumn(String sessionId, String category, String columnId, Position position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-		SaikuColumn column = findAndRemoveByUid(model,position.getUid());
+		SaikuColumn column = findAndRemoveByUid(model, position.getUid());
 
 		List<SaikuColumn> columns = model.getColumns();
 
 		final LogicalModel logicalModel = model.getDerivedModels().getLogicalModel();
 		LogicalColumn logicalColumn = logicalModel.findLogicalColumn(columnId);
 
-		if(column==null){
+		if (column == null) {
 			column = new SaikuColumn(logicalColumn);
-			column.setName(StringUtils.getUniqueColumnName(column.getName(),columns));
+			column.setName(StringUtils.getUniqueColumnName(column.getName(), columns));
 			column.setCategory(category);
 			column.setId(columnId);
 			column.setSelectedAggType(column.getDefaultAggType());
@@ -194,7 +166,7 @@ public class EditorService {
 			log.debug("SERVICE:EditorService " + sessionId + " addColumn\n" + sessionHolder.logModel(sessionId));
 		}
 
-		return new DisplayName(column.getName(),position.getUid());
+		return new DisplayName(column.getName(), position.getUid());
 
 	}
 
@@ -205,12 +177,12 @@ public class EditorService {
 		SaikuColumn saikuColumn = null;
 		for (Iterator<SaikuColumn> iterator = columns.iterator(); iterator.hasNext();) {
 			SaikuColumn col = (SaikuColumn) iterator.next();
-			if(col.getUid().equals(uid)){
+			if (col.getUid().equals(uid)) {
 				saikuColumn = col;
 				break;
 			}
 		}
-		if(saikuColumn!=null){
+		if (saikuColumn != null) {
 			columns.remove(saikuColumn);
 			return saikuColumn;
 		}
@@ -220,12 +192,12 @@ public class EditorService {
 		SaikuGroup saikuGroup = null;
 		for (Iterator<SaikuGroup> iterator2 = groups.iterator(); iterator2.hasNext();) {
 			SaikuGroup group = (SaikuGroup) iterator2.next();
-			if(group.getUid().equals(uid)){			
+			if (group.getUid().equals(uid)) {
 				saikuGroup = group;
 				break;
 			}
 		}
-		if(saikuGroup!=null){
+		if (saikuGroup != null) {
 			groups.remove(saikuGroup);
 		}
 
@@ -234,33 +206,16 @@ public class EditorService {
 		/*
 		 * Doesnt work with parameters yet
 		 * 
-		final ArrayList<SaikuParameter> parameters = model.getParameters();
-		for (SaikuParameter saikuParam : parameters) {
-			if(saikuParam.g.equals(uid)){
-				groups.remove(saikuParam);
-			}
-		}
+		 * final ArrayList<SaikuParameter> parameters = model.getParameters();
+		 * for (SaikuParameter saikuParam : parameters) {
+		 * if(saikuParam.g.equals(uid)){ groups.remove(saikuParam); } }
 		 */
 
-
 	}
 
-/*
-	public DisplayName addCalulatedColumn(String sessionId, Integer position, SaikuColumn config) {
-		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
-		List<SaikuColumn> columns = model.getColumns();	
-		columns.add(config);
-		
-		return new DisplayName(config.getUid(),config.getName());
-	}
+	public void removeColumn(String sessionId, String category, String businessColumn, Integer position) {
 
-*/
-
-	public void removeColumn(String sessionId, String category,
-			String businessColumn, Integer position) {
-
-		List<SaikuColumn> columns = sessionHolder.getModel(sessionId)
-		.getColumns();
+		List<SaikuColumn> columns = sessionHolder.getModel(sessionId).getColumns();
 
 		int index = position;
 
@@ -272,12 +227,11 @@ public class EditorService {
 
 	}
 
-	public void addFilter(String sessionId, String category,
-			String businessColumn, int position) {
+	public void addFilter(String sessionId, String category, String businessColumn, int position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-		//TODO: We need remove by uid here too
+		// TODO: We need remove by uid here too
 
 		List<SaikuParameter> parameters = model.getParameters();
 
@@ -297,13 +251,11 @@ public class EditorService {
 
 	}
 
-	public void removeFilter(String sessionId, String category,
-			String businessColumn, int position) {
+	public void removeFilter(String sessionId, String category, String businessColumn, int position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-		List<SaikuParameter> parameters = model
-		.getParameters();
+		List<SaikuParameter> parameters = model.getParameters();
 
 		String filterKey = category + "." + businessColumn;
 
@@ -317,8 +269,7 @@ public class EditorService {
 
 	}
 
-	public void setFilterValues(String sessionId, String category,
-			String businessColumn, ArrayList<FilterValue> selection) {
+	public void setFilterValues(String sessionId, String category, String businessColumn, ArrayList<FilterValue> selection) {
 
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
@@ -329,8 +280,7 @@ public class EditorService {
 
 		final List<SaikuParameter> parameters = model.getParameters();
 		for (SaikuParameter saikuParameter : parameters) {
-			if(saikuParameter.getCategory().equals(category)&&
-					saikuParameter.getId().equals(businessColumn)){
+			if (saikuParameter.getCategory().equals(category) && saikuParameter.getId().equals(businessColumn)) {
 				saikuParameter.setParameterValues(values);
 			}
 
@@ -338,17 +288,15 @@ public class EditorService {
 
 	}
 
-	public void addGroup(String sessionId, String categoryId, String columnId,
-			Position position) {
+	public void addGroup(String sessionId, String categoryId, String columnId, Position position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-		findAndRemoveByUid(model,position.getUid());
+		findAndRemoveByUid(model, position.getUid());
 
 		List<SaikuGroup> groups = model.getGroups();
 
-		final LogicalModel logicalModel = model.getDerivedModels()
-		.getLogicalModel();
+		final LogicalModel logicalModel = model.getDerivedModels().getLogicalModel();
 		LogicalColumn column = logicalModel.findLogicalColumn(columnId);
 
 		SaikuGroup group = null;
@@ -356,13 +304,13 @@ public class EditorService {
 		// see if group is allready in the selection
 		for (SaikuGroup saikuGroup : groups) {
 			if (saikuGroup.getUid().equals(position.getUid())) {
-				group = saikuGroup;				
+				group = saikuGroup;
 			}
 		}
 
-		if(group!=null){
+		if (group != null) {
 			groups.remove(group);
-		}else {
+		} else {
 			group = new SaikuGroup();
 			group.setColumnId(columnId);
 			group.setCategory(categoryId);
@@ -372,10 +320,6 @@ public class EditorService {
 			group.setDisplayName(column.getName(locale));
 
 			group.setUid(position.getUid());
-
-			// Group name gets overwritten with the message format
-			//group.setGroupName(column.getName(locale));
-
 
 			group.setGroupTotalsLabel("Total " + column.getName(locale));
 		}
@@ -388,8 +332,7 @@ public class EditorService {
 
 	}
 
-	public void removeGroup(String sessionId, String category,
-			String businessColumn, int position) {
+	public void removeGroup(String sessionId, String category, String businessColumn, int position) {
 
 		List<SaikuGroup> groups = sessionHolder.getModel(sessionId).getGroups();
 
@@ -401,8 +344,7 @@ public class EditorService {
 
 	}
 
-	public SaikuColumn getColumnConfig(String sessionId, String category,
-			String column, Integer position) {
+	public SaikuColumn getColumnConfig(String sessionId, String category, String column, Integer position) {
 
 		return sessionHolder.getModel(sessionId).getColumns().get(position);
 
@@ -412,9 +354,8 @@ public class EditorService {
 
 		final List<SaikuColumn> columns = sessionHolder.getModel(sessionId).getColumns();
 
-
 		for (SaikuColumn saikuColumn : columns) {
-			if(id.equals(saikuColumn.getUid())){
+			if (id.equals(saikuColumn.getUid())) {
 				return saikuColumn;
 			}
 		}
@@ -422,97 +363,87 @@ public class EditorService {
 		return null;
 	}
 
-/*
-	public void setColumnConfig(String sessionId, SaikuColumn config) {
-
-		final List<SaikuColumn> columns = sessionHolder.getModel(sessionId).getColumns();
-
-		for (SaikuColumn saikuColumn : columns) {
-			if(config.getUid().equals(saikuColumn.getUid())){
-				columns.set(columns.indexOf(saikuColumn), config);
-			}
-		}
-
-	}
-*/
+	/*
+	 * public void setColumnConfig(String sessionId, SaikuColumn config) {
+	 * 
+	 * final List<SaikuColumn> columns =
+	 * sessionHolder.getModel(sessionId).getColumns();
+	 * 
+	 * for (SaikuColumn saikuColumn : columns) {
+	 * if(config.getUid().equals(saikuColumn.getUid())){
+	 * columns.set(columns.indexOf(saikuColumn), config); } }
+	 * 
+	 * }
+	 */
 	public ElementFormat getElementFormat(String sessionId, String id) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
 		final Map<String, SaikuElementFormat> rptIdToElementFormat = model.getDerivedModels().getRptIdToElementFormat();
 
-		if(id.contains("dtl")){
+		if (id.contains("dtl")) {
 			return getFormat(id, model, rptIdToElementFormat);
 
-		}else if(id.contains("dth")){
+		} else if (id.contains("dth")) {
 			return getFormat(id, model, rptIdToElementFormat);
 
-		}else if(id.contains("ghd")){
+		} else if (id.contains("ghd")) {
 			final SaikuGroup saikuGroup = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			return new ElementFormat(
-					rptIdToElementFormat.get(id),saikuGroup.getGroupName());
+			return new ElementFormat(rptIdToElementFormat.get(id), saikuGroup.getGroupName());
 		}
 
-		else if(id.contains("gft")){
+		else if (id.contains("gft")) {
 
-			String[] splits = id.split("-");	
+			String[] splits = id.split("-");
 			Integer index = Integer.valueOf(splits[2]);
-			//get the correct group by index
+			// get the correct group by index
 			SaikuGroup saikuGroup = model.getGroups().get(index);
 
-			final List<SaikuLabel> msgs = saikuGroup.getGroupFooterElements();			
+			final List<SaikuLabel> msgs = saikuGroup.getGroupFooterElements();
 			for (SaikuLabel msg : msgs) {
-				if(id.equals(msg.getUid())){
-					return new ElementFormat(
-							rptIdToElementFormat.get(id),msg.getValue());
+				if (id.equals(msg.getUid())) {
+					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
 				}
-			}	
+			}
 		}
 
-		else if(id.contains("rhd")){
-			final List<SaikuLabel> msgs = model.getReportHeaderElements();			
+		else if (id.contains("rhd")) {
+			final List<SaikuLabel> msgs = model.getReportHeaderElements();
 			for (SaikuLabel msg : msgs) {
-				if(id.equals(msg.getUid())){
-					return new ElementFormat(
-							rptIdToElementFormat.get(id),msg.getValue());
+				if (id.equals(msg.getUid())) {
+					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
 
 				}
-			}	
-		}else if(id.contains("rft")){
-			final List<SaikuLabel> msgs = model.getReportFooterElements();			
+			}
+		} else if (id.contains("rft")) {
+			final List<SaikuLabel> msgs = model.getReportFooterElements();
 			for (SaikuLabel msg : msgs) {
-				if(id.equals(msg.getUid())){
-					return new ElementFormat(
-							rptIdToElementFormat.get(id),msg.getValue());
+				if (id.equals(msg.getUid())) {
+					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
 				}
-			}	
-		}else if(id.contains("sum")){
-			final List<SaikuLabel> msgs = model.getReportSummaryElements();			
+			}
+		} else if (id.contains("sum")) {
+			final List<SaikuLabel> msgs = model.getReportSummaryElements();
 			for (SaikuLabel msg : msgs) {
-				if(id.equals(msg.getUid())){
-					return new ElementFormat(
-							rptIdToElementFormat.get(id),msg.getValue());
+				if (id.equals(msg.getUid())) {
+					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
 				}
-			}	
-		}else if(id.contains("phd")){
-			final List<SaikuLabel> msgs = model.getPageHeaderElements();			
+			}
+		} else if (id.contains("phd")) {
+			final List<SaikuLabel> msgs = model.getPageHeaderElements();
 			for (SaikuLabel msg : msgs) {
-				if(id.equals(msg.getUid())){
-					return new ElementFormat(
-							rptIdToElementFormat.get(id),msg.getValue());
+				if (id.equals(msg.getUid())) {
+					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
 				}
-			}		
-		}else if(id.contains("pft")){
-			final List<SaikuLabel> msgs = model.getPageFooterElements();			
+			}
+		} else if (id.contains("pft")) {
+			final List<SaikuLabel> msgs = model.getPageFooterElements();
 			for (SaikuLabel msg : msgs) {
-				if(id.equals(msg.getUid())){
-					return new ElementFormat(
-							rptIdToElementFormat.get(id),msg.getValue());
+				if (id.equals(msg.getUid())) {
+					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
 				}
-			}				
+			}
 		}
-
-
 
 		return null;
 	}
@@ -520,8 +451,7 @@ public class EditorService {
 	private ElementFormat getFormat(String id, final SaikuMasterModel model,
 			final Map<String, SaikuElementFormat> rptIdToElementFormat) {
 		final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-		return new ElementFormat(
-				rptIdToElementFormat.get(id),saikuColumn.getName());
+		return new ElementFormat(rptIdToElementFormat.get(id), saikuColumn.getName());
 	}
 
 	public DisplayName setElementFormat(String sessionId, ElementFormat format, String id) {
@@ -533,25 +463,16 @@ public class EditorService {
 		if (id.contains("dtl")) {
 			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			saikuColumn.setElementFormat(format.getFormat());
-			//saikuColumn.setName(displayName);
 
 		}
 
 		else if (id.contains("dth")) {
 			final SaikuColumn m = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			
-			List<SaikuColumn> columns = model.getColumns();
-			/*
-			Float oldWidth = m.getColumnHeaderFormat().getWidth();
-			Float newWidth = format.getFormat().getWidth();
-			Float widthChange = oldWidth + newWidth;
 
-			SaikuColumn nextCol = columns.get(columns.indexOf(m)+1);
-			Float nextColWidth = nextCol.getColumnHeaderFormat().getWidth();
-			nextCol.getColumnHeaderFormat().setWidth(nextColWidth - widthChange);
-			*/
+			List<SaikuColumn> columns = model.getColumns();
+
 			m.setColumnHeaderFormat(format.getFormat());
-			if(!m.getName().equals(displayName)){
+			if (!m.getName().equals(displayName)) {
 				m.setName(StringUtils.getUniqueColumnName(displayName, columns));
 			}
 			return new DisplayName(m.getName(), m.getUid());
@@ -560,15 +481,15 @@ public class EditorService {
 			final SaikuGroup m = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			m.setGroupsHeaderFormat(format.getFormat());
 			m.setGroupName(displayName);
-
 		} else if (id.contains("gft") || id.contains("rhd")) {
 			final SaikuLabel m = (SaikuLabel) model.getDerivedModels().getRptIdToSaikuElement().get(id);
 			m.setElementFormat(format.getFormat());
 			m.setValue(displayName);
 
-		}
-
-		else if (id.contains("rft")) {
+		} else if (id.contains("sum")) {
+			final List<SaikuLabel> msgs = model.getReportSummaryElements();
+			setFormat(format, id, msgs);
+		} else if (id.contains("rft")) {
 			final List<SaikuLabel> msgs = model.getReportFooterElements();
 			setFormat(format, id, msgs);
 		} else if (id.contains("phd")) {
@@ -585,72 +506,71 @@ public class EditorService {
 
 	private void setFormat(ElementFormat format, String id, final List<SaikuLabel> msgs) {
 		for (SaikuLabel msg : msgs) {
-			if(id.equals(msg.getUid())){
+			if (id.equals(msg.getUid())) {
 				msg.setElementFormat(format.getFormat());
 				msg.setValue(format.getValue());
 			}
 		}
 	}
 
-	public DisplayName setColumnConfig(String sessionId, String category,
-			String businessColumn, Integer position, SaikuColumn config) {
+	public DisplayName setColumnConfig(String sessionId, String category, String businessColumn, Integer position,
+			SaikuColumn config) {
 
 		List<SaikuColumn> columns = sessionHolder.getModel(sessionId).getColumns();
-		
-		//The new name must be unique among the columns (excluding itself);
+
+		// The new name must be unique among the columns (excluding itself);
 		List<String> colNames = new ArrayList<String>();
-		
+
 		for (SaikuColumn col : columns) {
-			if(columns.indexOf(col)!=position){
+			if (columns.indexOf(col) != position) {
 				colNames.add(col.getName());
-			}	
+			}
 		}
-		
 
 		String newName = StringUtils.getUniqueName(config.getName(), colNames);
 		config.setName(newName);
 
-		if(category.equals("CALCULATED") && config.getId().equals("NEW")){		
-			config.setId(UUID.randomUUID().toString());	
+		if (category.equals("CALCULATED") && config.getId().equals("NEW")) {
+			config.setId(UUID.randomUUID().toString());
 			columns.add(config);
-		}else{
-			SaikuColumn oldCol = columns.set(position, config);	
-			//if we changed the name we need to replace it in all formulas
+		} else {
+			SaikuColumn oldCol = columns.set(position, config);
+			// if we changed the name we need to replace it in all formulas
 			String oldName = oldCol.getName();
-			if(!oldName.equals(newName)){
-				replaceInFormulas(oldName,newName,columns);	
+			if (!oldName.equals(newName)) {
+				replaceInFormulas(oldName, newName, columns);
 			}
 		}
 
 		return new DisplayName(config.getName(), config.getUid());
-		
+
 	}
 
 	private void replaceInFormulas(String oldName, String newName, List<SaikuColumn> columns) {
-		
+
 		String tokenOld = "\\[" + oldName + "\\]";
 		String tokenNew = "[" + newName + "]";
-		
+
 		for (SaikuColumn saikuColumn : columns) {
 			String formula = saikuColumn.getFormula();
-			if(formula!=null) saikuColumn.setFormula(formula.replaceAll(tokenOld, tokenNew));
+			if (formula != null)
+				saikuColumn.setFormula(formula.replaceAll(tokenOld, tokenNew));
 		}
-		
+
 	}
 
-	public void setColumnSort(String sessionId, String category, String column,
-			Integer position, String order) {
+	public void setColumnSort(String sessionId, String category, String column, Integer position, String order) {
 		sessionHolder.getModel(sessionId).getColumns().get(position).setSort(order);
 	}
 
-	public void setGroupSort(String sessionId, String category, String column,
-			Integer position, String order) {
+	public void setGroupSort(String sessionId, String category, String column, Integer position, String order) {
 		sessionHolder.getModel(sessionId).getGroups().get(position).setSort(order);
 	}
 
 	public void setMetadataService(IMetadataService metadataService) {
 		this.metadataService = metadataService;
 	}
+
 	public String getModelJson(String sessionId) throws JsonGenerationException, JsonMappingException, IOException {
 
 		String value = null;
@@ -674,5 +594,5 @@ public class EditorService {
 	public void setReportSettings(String sessionId, SaikuReportSettings settings) {
 		sessionHolder.getModel(sessionId).setSettings(settings);
 	}
-	
+
 }

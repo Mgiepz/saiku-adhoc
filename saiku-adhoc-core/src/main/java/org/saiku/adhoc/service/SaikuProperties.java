@@ -241,6 +241,11 @@ public class SaikuProperties extends Properties{
 
 	public static final String defaultPrptTemplate = getPropString("saiku-adhoc.default.template","jade_4_left_aligned_grid.prpt");
 
+	public static final String cdaUser = getPropString("saiku-adhoc.cda.user","joe");
+
+	public static final String cdaPassword = getPropString("saiku-adhoc.cda.password","password");
+
+	
 	private static Boolean getPropBoolean(String key, String defaultValue) {
 		Boolean ret;
 		if (instance.containsKey(key)) {

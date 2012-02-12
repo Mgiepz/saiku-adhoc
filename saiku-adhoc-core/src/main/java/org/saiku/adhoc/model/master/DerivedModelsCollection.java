@@ -141,11 +141,9 @@ public class DerivedModelsCollection {
 		f.setSolution(this.cdaManager.getSolution());
         f.setPath(this.cdaManager.getPath());
 		String file =  this.sessionId + ".cda";
-		f.setFile(file);        
-		String username = "joe";
-		f.setUsername(username);
-		String password = "password";
-		f.setPassword(password);
+		f.setFile(file);      
+		f.setUsername(SaikuProperties.cdaUser);
+		f.setPassword(SaikuProperties.cdaPassword);
 		this.cdaDataFactory = f;
 	}
 

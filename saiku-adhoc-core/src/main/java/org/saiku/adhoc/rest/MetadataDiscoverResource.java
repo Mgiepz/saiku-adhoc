@@ -30,6 +30,7 @@ import javax.ws.rs.Produces;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.pentaho.reporting.engine.classic.core.util.PageFormatFactory;
 import org.saiku.adhoc.exceptions.MetadataException;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.metadata.impl.MetadataModel;
@@ -106,6 +107,18 @@ public class MetadataDiscoverResource {
 	public ReportTemplate[] getReportTemplates(){
 		
     	return metadataService.loadTemplates();
+		
+	}
+    
+    /**
+     * Returns the available page formats.
+     */
+    @GET
+    @Produces({"application/json" })
+    @Path("/pageformats")
+	public String[] getPageFormats(){
+    	
+    	return PageFormatFactory.getInstance().getPageFormats();
 		
 	}
 	

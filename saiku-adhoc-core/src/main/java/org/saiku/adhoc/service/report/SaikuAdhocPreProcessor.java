@@ -92,9 +92,6 @@ import org.saiku.adhoc.service.report.tasks.UpdateTask;
 
 public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6383038273801168593L;
 
 	private static final int MIN_WIDTH = 1;

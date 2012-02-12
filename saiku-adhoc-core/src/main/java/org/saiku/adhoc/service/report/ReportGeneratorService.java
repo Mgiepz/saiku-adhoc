@@ -20,7 +20,7 @@
 
 package org.saiku.adhoc.service.report;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.Insets;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.io.BufferedWriter;
@@ -78,6 +78,7 @@ import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.server.datasource.IPRPTManager;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
 import org.saiku.adhoc.utils.ParamUtils;
+import org.saiku.adhoc.utils.TemplateUtils;
 
 public class ReportGeneratorService {
 
@@ -145,17 +146,14 @@ public class ReportGeneratorService {
 		sessionHolder.materializeModel(sessionId);
 		String path = prptManager.getTemplatePath();
 		String solution = prptManager.getSolution();
-		
-		
-		//TODO: remove this later!
+
 		if(templateName != null && !templateName.equals("default")){
 		    ReportTemplate template = prptManager.getTemplate(path, solution, templateName);
 	        model.setReportTemplate(template);
 		}
 
-		MasterReport output = null;
 
-		output = processReport(model, output);			
+		MasterReport output = processReport(model);			
 
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
@@ -206,9 +204,7 @@ public class ReportGeneratorService {
 
 		sessionHolder.materializeModel(sessionId);
 
-		MasterReport output = null;
-
-		output = processReport(model, output);			
+		MasterReport output = processReport(model);			
 
 		generatePdfReport(output, stream, ParamUtils.getReportParameters("", model));
 
@@ -226,8 +222,7 @@ public class ReportGeneratorService {
 	 * @throws IOException 
 	 * @throws ResourceException 
 	 */
-	protected MasterReport processReport(SaikuMasterModel model,
-			MasterReport output) throws ReportException, ReportProcessingException, SaikuAdhocException, ResourceException, IOException {
+	protected MasterReport processReport(SaikuMasterModel model) throws ReportException, ReportProcessingException, SaikuAdhocException, ResourceException, IOException {
 
 
 		CachingDataFactory dataFactory = null;
@@ -235,7 +230,7 @@ public class ReportGeneratorService {
 		try {
 
 			model.deriveModels();
-
+			
 			final MasterReport reportTemplate = model.getDerivedModels().getReportTemplate();
 
 			final WizardSpecification wizardSpecification = model
@@ -286,26 +281,33 @@ public class ReportGeneratorService {
 
 			ReportPreProcessor processor = new SaikuAdhocPreProcessor();
 			((SaikuAdhocPreProcessor) processor).setSaikuMasterModel(model);
-			output = processor.performPreProcessing(
+			MasterReport output = processor.performPreProcessing(
 					reportTemplate, postQueryFlowController);
 			output.setAttribute(AttributeNames.Wizard.NAMESPACE,
 					AttributeNames.Wizard.ENABLE, Boolean.FALSE);
 
 			output.setAttribute(AttributeNames.Wizard.NAMESPACE,
 					AttributeNames.Wizard.ENABLE, Boolean.FALSE);
+			
+			TemplateUtils.mergePageSetup(model, output);
+			
+			return output;
 
+			/*
 			Paper paper = PageFormatFactory.getInstance().createPaper(PageSize.A4);
 			int orientation = model.getSettings().getOrientation();
 			PageFormat pageFormat = PageFormatFactory.getInstance().createPageFormat(paper, orientation);
+			Insets insets = new Insets(5,5,5,5);
+			PageFormatFactory.getInstance().setPageMargins(pageFormat,insets);
 			PageDefinition format = new SimplePageDefinition(pageFormat);
 
 			output.setPageDefinition(format);
-			
+			*/
 
 		} finally {
 			dataFactory.close();
 		}
-		return output;
+
 	}
 
 
@@ -346,40 +348,6 @@ public class ReportGeneratorService {
 		}
 		return vals;
 	}
-
-
-	//	private Map<String, Object> getReportParameters(SaikuMasterModel model) throws ParseException {
-	//
-	//		Map<String, Object> reportParameters = new HashMap<String, Object>();
-	//
-	//		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-	//
-	//		final ArrayList<SaikuParameter> parameters = model.getParameters();
-	//		for (SaikuParameter saikuParameter : parameters) {
-	//
-	//			final String categoryId = saikuParameter.getCategory();
-	//			final String columnId = saikuParameter.getId();	
-	//			final String parameterName = "F_" + categoryId + "_" + columnId;
-	//
-	//			if(saikuParameter.getType().equals("String")){
-	//				ArrayList<String> valueList = saikuParameter.getParameterValues();
-	//				String[] values = valueList.toArray(new String[valueList.size()]);
-	//				reportParameters.put(parameterName, values);
-	//			}
-	//			if(saikuParameter.getType().equals("Date")){
-	//				String nameFrom = parameterName + "_FROM";
-	//				String nameTo = parameterName + "_TO";
-	//				ArrayList<String> valueList = saikuParameter.getParameterValues();
-	//				String[] values = valueList.toArray(new String[valueList.size()]);
-	//
-	//				reportParameters.put(nameFrom, dateFormat.parse(values[0]));
-	//				reportParameters.put(nameTo, dateFormat.parse(values[1]));
-	//
-	//			}
-	//
-	//		}
-	//		return reportParameters;
-	//	}
 
 	/**
 	 * Generate the report
@@ -523,10 +491,8 @@ public class ReportGeneratorService {
 		String[] splits = ParamUtils.splitFirst(path.substring(1),"/");
 
 		ByteArrayOutputStream prptContent = null;
-
-		MasterReport output = null;
-
-		output = processReport(model, output);
+;
+		MasterReport output = processReport(model);
 		prptContent = generatePrptOutput(model, output);
 
 		String solPath = splits.length > 1 ? splits[1] : "";

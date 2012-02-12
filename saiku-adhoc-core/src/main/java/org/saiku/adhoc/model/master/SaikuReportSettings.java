@@ -21,18 +21,34 @@ package org.saiku.adhoc.model.master;
 
 public class SaikuReportSettings {
 	
+	public void setPageFormat(String pageFormat) {
+		this.pageFormat = pageFormat;
+	}
+
 	private static final int INITIAL_LIMIT = 100;
 	
 	private boolean disableDistinct;
 	private int limit;
-	private int orientation;
+	private Integer orientation;
+	
+	private Integer marginLeft;
+	private Integer marginRight;
+	private Integer marginBottom;
+	private Integer marginTop;
 	
 	private ReportTemplate reportTemplate;
+
+	private String pageFormat;
 	
 	public SaikuReportSettings() {
 		this.disableDistinct = false;
 		this.limit = INITIAL_LIMIT;
-		this.orientation = 0;
+		this.orientation = null;
+		this.marginBottom = null;
+		this.marginLeft = null;
+		this.marginRight = null;
+		this.marginTop = null;
+		
 	}
 
 	public void setDisableDistinct(boolean disableDistinct) {
@@ -56,12 +72,48 @@ public class SaikuReportSettings {
 		return reportTemplate;
 	}
 
-	public void setOrientation(int orientation) {
+	public void setOrientation(Integer orientation) {
 		this.orientation = orientation;
 	}
 
-	public int getOrientation() {
+	public Integer getOrientation() {
 		return orientation;
+	}
+
+	public void setMarginLeft(Integer marginLeft) {
+		this.marginLeft = marginLeft;
+	}
+
+	public Integer getMarginLeft() {
+		return marginLeft;
+	}
+
+	public void setMarginRight(Integer marginRight) {
+		this.marginRight = marginRight;
+	}
+
+	public Integer getMarginRight() {
+		return marginRight;
+	}
+
+	public void setMarginBottom(Integer marginBottom) {
+		this.marginBottom = marginBottom;
+	}
+
+	public Integer getMarginBottom() {
+		return marginBottom;
+	}
+
+	public void setMarginTop(Integer marginTop) {
+		this.marginTop = marginTop;
+	}
+
+	public Integer getMarginTop() {
+		return marginTop;
+	}
+
+	public String getPageFormat() {
+		return this.pageFormat;
 	}
 
 }
