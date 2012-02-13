@@ -117,6 +117,8 @@ public class EditorService {
 
 				masterModel.init(domain, model, sessionId, cdaManager, reportGeneratorService);
 
+				masterModel.setCdaDirty(true);
+				
 				masterModel.deriveModels();
 			}
 
@@ -161,6 +163,8 @@ public class EditorService {
 		}
 
 		columns.add(position.getPosition(), column);
+		
+		model.setCdaDirty(true);
 
 		if (log.isDebugEnabled()) {
 			log.debug("SERVICE:EditorService " + sessionId + " addColumn\n" + sessionHolder.logModel(sessionId));
@@ -215,12 +219,15 @@ public class EditorService {
 
 	public void removeColumn(String sessionId, String category, String businessColumn, Integer position) {
 
-		List<SaikuColumn> columns = sessionHolder.getModel(sessionId).getColumns();
+		SaikuMasterModel model = sessionHolder.getModel(sessionId);
+		List<SaikuColumn> columns = model.getColumns();
 
 		int index = position;
 
 		columns.remove(index);
 
+		model.setCdaDirty(true);
+		
 		if (log.isDebugEnabled()) {
 			log.debug("SERVICE:EditorService " + sessionId + " removeColumn\n" + sessionHolder.logModel(sessionId));
 		}
@@ -245,6 +252,8 @@ public class EditorService {
 
 		parameters.add(position, parameter);
 
+		model.setCdaDirty(true);
+		
 		if (log.isDebugEnabled()) {
 			log.debug("SERVICE:EditorService " + sessionId + " addFilter\n" + sessionHolder.logModel(sessionId));
 		}
@@ -263,6 +272,8 @@ public class EditorService {
 
 		model.getDerivedModels().getFilterQueries().remove(filterKey);
 
+		model.setCdaDirty(true);
+		
 		if (log.isDebugEnabled()) {
 			log.debug("SERVICE:EditorService " + sessionId + " removeFilter\n" + sessionHolder.logModel(sessionId));
 		}
@@ -326,6 +337,8 @@ public class EditorService {
 
 		groups.add(position.getPosition(), group);
 
+		model.setCdaDirty(true);
+		
 		if (log.isDebugEnabled()) {
 			log.debug("SERVICE:EditorService " + sessionId + " addGroup\n" + sessionHolder.logModel(sessionId));
 		}
@@ -334,10 +347,13 @@ public class EditorService {
 
 	public void removeGroup(String sessionId, String category, String businessColumn, int position) {
 
-		List<SaikuGroup> groups = sessionHolder.getModel(sessionId).getGroups();
+		SaikuMasterModel model = sessionHolder.getModel(sessionId);
+		List<SaikuGroup> groups = model.getGroups();
 
 		groups.remove(position);
 
+		model.setCdaDirty(true);
+		
 		if (log.isDebugEnabled()) {
 			log.debug("SERVICE:EditorService " + sessionId + " removeGroup\n" + sessionHolder.logModel(sessionId));
 		}
@@ -516,7 +532,8 @@ public class EditorService {
 	public DisplayName setColumnConfig(String sessionId, String category, String businessColumn, Integer position,
 			SaikuColumn config) {
 
-		List<SaikuColumn> columns = sessionHolder.getModel(sessionId).getColumns();
+		SaikuMasterModel model = sessionHolder.getModel(sessionId);
+		List<SaikuColumn> columns = model.getColumns();
 
 		// The new name must be unique among the columns (excluding itself);
 		List<String> colNames = new ArrayList<String>();
@@ -530,6 +547,8 @@ public class EditorService {
 		String newName = StringUtils.getUniqueName(config.getName(), colNames);
 		config.setName(newName);
 
+		model.setCdaDirty(true);
+		
 		if (category.equals("CALCULATED") && config.getId().equals("NEW")) {
 			config.setId(UUID.randomUUID().toString());
 			columns.add(config);
@@ -560,11 +579,15 @@ public class EditorService {
 	}
 
 	public void setColumnSort(String sessionId, String category, String column, Integer position, String order) {
-		sessionHolder.getModel(sessionId).getColumns().get(position).setSort(order);
+		SaikuMasterModel model = sessionHolder.getModel(sessionId);
+		model.getColumns().get(position).setSort(order);
+		model.setCdaDirty(true);
 	}
 
 	public void setGroupSort(String sessionId, String category, String column, Integer position, String order) {
-		sessionHolder.getModel(sessionId).getGroups().get(position).setSort(order);
+		SaikuMasterModel model = sessionHolder.getModel(sessionId);
+		model.getGroups().get(position).setSort(order);
+		model.setCdaDirty(true);
 	}
 
 	public void setMetadataService(IMetadataService metadataService) {
@@ -585,6 +608,7 @@ public class EditorService {
 	public void setRowlimit(String sessionId, String rowlimit) {
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 		model.getSettings().setLimit(Integer.parseInt(rowlimit));
+		model.setCdaDirty(true);
 	}
 
 	public SaikuReportSettings getReportSettings(String sessionId) {

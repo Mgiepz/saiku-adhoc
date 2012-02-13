@@ -128,8 +128,13 @@ public class WorkspaceSessionHolder {
 
 		model.deriveModels();
 
+		if(!model.isCdaDirty()){
+			return;
+		}
+	
 		try {
 		    cdaManager.addDatasource(prptManager.getSolution(), prptManager.getPath(), action, model.getCdaSettings().asXML());
+		    model.setCdaDirty(false);
 		} catch (Exception e) {
 			throw new SaikuAdhocException(				
 					Messages.getErrorString("Repository.ERROR_0001_COULD_NOT_PUBLISH_FILE")

@@ -52,6 +52,7 @@ import org.apache.commons.logging.LogFactory;
 
 import pt.webdetails.cda.settings.CdaSettings;
 
+//@JsonPropertyOrder({"reportHeaderElements"})
 public class SaikuMasterModel {
 
 	public List<SaikuLabel> getReportSummaryElements() {
@@ -123,6 +124,9 @@ public class SaikuMasterModel {
     @JsonIgnore
 	private Log log = LogFactory.getLog(SaikuMasterModel.class);
     
+    @JsonIgnore
+    private Boolean cdaDirty = true;
+    
 
 	public void init(Domain domain, LogicalModel model, String sessionId, ICDAManager manager, ReportGeneratorService reportGeneratorService) throws SaikuAdhocException{
         this.cdaManager = manager;
@@ -179,6 +183,7 @@ public class SaikuMasterModel {
 		this.settings.setReportTemplate(reportTemplate);		
 	}
 
+	@JsonIgnore
 	public ReportTemplate getReportTemplate() {
 		return this.settings.getReportTemplate();
 	}
@@ -417,6 +422,15 @@ public class SaikuMasterModel {
 			log.debug(object);
 		}
 
+	}
+
+	public void setCdaDirty(Boolean cdaDirty) {
+		this.cdaDirty = cdaDirty;
+	}
+
+	@JsonIgnore
+	public Boolean isCdaDirty() {
+		return cdaDirty;
 	}
 	
 }

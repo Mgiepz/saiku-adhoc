@@ -293,17 +293,6 @@ public class ReportGeneratorService {
 			
 			return output;
 
-			/*
-			Paper paper = PageFormatFactory.getInstance().createPaper(PageSize.A4);
-			int orientation = model.getSettings().getOrientation();
-			PageFormat pageFormat = PageFormatFactory.getInstance().createPageFormat(paper, orientation);
-			Insets insets = new Insets(5,5,5,5);
-			PageFormatFactory.getInstance().setPageMargins(pageFormat,insets);
-			PageDefinition format = new SimplePageDefinition(pageFormat);
-
-			output.setPageDefinition(format);
-			*/
-
 		} finally {
 			dataFactory.close();
 		}
