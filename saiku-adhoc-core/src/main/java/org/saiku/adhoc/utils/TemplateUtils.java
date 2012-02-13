@@ -176,7 +176,22 @@ public class TemplateUtils {
 		if (prptFormat == null && saikuFormat == null) {
 			return;
 		}
+		
+		
+		if (saikuFormat.getPaddingLeft() == null) {
+			final Float padding = (Float) prptFormat.getStyleProperty(ElementStyleKeys.PADDING_LEFT, null);
+			saikuFormat.setPaddingLeft(padding);
+		} else {
+			prptFormat.setStyleProperty(ElementStyleKeys.PADDING_LEFT,saikuFormat.getPaddingLeft());
+		}
 
+		if (saikuFormat.getPaddingRight() == null) {
+			final Float padding = (Float) prptFormat.getStyleProperty(ElementStyleKeys.PADDING_RIGHT, null);
+			saikuFormat.setPaddingRight(padding);
+		} else {
+			prptFormat.setStyleProperty(ElementStyleKeys.PADDING_RIGHT,saikuFormat.getPaddingRight());
+		}
+		
 		/*
 		 * warum ist das hier negativ
 		 */

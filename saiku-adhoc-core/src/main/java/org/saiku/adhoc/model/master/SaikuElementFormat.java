@@ -44,7 +44,6 @@ public class SaikuElementFormat implements Cloneable {
 
 	private Boolean fontUnderlined;
 
-	//TODO: Es gibt auch ein Color format in Metadata PAckage
 	private String fontColor;
 
 	private String horizontalAlignment;
@@ -52,6 +51,10 @@ public class SaikuElementFormat implements Cloneable {
 	private String verticalAlignment;
 
 	private String backgroundColor;
+	
+	private Float paddingLeft;
+	
+	private Float paddingRight;
 
 	public String getFontName() {
 		return fontName;
@@ -143,7 +146,21 @@ public class SaikuElementFormat implements Cloneable {
 		return width;
 	}
 
+	public void setPaddingLeft(Float padding) {
+		this.paddingLeft = padding;
+	}
 
+	public Float getPaddingLeft() {
+		return paddingLeft;
+	}
+
+	public void setPaddingRight(Float paddingRight) {
+		this.paddingRight = paddingRight;
+	}
+
+	public Float getPaddingRight() {
+		return paddingRight;
+	}
 
 }
 
