@@ -86,7 +86,7 @@ public class TransModelToWizard {
 				if(columns.indexOf(saikuColumn) == columnCount -1){
 				//	colWidth = Double.valueOf(100) - widthCumul;
 				}
-				Length width = new Length(LengthUnit.PERCENTAGE, Math.round(colWidth.doubleValue()));
+				Length width = new Length(LengthUnit.PERCENTAGE, Math.round(colWidth.doubleValue()*1000)/1000);
 				log.info("col["+i+"]:" + colWidth);
 				detailFieldDef.setWidth(width);				
 				widthCumul+=colWidth;

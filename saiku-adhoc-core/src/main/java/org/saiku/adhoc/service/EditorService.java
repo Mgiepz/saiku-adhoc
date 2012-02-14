@@ -487,6 +487,11 @@ public class EditorService {
 
 			List<SaikuColumn> columns = model.getColumns();
 
+			//If width is not set by the client, keep the old one (inc. NULL)
+			if(format.getFormat().getWidth()==null){
+				format.getFormat().setWidth(m.getColumnHeaderFormat().getWidth());
+			}
+	
 			m.setColumnHeaderFormat(format.getFormat());
 			if (!m.getName().equals(displayName)) {
 				m.setName(StringUtils.getUniqueColumnName(displayName, columns));
