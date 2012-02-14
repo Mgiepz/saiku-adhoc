@@ -38,7 +38,8 @@ import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.server.model.master.ReportTemplateServer;
 import org.saiku.adhoc.server.reporting.SaikuReportingComponent;
-    
+import org.apache.commons.io.FilenameUtils;
+
 public class ClassPathResourcePRPTManager implements IPRPTManager {
 
     private URL repoURL;
@@ -98,7 +99,7 @@ public class ClassPathResourcePRPTManager implements IPRPTManager {
 //                        String type = props.getProperty("type");
 //                        if (name != null && type != null) {
 //                            Type t = ReportTemplate.Type.valueOf(type.toUpperCase());
-                            ReportTemplate ds = new ReportTemplateServer(null, file.getCanonicalPath(), file.getName());
+                            ReportTemplate ds = new ReportTemplateServer(null, file.getCanonicalPath(), FilenameUtils.removeExtension(file.getName()));
                             datasources.put(file.getName(), ds);
                         //}
                         }
@@ -199,12 +200,12 @@ public class ClassPathResourcePRPTManager implements IPRPTManager {
     }
 
     public ReportTemplate getDatasource(String datasourceName) {
-    	if(!datasourceName.substring(datasourceName.length()-4).equals("PRPT"))
-    	{
-    		return datasources.get(datasourceName+".prpt");
-    	}else{
+//    	if(!datasourceName.substring(datasourceName.length()-4).equals("PRPT"))
+//    	{
+//    		return datasources.get(datasourceName+".prpt");
+//    	}else{
     		return datasources.get(datasourceName);
-    	}
+    	//}
     }
 
     @Override
