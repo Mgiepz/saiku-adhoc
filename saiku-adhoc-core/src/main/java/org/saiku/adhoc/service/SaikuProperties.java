@@ -239,7 +239,7 @@ public class SaikuProperties extends Properties{
 
     }
 
-	public static final String defaultPrptTemplate = getPropString("saiku-adhoc.default.template","jade_4_left_aligned_grid.prpt");
+	public static final String defaultPrptTemplate = getPropString("saiku-adhoc.default.template","jade_4_left_aligned_grid");
 
 	public static final String cdaUser = getPropString("saiku-adhoc.cda.user","joe");
 
