@@ -46,7 +46,7 @@ public class MemoryBasedRepository {
     private void createDomain(){
         FileInputStream in = null;
         try {
-            in = new FileInputStream("/tmp/metadata.xmi");
+            in = new FileInputStream("c:/TargetPlatforms/saiku-server/tomcat/webapps/metadata.xmi");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

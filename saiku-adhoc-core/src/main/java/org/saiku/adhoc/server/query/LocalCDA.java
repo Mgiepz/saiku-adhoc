@@ -20,6 +20,7 @@
 package org.saiku.adhoc.server.query;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +49,17 @@ public class LocalCDA {
     }
     
     public static String localCDAQuery(final Map<String, Object> inputs){
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+    	
+    	ByteArrayOutputStream out = new ByteArrayOutputStream();
+    	
+    	localCDAQuery(inputs, out);
+    
+    	return out.toString();
+		
+	}
+    
+    public static void localCDAQuery(Map<String, Object> inputs, OutputStream out) {
+    	// TODO Auto-generated method stub
         
         CdaEngine engine = CdaEngine.getInstance();
         
@@ -146,7 +156,7 @@ public class LocalCDA {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return out.toString();
+        
         }
     
      private static int inputsGetInteger(Map<String,Object>inputs, String name, int defaultVal)

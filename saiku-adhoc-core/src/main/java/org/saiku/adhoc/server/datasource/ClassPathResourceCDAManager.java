@@ -235,7 +235,7 @@ public class ClassPathResourceCDAManager implements ICDAManager {
 
     public void callCDA(String pluginName, String method, Map<String, Object> params, OutputStream outputStream,
             String foo) {
-        // TODO Auto-generated method stub
+    	LocalCDA.localCDAQuery(params, outputStream);
         
     }
 
