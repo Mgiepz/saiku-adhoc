@@ -72,7 +72,7 @@ public class DerivedModelsCollection {
 	protected QueryXmlHelper xmlHelper; 
 	protected DataFactory cdaDataFactory;
 	
-	protected Map<Selection,SaikuColumn> selectionToSaikuColumn;
+	protected List<SaikuColumn> selectionToSaikuColumn;
 	
 	protected Map<String,SaikuElement> rptIdToSaikuElement;
 	
@@ -97,7 +97,7 @@ public class DerivedModelsCollection {
         
         this.rptIdToSaikuElement = new HashMap<String, SaikuElement>();
         this.rptIdToElementFormat = new HashMap<String,SaikuElementFormat>();  
-        this.selectionToSaikuColumn = new HashMap<Selection,SaikuColumn>();
+        this.selectionToSaikuColumn = new ArrayList<SaikuColumn>();
 
         try{
             //init cda
@@ -148,7 +148,7 @@ public class DerivedModelsCollection {
 	}
 
 	
-    public Map<Selection, SaikuColumn> getSelectionToSaikuColumn() {
+    public List<SaikuColumn> getSelectionToSaikuColumn() {
 		return selectionToSaikuColumn;
 	}
 	

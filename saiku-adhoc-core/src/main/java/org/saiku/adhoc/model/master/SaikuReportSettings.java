@@ -48,6 +48,7 @@ public class SaikuReportSettings {
 		this.marginLeft = null;
 		this.marginRight = null;
 		this.marginTop = null;
+		this.limit = -1;
 		
 	}
 

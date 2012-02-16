@@ -153,7 +153,7 @@ public class TransModelToCda {
 
 			String name = sel.getLogicalColumn().getName(locale);
 
-			SaikuColumn saikuColumn = smm.getDerivedModels().getSelectionToSaikuColumn().get(sel);
+			SaikuColumn saikuColumn = smm.getDerivedModels().getSelectionToSaikuColumn().get(i);
 			if(saikuColumn!=null){
 				name = saikuColumn.getName();
 			}
