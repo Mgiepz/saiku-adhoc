@@ -134,7 +134,9 @@ public class TransModelToQuery {
 		}
 
 		query.setDisableDistinct(smm.getSettings().isDisableDistinct());
-		query.setLimit(smm.getSettings().getLimit());
+
+		Integer limit = smm.getSettings().getLimit();
+		if(limit!=null && limit!=-1) query.setLimit(limit);
 
 		return query;
 	}

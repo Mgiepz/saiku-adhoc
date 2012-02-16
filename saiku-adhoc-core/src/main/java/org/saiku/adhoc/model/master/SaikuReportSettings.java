@@ -28,7 +28,7 @@ public class SaikuReportSettings {
 	private static final int INITIAL_LIMIT = 100;
 	
 	private boolean disableDistinct;
-	private int limit;
+	private Integer limit;
 	private Integer orientation;
 	
 	private Integer marginLeft;
@@ -42,7 +42,7 @@ public class SaikuReportSettings {
 	
 	public SaikuReportSettings() {
 		this.disableDistinct = false;
-		this.limit = INITIAL_LIMIT;
+		//this.limit = INITIAL_LIMIT;
 		this.orientation = null;
 		this.marginBottom = null;
 		this.marginLeft = null;
@@ -57,10 +57,10 @@ public class SaikuReportSettings {
 	public boolean isDisableDistinct() {
 		return disableDistinct;
 	}
-	public void setLimit(int limit) {
+	public void setLimit(Integer limit) {
 		this.limit = limit;
 	}
-	public int getLimit() {
+	public Integer getLimit() {
 		return limit;
 	}
 
