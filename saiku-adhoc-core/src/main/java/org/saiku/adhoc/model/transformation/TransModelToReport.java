@@ -31,7 +31,7 @@ import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
 
-
+@Deprecated
 public class TransModelToReport {
 
     ReportGeneratorService reportManager;

@@ -44,7 +44,7 @@ import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.rest.MetadataDiscoverResource;
 import org.saiku.adhoc.utils.TemplateUtils;
 
-
+@Deprecated
 public class TransModelToWizard {
 	
     private static final Log log = LogFactory.getLog(TransModelToWizard.class);

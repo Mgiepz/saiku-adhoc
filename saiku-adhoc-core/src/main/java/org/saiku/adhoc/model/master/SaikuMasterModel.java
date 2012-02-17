@@ -23,10 +23,10 @@ package org.saiku.adhoc.model.master;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.pentaho.metadata.model.Domain;
@@ -37,18 +37,12 @@ import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.messages.Messages;
-import org.saiku.adhoc.model.transformation.TransModelToCda;
-import org.saiku.adhoc.model.transformation.TransModelToParams;
-import org.saiku.adhoc.model.transformation.TransModelToQuery;
+import org.saiku.adhoc.model.builder.CdaBuilder;
 import org.saiku.adhoc.model.transformation.TransModelToReport;
 import org.saiku.adhoc.model.transformation.TransModelToWizard;
-import org.saiku.adhoc.rest.ExportResource;
 import org.saiku.adhoc.server.datasource.ICDAManager;
 import org.saiku.adhoc.server.datasource.SaikuCDA;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import pt.webdetails.cda.settings.CdaSettings;
 
@@ -219,7 +213,11 @@ public class SaikuMasterModel {
 	 * @throws SaikuAdhocException 
 	 * @throws IOException 
 	 * @throws ResourceException 
+	 * 
+	 * This needs to be removed and should follow a director/builder pattern
+	 * 
 	 */
+	@Deprecated
 	public void deriveModels() throws SaikuAdhocException{
 		
 		if (this.getColumns().isEmpty()){
@@ -232,28 +230,15 @@ public class SaikuMasterModel {
 			logModel();
 		}
 
-		//Query -> ok!
-		TransModelToQuery transQuery = new TransModelToQuery();
-		final Query query = transQuery.doIt(this);
-		this.derivedModels.setQuery(query);
-
-		//Filter Queries
-		TransModelToParams transParams = new TransModelToParams();
-		final Map<String, Query> filterQueries = transParams.doIt(this);
-		this.derivedModels.setFilterQueries(filterQueries);
-
-		//CDA
-		TransModelToCda transCda = new TransModelToCda();
+		final CdaBuilder cdaBuilder = new CdaBuilder();
 		try {
-		final CdaSettings cda = transCda.doIt(this, cdaManager);
-		this.derivedModels.setCda(cda);
+			this.derivedModels.setCda(cdaBuilder.build(this, cdaManager));
 		} catch (Exception e) {
-			//TODO: move that into transformation.doIt
 			throw new SaikuAdhocException(				
 					Messages.getErrorString("MasterModel.ERROR_0001_TRANSFORMATION_TO_CDA_FAILED")
 			);
 		}
-
+				
 		//Wizard
 		TransModelToWizard transWizard = new TransModelToWizard();
 		WizardSpecification wizardSpec;

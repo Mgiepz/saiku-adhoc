@@ -43,8 +43,10 @@ import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.pentaho.platform.engine.core.system.PentahoBase;
+import org.pentaho.reporting.libraries.formula.parser.ParseException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.exceptions.SaikuClientException;
+import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.dto.DisplayName;
 import org.saiku.adhoc.model.dto.ElementFormat;
 import org.saiku.adhoc.model.dto.FilterResult;
@@ -500,20 +502,15 @@ public class QueryResource extends PentahoBase {
 		}
 
 		try {
-			
-		/*
-			if(category.equals("CALCULATED") && config.getId().equals("NEW")){
-				//TODO: We need a more meaningfull uid				
-				config.setId(UUID.randomUUID().toString());	
-				//config.setId(id);
-				return editorService.addCalulatedColumn(sessionId, position, config);	
-			}else{
-		*/
-				return editorService.setColumnConfig(sessionId, category, column, position, config);	
-			//}
-		} catch (Exception e) {
-			log.error("Cannot add config column", e);
-			String error = ExceptionUtils.getRootCauseMessage(e);
+			return editorService.setColumnConfig(sessionId, category, column, position, config);	
+		}catch(ParseException e){
+			log.error("Formula is not valid", e);
+			String error = Messages.getErrorString("ReportGeneratorService.ERROR_0007_INVALID_FORMULA");
+			throw new SaikuClientException(error);	
+
+		} catch (Exception e1) {
+			log.error("Cannot config column", e1);
+			String error = ExceptionUtils.getRootCauseMessage(e1);
 			throw new SaikuClientException(error);		
 		}
 	}

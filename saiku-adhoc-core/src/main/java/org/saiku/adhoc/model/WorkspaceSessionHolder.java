@@ -19,9 +19,14 @@
  */
 package org.saiku.adhoc.model;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.naming.OperationNotSupportedException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.messages.Messages;
@@ -136,9 +141,10 @@ public class WorkspaceSessionHolder {
 		    cdaManager.addDatasource(prptManager.getSolution(), prptManager.getPath(), action, model.getCdaSettings().asXML());
 		    model.setCdaDirty(false);
 		} catch (Exception e) {
-			throw new SaikuAdhocException(				
-					Messages.getErrorString("Repository.ERROR_0001_COULD_NOT_PUBLISH_FILE")
-			);
+			e.printStackTrace();
+//			throw new SaikuAdhocException(				
+//					Messages.getErrorString("Repository.ERROR_0001_COULD_NOT_PUBLISH_FILE")
+//			);
 		}
 
 	}

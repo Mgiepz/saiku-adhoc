@@ -1,0 +1,243 @@
+{
+ "parameters": [],
+ "groups": [],
+ "reportTitle": null,
+ "columns": [
+  {
+   "name": "Territory",
+   "id": "BC_OFFICES_TERRITORY",
+   "description": "Geographical area assigned to Sales Office",
+   "category": "BC_OFFICES_",
+   "formula": null,
+   "sort": "NONE",
+   "fieldType": "String",
+   "elementFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "uid": "uid-0",
+   "defaultAggType": "NONE",
+   "columnHeaderFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "aggTypes": [
+    "NONE"
+   ],
+   "selectedAggType": "NONE",
+   "formatMask": null,
+   "selectedSummaryType": "NONE",
+   "hideRepeating": false
+  }
+ ],
+ "settings": {
+  "limit": 100,
+  "pageFormat": "LETTER",
+  "orientation": 1,
+  "reportTemplate": {
+   "name": "nickel_4_left_aligned_grid",
+   "path": "saiku-adhoc/resources/templates/",
+   "description": null,
+   "solution": "system"
+  },
+  "disableDistinct": false,
+  "marginLeft": 18,
+  "marginRight": 18,
+  "marginBottom": 18,
+  "marginTop": 40
+ },
+ "clientModelSelection": "steel-wheels%2Fmetadata.xmi/BV_HUMAN_RESOURCES",
+ "reportHeaderElements": [
+  {
+   "value": "Report Title",
+   "elementFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "uid": "rpt-rhd-0-0"
+  },
+  {
+   "value": "Sub Title 1",
+   "elementFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "uid": "rpt-rhd-0-1"
+  },
+  {
+   "value": "Sub Title 2",
+   "elementFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "uid": "rpt-rhd-0-2"
+  }
+ ],
+ "reportFooterElements": [
+  {
+   "value": "Report Footer",
+   "elementFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "uid": "rpt-rft-0-3"
+  }
+ ],
+ "reportSummaryElements": [
+  {
+   "value": null,
+   "elementFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "uid": "rpt-sum-0-0"
+  }
+ ],
+ "pageHeaderElements": [
+  {
+   "value": null,
+   "elementFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "uid": "rpt-phd-0-1"
+  },
+  {
+   "value": "$(report.date, date, MMMM dd, yyyy @ hh:mm )",
+   "elementFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "uid": "rpt-phd-0-2"
+  }
+ ],
+ "pageFooterElements": [
+  {
+   "value": null,
+   "elementFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "uid": "rpt-pft-0-0"
+  },
+  {
+   "value": "$(report.date)",
+   "elementFormat": {
+    "width": null,
+    "horizontalAlignment": null,
+    "verticalAlignment": null,
+    "fontName": null,
+    "fontColor": null,
+    "backgroundColor": null,
+    "fontBold": null,
+    "fontItalic": null,
+    "fontSize": 0,
+    "fontUnderlined": null,
+    "paddingLeft": null,
+    "paddingRight": null
+   },
+   "uid": "rpt-pft-0-1"
+  }
+ ],
+ "sortColumns": []
+}

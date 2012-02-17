@@ -37,6 +37,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.reporting.libraries.formula.Formula;
+import org.pentaho.reporting.libraries.formula.parser.ParseException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.dto.DisplayName;
@@ -535,10 +537,14 @@ public class EditorService {
 	}
 
 	public DisplayName setColumnConfig(String sessionId, String category, String businessColumn, Integer position,
-			SaikuColumn config) {
+			SaikuColumn config) throws ParseException {
 
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 		List<SaikuColumn> columns = model.getColumns();
+		
+//		if(config.getFormula()!=null){
+//				final Formula f = new Formula(config.getFormula());		
+//		}
 
 		// The new name must be unique among the columns (excluding itself);
 		List<String> colNames = new ArrayList<String>();
