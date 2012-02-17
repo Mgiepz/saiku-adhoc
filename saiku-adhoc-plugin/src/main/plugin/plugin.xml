@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin title='Saiku-Adhoc' loader="OVERRIDING">
 
+	<!--overlays>
+		<overlay id="startup.saikuAnalysis" resourcebundle="../content/saiku-ui/saikuplugin.properties">
+			<overlay id="startup.saikuAnalysis">
+				<toolbar id="mainToolbar">
+					<toolbarbutton id="openSaiku" image="../content/saiku-ui/images/src/saiku_32.png"
+						onclick="mainToolbarHandler.openUrl('Saiku Analytics','Saiku Analytics','content/saiku-ui/index.html?biplugin=true')"
+						tooltiptext="${saiku-plugin.label}" insertafter="newAnalysisButton" />
+				</toolbar>
+			</overlay>
+		</overlay>	
+	</overlays-->
+
 <menu-items>
-<menu-item id="new-adhoc" anchor="file-new-submenu" label="Saiku-Adhoc"
+<menu-item id="new-adhoc" anchor="file-new-submenu" label="Saiku Reporting"
 command="content/saiku-adhoc/web/index.html" type="MENU_ITEM" how="LAST_CHILD" />
 </menu-items>
 
 <content-type type="adhoc" mime-type="text/html">
-<title>Saiku Adhoc</title>
-<description>Saiku Adhoc query definition file</description>
+<title>Saiku Reporting</title>
+<description>Saiku Reporting File</description>
 <icon-url>content/saiku-ui/images/src/saiku_16.png</icon-url>
 <meta-provider>org.saiku.adhoc.service.AdhocContentTypeMetaProvider</meta-provider>
 <operations>
