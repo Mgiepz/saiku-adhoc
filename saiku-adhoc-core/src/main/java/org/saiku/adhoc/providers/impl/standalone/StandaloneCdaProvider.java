@@ -36,6 +36,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
 import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaDataFactory;
+import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaQueryEntry;
 import org.saiku.adhoc.model.dto.SaikuCda;
 import org.saiku.adhoc.providers.ICdaProvider;
 import org.saiku.adhoc.service.SaikuProperties;
@@ -85,7 +86,8 @@ public class StandaloneCdaProvider implements ICdaProvider {
 		f.setBaseUrlField(baseUrlField);
 		String name = dsId;
 		String queryString = dsId;
-		f.setQuery(name, queryString);          
+		CdaQueryEntry entry = new CdaQueryEntry(queryString);
+		f.setQuery(name, entry);;          
 		String baseUrl = SaikuProperties.baseURL;
 		
 		//Use this for the login

@@ -353,7 +353,7 @@
 		<dependency>
 			<groupId>pentaho-reporting-engine</groupId>
 			<artifactId>pentaho-reporting-engine-classic-extensions-cda</artifactId>
-			<version>3.8-SNAPSHOT</version>
+			<version>3.9.0-RC1</version>
 		</dependency>
 		<dependency>
 			<groupId>pentaho-reporting-engine</groupId>

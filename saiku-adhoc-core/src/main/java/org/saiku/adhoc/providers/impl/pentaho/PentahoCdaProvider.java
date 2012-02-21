@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaDataFactory;
+import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaQueryEntry;
 import org.saiku.adhoc.model.dto.SaikuCda;
 import org.saiku.adhoc.providers.ICdaProvider;
 import org.saiku.adhoc.service.SaikuProperties;
@@ -59,7 +60,8 @@ public class PentahoCdaProvider implements ICdaProvider {
 		f.setBaseUrlField(baseUrlField);
 		String name = dsId;
 		String queryString = dsId;
-		f.setQuery(name, queryString);          
+		CdaQueryEntry entry = new CdaQueryEntry(queryString);
+		f.setQuery(name, entry);          
 		String baseUrl = SaikuProperties.baseURL;
 		
 		//Use this for the login
