@@ -55,8 +55,8 @@ public class SaikuUpdateGroupHeaderTask implements UpdateTask {
 
 			final String htmlClass = "saiku " + rptId;
 
-			model.getDerivedModels().getRptIdToSaikuElement().put(rptId, groupDefinition);
-
+			groupDefinition.setLayoutId(rptId);
+			
 			e.setAttribute(AttributeNames.Html.NAMESPACE, AttributeNames.Html.STYLE_CLASS, htmlClass);
 
 			e.setAttribute("http://reporting.pentaho.org/namespaces/engine/attributes/wizard", "allow-metadata-styling", Boolean.FALSE);
@@ -72,12 +72,12 @@ public class SaikuUpdateGroupHeaderTask implements UpdateTask {
 			 * Transfer element style
 			 */	
 			
-			SaikuElementFormat tempFormat = (SaikuElementFormat) groupDefinition.getGroupsHeaderFormat().clone();
+			SaikuElementFormat tempFormat = (SaikuElementFormat) groupDefinition.getGroupHeaderFormat().clone();
 			
 			TemplateUtils.mergeElementFormats(e.getStyle(), tempFormat);
-			
-			model.getDerivedModels().getRptIdToElementFormat().put(rptId, tempFormat);
 
+			//set a transient format
+			groupDefinition.getGroupHeaderFormat().setTempFormat(tempFormat);
 
 		}
 

@@ -61,7 +61,7 @@ public class SaikuUpdateDetailsTask implements UpdateTask {
 
 		final String htmlClass = "saiku " + rptId;
 
-		model.getDerivedModels().getRptIdToSaikuElement().put(rptId, saikuColumn);
+		saikuColumn.setLayoutId(rptId);
 
 		e.setAttribute(AttributeNames.Html.NAMESPACE, AttributeNames.Html.STYLE_CLASS, htmlClass);
 
@@ -77,13 +77,16 @@ public class SaikuUpdateDetailsTask implements UpdateTask {
 		TemplateUtils.mergeElementFormats(e.getStyle(), tempFormat);
 
 		//<style-expression style-key="visible" formula="=HASCHANGED(&quot;ID&quot;)"/>
+		//TODO: also show on group change and on pagebreak
+		
 		if(saikuColumn.isHideRepeating()){
 			FormulaExpression expression = new FormulaExpression();
 			expression.setFormula("=HASCHANGED(\""+ saikuColumn.getName() +"\")");
 			e.setStyleExpression(ElementStyleKeys.VISIBLE, expression);
 		}
 
-		model.getDerivedModels().getRptIdToElementFormat().put(rptId, tempFormat);
+		//set a transient format
+		saikuColumn.getElementFormat().setTempFormat(tempFormat);
 
 	}
 

@@ -4,80 +4,75 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="metadataServiceBean" class="org.saiku.adhoc.server.model.service.repository.ServerMetadataService">
-		<property name="RepositoryHelper" ref="repositoryHelperBean" />
- 	</bean>
-
- 	<bean id="classpathPrptManager" class="org.saiku.adhoc.server.datasource.ClassPathResourcePRPTManager">
+	<!-- common -->
+	<bean id="sessionHolder" class="org.saiku.adhoc.model.WorkspaceSessionHolder">
+		<property name="cdaProvider" ref="cdaProvider" />
+		<property name="prptProvider" ref="prptProvider" />
+		<property name="metadataProvider" ref="metadataProvider" />
+	</bean>
+	
+	<!-- standalone -->
+	<bean id="cdaProvider" class="org.saiku.adhoc.providers.impl.standalone.StandaloneCdaProvider">
 		<property name="path" value="res:saiku-datasources"/>
-	</bean>
+	</bean>	
+	<bean id="prptProvider" class="org.saiku.adhoc.providers.impl.standalone.StandalonePrptProvider">
+		<property name="path" value="res:saiku-datasources"/>
+	</bean>	
+	<bean id="metadataProvider" class="org.saiku.adhoc.providers.impl.standalone.StandaloneMetadataProvider">
+		<property name="repositoryHelper" ref="repositoryHelper" />
+	</bean>		
+	<bean id="repositoryHelper" class="org.saiku.adhoc.service.repository.StandaloneRepositoryHelper">
+	</bean>	
 
- 	<bean id="classpathCdaManager" class="org.saiku.adhoc.server.datasource.ClassPathResourceCDAManager">
-		<property name="path" value="res:saiku-repository"/>
+	<!-- service -->
+	<bean id="queryService" class="org.saiku.adhoc.service.cda.CdaQueryService">
+		<property name="sessionHolder" ref="sessionHolder" />
+		<property name="metadataProvider" ref="metadataProvider" />
+		<property name="cdaAccessor" ref="cdaAccessor" />
+		<property name="repositoryHelper" ref="repositoryHelper" />
 	</bean>
-
-
-	<bean id="workspaceSessionHolderBean" class="org.saiku.adhoc.model.WorkspaceSessionHolder">
-	 		<property name="PRPTManager" ref="classpathPrptManager" />
-	 		<property name="CDAManager" ref="classpathCdaManager" />
- 	</bean>
- 	
- 	
-  	<bean id="cdaAccessorBean" class="org.saiku.adhoc.service.cda.PentahoCdaAccessor">
-	                <property name="CDAManager" ref="classpathCdaManager" />
- 	</bean>
-	
- 	<bean id="repositoryHelperBean" class="org.saiku.adhoc.server.model.service.repository.ServerRepositoryHelper">
- 			<property name="PRPTManager" ref="classpathPrptManager" />
- 	</bean>
- 	
- 	<bean id="exportServiceBean" class="org.saiku.adhoc.service.cda.ExportService">
- 			<property name="SessionHolder" ref="workspaceSessionHolderBean" />
- 			<property name="CdaAccessor" ref="cdaAccessorBean" />
- 			<property name="ReportGeneratorService" ref="reportGeneratorServiceBean" />
- 			
- 	</bean>
- 	
-	<bean id="exportResourceBean" class="org.saiku.adhoc.rest.ExportResource">
-		<property name="exportService" ref="exportServiceBean" />
-	</bean>
-	
-	<bean id="queryServiceBean" class="org.saiku.adhoc.service.cda.CdaQueryService">
-		<property name="RepositoryHelper" ref="repositoryHelperBean" />
-		<property name="SessionHolder" ref="workspaceSessionHolderBean" />
-		<property name="CdaAccessor" ref="cdaAccessorBean" />
 		
- 	</bean>
+	<bean id="cdaAccessor" class="org.saiku.adhoc.service.cda.CdaAccessor">
+		<property name="cdaProvider" ref="cdaProvider" />
+	</bean>
+
+	<bean id="editorService" class="org.saiku.adhoc.service.EditorService">
+		<property name="sessionHolder" ref="sessionHolder" />
+		<property name="metadataProvider" ref="metadataProvider" />
+	</bean>
+
+	<bean id="reportGeneratorService" class="org.saiku.adhoc.service.report.ReportGeneratorService">
+		<property name="sessionHolder" ref="sessionHolder" />
+		<property name="repositoryHelper" ref="repositoryHelper" />
+		<property name="cdaProvider" ref="cdaProvider" />
+		<property name="prptProvider" ref="prptProvider" />
+		<property name="metadataProvider" ref="metadataProvider" />
+	</bean>
+
+	<bean id="exportService" class="org.saiku.adhoc.service.cda.ExportService">
+		<property name="sessionHolder" ref="sessionHolder" />
+		<property name="cdaAccessor" ref="cdaAccessor" />
+		<property name="reportGeneratorService" ref="reportGeneratorService" />
+	</bean>
  	
- 	<bean id="reportGeneratorServiceBean" class="org.saiku.adhoc.service.report.ReportGeneratorService">
- 		<property name="PRPTManager" ref="classpathPrptManager" />
- 		<property name="RepositoryHelper" ref="repositoryHelperBean" />
-		<property name="SessionHolder" ref="workspaceSessionHolderBean" />
-		<property name="CDAManager" ref="classpathCdaManager" />
- 	</bean>		
-
-        <bean id="editorServiceBean" class="org.saiku.adhoc.service.EditorService">
-                <property name="SessionHolder" ref="workspaceSessionHolderBean" />
-                <property name="MetadataService" ref="metadataServiceBean" />
-                <property name="CDAManager" ref="classpathCdaManager" />
-                <property name="ReportGeneratorService" ref="reportGeneratorServiceBean" />
-        </bean>
-	
-	<bean id="queryResourceBean" class="org.saiku.adhoc.rest.QueryResource">
-		<property name="QueryService" ref="queryServiceBean" />
-		<property name="EditorService" ref="editorServiceBean" />
-		<property name="ReportGeneratorService" ref="reportGeneratorServiceBean" />
-	</bean> 
-	
-
- 	<bean id="metadataResourceBean" class="org.saiku.adhoc.rest.MetadataDiscoverResource">
-		<property name="MetadataDiscoverService" ref="metadataServiceBean" />
-	</bean>
-	
-	<bean id="pentahoRepositoryResourceBean" class="org.saiku.adhoc.rest.PentahoRepositoryResource">
-		<property name="RepositoryHelper" ref="repositoryHelperBean" />
-		<property name="SessionHolder" ref="workspaceSessionHolderBean" />
+ 	<!-- resources -->
+ 	<bean id="metadataResource" class="org.saiku.adhoc.rest.MetadataDiscoverResource">
+		<property name="metadataProvider" ref="metadataProvider" />
 	</bean>
 
+	<bean id="pentahoRepositoryResource" class="org.saiku.adhoc.rest.PentahoRepositoryResource">
+		<property name="sessionHolder" ref="sessionHolder" />
+		<property name="repositoryHelper" ref="repositoryHelper" />
+	</bean>
 
+	<bean id="queryResource" class="org.saiku.adhoc.rest.QueryResource">
+		<property name="queryService" ref="queryService" />
+		<property name="reportGeneratorService" ref="reportGeneratorService" />
+		<property name="editorService" ref="editorService" />
+	</bean>
+
+	<bean id="exportResource" class="org.saiku.adhoc.rest.ExportResource">
+		<property name="exportService" ref="exportService" />
+	</bean>
+ 	
 </beans>

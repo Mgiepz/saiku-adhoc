@@ -35,7 +35,7 @@ import org.saiku.adhoc.exceptions.MetadataException;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.metadata.impl.MetadataModel;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
-import org.saiku.adhoc.service.repository.IMetadataService;
+import org.saiku.adhoc.providers.IMetadataProvider;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -44,13 +44,13 @@ import org.springframework.stereotype.Component;
 @Scope("request")
 public class MetadataDiscoverResource {
 	
-    IMetadataService metadataService;
+    IMetadataProvider metadataProvider;
     
     private static final Log log = LogFactory.getLog(MetadataDiscoverResource.class);
     
     //
-    public void setMetadataDiscoverService(IMetadataService mdmds) {
-        metadataService = mdmds;
+    public void setMetadataProvider(IMetadataProvider mdmds) {
+        metadataProvider = mdmds;
     }
     
     /**
@@ -68,7 +68,7 @@ public class MetadataDiscoverResource {
     			log.debug("REST:GET " + " getModelInfos");
     		}
     		
-			return metadataService.getBusinessModels("",locale);
+			return metadataProvider.getBusinessModels("",locale);
 		} catch (MetadataException e) {
 			log.error(this.getClass().getName(),e);
 			return new MetadataModelInfo[]{};
@@ -89,7 +89,7 @@ public class MetadataDiscoverResource {
     			log.debug("REST:GET " + " getModel domainId=" + domainId + " modelId=" + modelId);
     		}
 			
-			return metadataService.loadModel(URLDecoder.decode(domainId,"UTF-8"),modelId);
+			return metadataProvider.loadModel(URLDecoder.decode(domainId,"UTF-8"),modelId);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,7 +106,7 @@ public class MetadataDiscoverResource {
     @Path("/templates")
 	public ReportTemplate[] getReportTemplates(){
 		
-    	return metadataService.loadTemplates();
+    	return metadataProvider.loadTemplates();
 		
 	}
     

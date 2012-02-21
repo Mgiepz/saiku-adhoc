@@ -28,6 +28,7 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.metadata.model.LogicalColumn;
+import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.CdaException;
@@ -37,6 +38,7 @@ import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.dto.FilterResult;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
+import org.saiku.adhoc.providers.IMetadataProvider;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
 
 public class CdaQueryService {
@@ -48,6 +50,12 @@ public class CdaQueryService {
 	protected IRepositoryHelper repository;
 	
 	protected WorkspaceSessionHolder sessionHolder;
+	
+	private IMetadataProvider metadataProvider;
+
+	public void setMetadataProvider(IMetadataProvider metadataProvider) {
+		this.metadataProvider = metadataProvider;
+	}
 
 	public void setSessionHolder(WorkspaceSessionHolder sessionHolder) {
 		this.sessionHolder = sessionHolder;
@@ -74,13 +82,10 @@ public class CdaQueryService {
 	 */
 	public String runQuery(String queryName, String sessionId) throws SaikuAdhocException, CdaException {
 
-		
-		sessionHolder.materializeModel(sessionId);
+		sessionHolder.storeCda(sessionId);
 		
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
-		
-		//then let cda generate output Json
-		//TODO: We need to remove the group-only columns here
+
 		return cdaAccessor.doQuery(model, queryName, null);
 
 	}
@@ -90,8 +95,10 @@ public class CdaQueryService {
 	
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 		
-		model.deriveModels();
-		LogicalColumn column = model.getDerivedModels().getQuery().getLogicalModel().findLogicalColumn(columnId);
+		//model.deriveModels();
+	
+		final LogicalModel logicalModel = metadataProvider.getLogicalModel(model.getDomainId(),model.getLogicalModelId());
+		LogicalColumn column = logicalModel.findLogicalColumn(columnId);
 
 		//
 		String filterKey = categoryId + "." + columnId; 

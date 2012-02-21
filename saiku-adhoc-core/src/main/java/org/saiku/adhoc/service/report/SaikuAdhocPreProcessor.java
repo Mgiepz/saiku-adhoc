@@ -281,7 +281,7 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 			return;
 
 		//In the report header we just need to tag every element
-		iterateSection(reportHeader, new SaikuUpdateReportHeaderTask(model.getReportHeaderElements(), RPT_HEADER_MSG, model));	
+		iterateSection(reportHeader, new SaikuUpdateReportHeaderTask(model.getReportHeaderElements(), RPT_HEADER_MSG));	
 	}
 
 	private void setupWizardRelationalGroups() throws ReportProcessingException, CloneNotSupportedException {

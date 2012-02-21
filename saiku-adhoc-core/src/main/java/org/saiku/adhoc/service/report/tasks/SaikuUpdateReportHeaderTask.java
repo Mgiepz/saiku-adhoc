@@ -22,28 +22,23 @@ package org.saiku.adhoc.service.report.tasks;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.Element;
 import org.pentaho.reporting.engine.classic.core.ReportElement;
-import org.saiku.adhoc.model.master.SaikuLabel;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
-import org.saiku.adhoc.model.master.SaikuMasterModel;
+import org.saiku.adhoc.model.master.SaikuLabel;
 import org.saiku.adhoc.utils.TemplateUtils;
 
 public class SaikuUpdateReportHeaderTask implements UpdateTask {
 
-	private Log log = LogFactory.getLog(SaikuUpdateMessagesTask.class);
 	private List<SaikuLabel> messages;
 	private String prefix;
-	private SaikuMasterModel model;
 
-	public SaikuUpdateReportHeaderTask(List<SaikuLabel> messages, String prefix, SaikuMasterModel model) {
+	public SaikuUpdateReportHeaderTask(List<SaikuLabel> messages, String prefix) {
 
 		this.messages = messages;
-		this.prefix = prefix + "0-";;
-		this.model = model;
+		this.prefix = prefix + "0-";
+		
 
 	}
 
@@ -72,8 +67,8 @@ public class SaikuUpdateReportHeaderTask implements UpdateTask {
 				String val = (String) e.getAttribute(AttributeNames.Core.NAMESPACE, AttributeNames.Core.VALUE);
 				m.setValue(val);
 				this.messages.add(m);
-
-				model.getDerivedModels().getRptIdToSaikuElement().put(uid, m);
+				
+				m.setLayoutId(uid);
 
 			}
 
@@ -86,7 +81,8 @@ public class SaikuUpdateReportHeaderTask implements UpdateTask {
 
 			TemplateUtils.mergeElementFormats(e.getStyle(), tempFormat);
 
-			model.getDerivedModels().getRptIdToElementFormat().put(uid, tempFormat);
+			//set a transient format
+			m.getElementFormat().setTempFormat(tempFormat);
 
 		}
 

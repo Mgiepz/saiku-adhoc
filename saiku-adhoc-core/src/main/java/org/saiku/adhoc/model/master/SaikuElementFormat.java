@@ -19,6 +19,8 @@
  */
 package org.saiku.adhoc.model.master;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 
 /**
  * @author mgie
@@ -55,6 +57,8 @@ public class SaikuElementFormat implements Cloneable {
 	private Float paddingLeft;
 	
 	private Float paddingRight;
+	
+	private SaikuElementFormat tempFormat;
 
 	public String getFontName() {
 		return fontName;
@@ -160,6 +164,15 @@ public class SaikuElementFormat implements Cloneable {
 
 	public Float getPaddingRight() {
 		return paddingRight;
+	}
+
+	public void setTempFormat(SaikuElementFormat tempFormat) {
+		this.tempFormat = tempFormat;
+	}
+
+	@JsonIgnore
+	public SaikuElementFormat getTempFormat() {
+		return tempFormat;
 	}
 
 }

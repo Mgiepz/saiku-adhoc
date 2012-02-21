@@ -44,7 +44,7 @@ import org.pentaho.platform.util.messages.LocaleHelper;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.service.PluginConfig;
 
-
+@Deprecated
 public class PentahoRepositoryHelper implements IRepositoryHelper {
 
 	private static final String solution = "system";

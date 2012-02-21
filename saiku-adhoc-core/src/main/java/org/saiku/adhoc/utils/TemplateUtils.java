@@ -23,6 +23,10 @@ import java.awt.Color;
 import java.awt.Insets;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,8 +87,8 @@ public class TemplateUtils {
 		} catch (ClassNotFoundException e) {
 			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - "
 					+ e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
-			log.error(message, e);
-			throw new ReportException("Aggregation Class not found", e);
+					log.error(message, e);
+					throw new ReportException("Aggregation Class not found", e);
 		}
 
 		return null;
@@ -164,6 +168,35 @@ public class TemplateUtils {
 		return null;
 	}
 
+	/*
+	 * Copies all element that are not null from the source to the target
+	 * if it is not null in the target
+	 * 
+	 * @param prptFormat
+	 * @param saikuFormat
+	 */
+	public static void mergeElementFormats(SaikuElementFormat source, SaikuElementFormat target) throws Exception {
+
+		BeanInfo beanInfo = Introspector.getBeanInfo(target.getClass());
+
+		for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
+
+			if (descriptor.getWriteMethod() != null) {
+				//				Object originalValue = descriptor.getReadMethod()
+				//				.invoke(target);
+				Object sourceValue = descriptor.getReadMethod().invoke(
+						source);
+				if (sourceValue != null) {
+					descriptor.getWriteMethod().invoke(target, sourceValue);
+				}
+
+			}
+		}
+
+	}
+
+
+
 	/**
 	 * Copies all element format prptFormation from a real report element to the
 	 * Saiku model and vice-versa.
@@ -176,8 +209,8 @@ public class TemplateUtils {
 		if (prptFormat == null && saikuFormat == null) {
 			return;
 		}
-		
-		
+
+
 		if (saikuFormat.getPaddingLeft() == null) {
 			final Float padding = (Float) prptFormat.getStyleProperty(ElementStyleKeys.PADDING_LEFT, null);
 			saikuFormat.setPaddingLeft(padding);
@@ -191,7 +224,7 @@ public class TemplateUtils {
 		} else {
 			prptFormat.setStyleProperty(ElementStyleKeys.PADDING_RIGHT,saikuFormat.getPaddingRight());
 		}
-		
+
 		/*
 		 * warum ist das hier negativ
 		 */

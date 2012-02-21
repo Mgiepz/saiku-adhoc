@@ -58,8 +58,8 @@ public class SaikuUpdateSummaryTask implements UpdateTask {
 				String val =(String) e.getAttribute(AttributeNames.Core.NAMESPACE, AttributeNames.Core.VALUE);
 				m.setValue(val);
 				this.messages.add(m);
-
-				model.getDerivedModels().getRptIdToSaikuElement().put(uid, m);
+				
+				m.setLayoutId(uid);
 
 			}
 
@@ -73,8 +73,8 @@ public class SaikuUpdateSummaryTask implements UpdateTask {
 
 			TemplateUtils.mergeElementFormats(e.getStyle(), tempFormat);
 
-			model.getDerivedModels().getRptIdToElementFormat().put(uid, tempFormat);
-
+			//set a transient format
+			m.getElementFormat().setTempFormat(tempFormat);
 		}
 
 

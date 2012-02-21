@@ -45,6 +45,7 @@ public class SaikuProperties extends Properties{
 	private int populateCount;
 
 	private static SaikuProperties instance = instance();
+
 	private static final String SAIKU_PROPERTIES = "saiku-adhoc.properties";
 
 	/**
@@ -245,6 +246,7 @@ public class SaikuProperties extends Properties{
 
 	public static final String cdaPassword = getPropString("saiku-adhoc.cda.password","password");
 
+	public static final String metadataFile = getPropString("saiku-adhoc.metadata.file","/metadata.xmi");
 	
 	private static Boolean getPropBoolean(String key, String defaultValue) {
 		Boolean ret;

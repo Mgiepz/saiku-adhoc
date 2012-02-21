@@ -46,10 +46,12 @@ import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
-import org.saiku.adhoc.server.datasource.ICDAManager;
+import org.saiku.adhoc.providers.IMetadataProvider;
 import org.saiku.adhoc.utils.XmlUtils;
 
+import pt.webdetails.cda.connections.Connection;
 import pt.webdetails.cda.connections.UnsupportedConnectionException;
+import pt.webdetails.cda.connections.metadata.MetadataConnection;
 import pt.webdetails.cda.dataaccess.AbstractDataAccess;
 import pt.webdetails.cda.dataaccess.ColumnDefinition;
 import pt.webdetails.cda.dataaccess.DataAccess;
@@ -60,23 +62,24 @@ import pt.webdetails.cda.settings.UnknownDataAccessException;
 
 public class CdaBuilder implements ModelBuilder {
 
-	public CdaSettings build(SaikuMasterModel smm, ICDAManager cdaManager) throws UnsupportedConnectionException,
+
+	public CdaSettings build(SaikuMasterModel masterModel, Domain domain, LogicalModel logicalModel) throws UnsupportedConnectionException,
 			UnsupportedDataAccessException, UnknownDataAccessException, SaikuAdhocException {
 
-		Domain domain = smm.getDerivedModels().getDomain();
-		LogicalModel model = smm.getDerivedModels().getLogicalModel();
-
+//		final Domain domain = metadataProvider.getDomain(masterModel.getDomainId());
+//		final LogicalModel logicalModel = metadataProvider.getLogicalModel(masterModel.getDomainId(),masterModel.getLogicalModelId());
+//		
 		final Collection<ColumnDefinition> cdaColumns = new ArrayList<ColumnDefinition>();
 
 		// The MQL-Query to build
-		Query query = new Query(domain, model);
+		Query query = new Query(domain, logicalModel);
 
 		int index = 0;
 
 		// The Group Columns
-		for (SaikuGroup saikuGroup : smm.getGroups()) {
-			Category category = model.findCategory(saikuGroup.getCategory());
-			LogicalColumn column = model.findLogicalColumn(saikuGroup.getColumnId());
+		for (SaikuGroup saikuGroup : masterModel.getGroups()) {
+			Category category = logicalModel.findCategory(saikuGroup.getCategory());
+			LogicalColumn column = logicalModel.findLogicalColumn(saikuGroup.getColumnId());
 			final AggregationType selectedAggType = AggregationType.NONE;
 			Selection selection = new Selection(category, column, selectedAggType);
 			query.getSelections().add(selection);
@@ -101,11 +104,11 @@ public class CdaBuilder implements ModelBuilder {
 
 		// while the query is being assembled we also create the cda columns
 		// that are based on original columns
-		for (SaikuColumn saikuColumn : smm.getColumns()) {
+		for (SaikuColumn saikuColumn : masterModel.getColumns()) {
 			if (saikuColumn.getFormula() == null) {
 
-				Category category = model.findCategory(saikuColumn.getCategory());
-				LogicalColumn column = model.findLogicalColumn(saikuColumn.getId());
+				Category category = logicalModel.findCategory(saikuColumn.getCategory());
+				LogicalColumn column = logicalModel.findLogicalColumn(saikuColumn.getId());
 				final AggregationType selectedAggType = saikuColumn.getSelectedAggType() != null ? AggregationType
 						.valueOf(saikuColumn.getSelectedAggType()) : AggregationType.NONE;
 				Selection selection = new Selection(category, column, selectedAggType);
@@ -132,7 +135,7 @@ public class CdaBuilder implements ModelBuilder {
 		}
 
 		// and then the calculated columns
-		for (SaikuColumn saikuColumn : smm.getColumns()) {
+		for (SaikuColumn saikuColumn : masterModel.getColumns()) {
 			if (saikuColumn.getFormula() != null) {
 				ColumnDefinition columnDef = new ColumnDefinition();
 				columnDef.setName(saikuColumn.getName());
@@ -143,29 +146,28 @@ public class CdaBuilder implements ModelBuilder {
 		}
 
 		// The CDA to build
-		CdaSettings cda = null;
-		String sessionId = smm.getDerivedModels().getSessionId();
-		String domainInfo = smm.getDerivedModels().getDomain().getId();
-		cda = cdaManager.initCDA(sessionId, domainInfo);
+		String sessionId = masterModel.getSessionId();
+		String domainId = masterModel.getDomainId();
+		CdaSettings cda = initCda(sessionId, domainId);
 
 		// Remove all old filters from query
 		query.getConstraints().clear();
 		query.getParameters().clear();
 
 		// Build the MQL-Paramters
-		buildMqlParameters(smm, query);
+		buildMqlParameters(masterModel, query);
 
-		Integer limit = smm.getSettings().getLimit();
+		Integer limit = masterModel.getSettings().getLimit();
 		if (limit != null && limit != -1)
 			query.setLimit(limit);
-		query.setDisableDistinct(smm.getSettings().isDisableDistinct()); // TODO:Reflect in client
+		query.setDisableDistinct(masterModel.getSettings().isDisableDistinct()); // TODO:Client
 
-		final QueryXmlHelper xmlHelper = smm.getDerivedModels().getXmlHelper();
+		final QueryXmlHelper xmlHelper = new QueryXmlHelper();
 
 		cda.getDataAccess(sessionId).setQuery(XmlUtils.prettyPrint(xmlHelper.toXML(query)));
 
 		// Create a CDA for each Filter Query
-		final Map<String, Query> filterQueries = buildFilterQueries(smm);
+		final Map<String, Query> filterQueries = buildFilterQueries(masterModel, domain, logicalModel);
 		for (Entry<String, Query> filterQueryEntry : filterQueries.entrySet()) {
 			String filterKey = filterQueryEntry.getKey();
 			Query filterQuery = filterQueryEntry.getValue();
@@ -177,7 +179,7 @@ public class CdaBuilder implements ModelBuilder {
 		final List<pt.webdetails.cda.dataaccess.Parameter> parameters = ((AbstractDataAccess) cda.getDataAccess(sessionId))
 				.getParameters();
 
-		parameters.addAll(buildCdaParameters(smm));
+		parameters.addAll(buildCdaParameters(masterModel, logicalModel));
 
 		cda.getDataAccess(sessionId).getColumnDefinitions().clear();
 		cda.getDataAccess(sessionId).getColumnDefinitions().addAll(cdaColumns);
@@ -226,7 +228,7 @@ public class CdaBuilder implements ModelBuilder {
 
 	}
 
-	private List<pt.webdetails.cda.dataaccess.Parameter> buildCdaParameters(SaikuMasterModel smm) {
+	private List<pt.webdetails.cda.dataaccess.Parameter> buildCdaParameters(SaikuMasterModel smm, LogicalModel logicalModel) {
 
 		final List<SaikuParameter> params = smm.getParameters();
 
@@ -235,7 +237,8 @@ public class CdaBuilder implements ModelBuilder {
 		for (SaikuParameter saikuParameter : params) {
 
 			String columnId = saikuParameter.getId();
-			LogicalColumn column = smm.getDerivedModels().getQuery().getLogicalModel().findLogicalColumn(columnId);
+			
+			LogicalColumn column = logicalModel.findLogicalColumn(columnId);
 
 			final String filterName = "F_" + saikuParameter.getCategory() + "_" + saikuParameter.getId();
 
@@ -279,7 +282,7 @@ public class CdaBuilder implements ModelBuilder {
 	 * @param smm
 	 * @return
 	 */
-	private Map<String, Query> buildFilterQueries(SaikuMasterModel smm) {
+	private Map<String, Query> buildFilterQueries(SaikuMasterModel smm, Domain domain, LogicalModel logicalModel) {
 
 		List<SaikuParameter> parameters = smm.getParameters();
 
@@ -291,13 +294,12 @@ public class CdaBuilder implements ModelBuilder {
 
 			String filterKey = categoryId + "." + columnId;
 
-			final LogicalModel logicalModel = smm.getDerivedModels().getLogicalModel();
 			Category category = logicalModel.findCategory(categoryId);
 			LogicalColumn column = logicalModel.findLogicalColumn(columnId);
 
 			// Dates do not need their own query
 			if (!column.getDataType().equals(DataType.DATE)) {
-				Query filterQuery = new Query(smm.getDerivedModels().getDomain(), logicalModel);
+				Query filterQuery = new Query(domain, logicalModel);
 
 				Selection selection = new Selection(category, column, AggregationType.NONE);
 				filterQuery.getSelections().add(selection);
@@ -308,4 +310,17 @@ public class CdaBuilder implements ModelBuilder {
 		return filterQueries;
 
 	}
+
+	private CdaSettings initCda(String sessionId, String domain) throws UnsupportedConnectionException,
+			UnsupportedDataAccessException {
+		CdaSettings cda = new CdaSettings("cda" + sessionId, null);
+
+		String[] domainInfo = domain.split("/");
+		Connection connection = new MetadataConnection("1", domainInfo[0] + "/" + domainInfo[1], domainInfo[1]);
+		DataAccess dataAccess = new MqlDataAccess(sessionId, sessionId, "1", "");
+		cda.addConnection(connection);
+		cda.addDataAccess(dataAccess);
+		return cda;
+	}
+
 }

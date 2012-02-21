@@ -26,6 +26,8 @@ public class SaikuLabel implements SaikuElement{
 	private SaikuElementFormat format;
 
 	private String value;
+	
+	private String layoutId;
 
 	public SaikuElementFormat getElementFormat() {
 		return format;
@@ -57,6 +59,14 @@ public class SaikuLabel implements SaikuElement{
 	@Override
 	public String getUid() {
 		return uid;
+	}
+
+	public void setLayoutId(String layoutId) {
+		this.layoutId = layoutId;
+	}
+
+	public String getLayoutId() {
+		return layoutId;
 	}
 	
 	

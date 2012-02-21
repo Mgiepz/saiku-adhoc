@@ -26,7 +26,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.logging.Log;
@@ -37,7 +36,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
-import org.pentaho.reporting.libraries.formula.Formula;
 import org.pentaho.reporting.libraries.formula.parser.ParseException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
@@ -46,17 +44,16 @@ import org.saiku.adhoc.model.dto.ElementFormat;
 import org.saiku.adhoc.model.dto.FilterValue;
 import org.saiku.adhoc.model.dto.Position;
 import org.saiku.adhoc.model.master.SaikuColumn;
-import org.saiku.adhoc.model.master.SaikuLabel;
-import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.model.master.SaikuGroup;
+import org.saiku.adhoc.model.master.SaikuLabel;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.model.master.SaikuReportSettings;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
-import org.saiku.adhoc.server.datasource.ICDAManager;
+import org.saiku.adhoc.providers.IMetadataProvider;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
-import org.saiku.adhoc.service.repository.IMetadataService;
 import org.saiku.adhoc.utils.StringUtils;
+import org.saiku.adhoc.utils.TemplateUtils;
 
 /**
  * @author mgiepz
@@ -64,32 +61,29 @@ import org.saiku.adhoc.utils.StringUtils;
  */
 public class EditorService {
 
+	public IMetadataProvider getMetadataProvider() {
+		return metadataProvider;
+	}
+
+	public void setMetadataProvider(IMetadataProvider metadataProvider) {
+		this.metadataProvider = metadataProvider;
+	}
+
 	protected Log log = LogFactory.getLog(EditorService.class);
 
 	protected WorkspaceSessionHolder sessionHolder;
-	protected IMetadataService metadataService;
+	protected IMetadataProvider metadataProvider;
 
 	public void setSessionHolder(WorkspaceSessionHolder sessionHolder) {
 		this.sessionHolder = sessionHolder;
 
 	}
 
-	private ICDAManager cdaManager;
-
-	public void setCDAManager(ICDAManager manager) {
-		this.cdaManager = manager;
-
-	}
-
-	public ICDAManager getCDAManager() {
-		return cdaManager;
-	}
-
-	private ReportGeneratorService reportGeneratorService;
-
-	public void setReportGeneratorService(ReportGeneratorService reportGeneratorService) {
-		this.reportGeneratorService = reportGeneratorService;
-	}
+//	private ReportGeneratorService reportGeneratorService;
+//
+//	public void setReportGeneratorService(ReportGeneratorService reportGeneratorService) {
+//		this.reportGeneratorService = reportGeneratorService;
+//	}
 
 	public void createNewModel(String sessionId, MetadataModelInfo modelInfo) throws SaikuAdhocException {
 
@@ -102,11 +96,13 @@ public class EditorService {
 
 				domainId = URLDecoder.decode(modelInfo.getDomainId(), "UTF-8");
 
-				Domain domain = metadataService.getDomain(domainId);
-				LogicalModel model = metadataService.getLogicalModel(domainId, modelInfo.getModelId());
+				Domain domain = metadataProvider.getDomain(domainId);
+				LogicalModel logicalModel = metadataProvider.getLogicalModel(domainId, modelInfo.getModelId());
 
 				masterModel = new SaikuMasterModel();
-				masterModel.init(domain, model, sessionId, cdaManager, reportGeneratorService);
+				
+				ModelHelper.init(masterModel, domain, logicalModel, sessionId);
+				
 			} else {
 				ObjectMapper mapper = new ObjectMapper();
 				masterModel = mapper.readValue(modelInfo.getJson(), SaikuMasterModel.class);
@@ -114,21 +110,20 @@ public class EditorService {
 				String[] split = masterModel.getClientModelSelection().split("/");
 
 				String domainId = URLDecoder.decode(split[0], "UTF-8");
-				Domain domain = metadataService.getDomain(domainId);
-				LogicalModel model = metadataService.getLogicalModel(domainId, split[1]);
+				Domain domain = metadataProvider.getDomain(domainId);
+				LogicalModel logicalModel = metadataProvider.getLogicalModel(domainId, split[1]);
 
-				masterModel.init(domain, model, sessionId, cdaManager, reportGeneratorService);
-
-				masterModel.setCdaDirty(true);
+				ModelHelper.init(masterModel, domain, logicalModel, sessionId);
 				
-				masterModel.deriveModels();
+				masterModel.setCdaDirty(true);
+
 			}
 
 			sessionHolder.initSession(masterModel, sessionId);
 
 			sessionHolder.getModel(sessionId).setClientModelSelection(
-					URLEncoder.encode(masterModel.getDerivedModels().getDomain().getId(), "UTF-8") + "/"
-							+ masterModel.getDerivedModels().getLogicalModel().getId());
+					URLEncoder.encode(masterModel.getDomainId(), "UTF-8") + "/"
+							+ masterModel.getLogicalModelId());
 
 		} catch (Exception e) {
 			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - "
@@ -151,7 +146,7 @@ public class EditorService {
 
 		List<SaikuColumn> columns = model.getColumns();
 
-		final LogicalModel logicalModel = model.getDerivedModels().getLogicalModel();
+		final LogicalModel logicalModel = metadataProvider.getLogicalModel(model.getDomainId(),model.getLogicalModelId());
 		LogicalColumn logicalColumn = logicalModel.findLogicalColumn(columnId);
 
 		if (column == null) {
@@ -244,7 +239,7 @@ public class EditorService {
 
 		List<SaikuParameter> parameters = model.getParameters();
 
-		final LogicalModel logicalModel = model.getDerivedModels().getLogicalModel();
+		final LogicalModel logicalModel = metadataProvider.getLogicalModel(model.getDomainId(), model.getLogicalModelId());
 		LogicalColumn logicalColumn = logicalModel.findLogicalColumn(businessColumn);
 
 		SaikuParameter parameter = new SaikuParameter(logicalColumn);
@@ -268,11 +263,11 @@ public class EditorService {
 
 		List<SaikuParameter> parameters = model.getParameters();
 
-		String filterKey = category + "." + businessColumn;
-
 		parameters.remove(position);
 
-		model.getDerivedModels().getFilterQueries().remove(filterKey);
+		//String filterKey = category + "." + businessColumn;
+
+		//model.getDerivedModels().getFilterQueries().remove(filterKey);
 
 		model.setCdaDirty(true);
 		
@@ -309,8 +304,8 @@ public class EditorService {
 
 		List<SaikuGroup> groups = model.getGroups();
 
-		final LogicalModel logicalModel = model.getDerivedModels().getLogicalModel();
-		LogicalColumn column = logicalModel.findLogicalColumn(columnId);
+		final LogicalModel logicalModel = metadataProvider.getLogicalModel(model.getDomainId(),model.getLogicalModelId());
+		LogicalColumn logicalColumn = logicalModel.findLogicalColumn(columnId);
 
 		SaikuGroup group = null;
 
@@ -329,12 +324,12 @@ public class EditorService {
 			group.setCategory(categoryId);
 
 			String locale = "en_En";
-			group.setColumnName(column.getName(locale));
-			group.setDisplayName(column.getName(locale));
+			group.setColumnName(logicalColumn.getName(locale));
+			group.setDisplayName(logicalColumn.getName(locale));
 
 			group.setUid(position.getUid());
 
-			group.setGroupTotalsLabel("Total " + column.getName(locale));
+			group.setGroupTotalsLabel("Total " + logicalColumn.getName(locale));
 		}
 
 		groups.add(position.getPosition(), group);
@@ -381,33 +376,21 @@ public class EditorService {
 		return null;
 	}
 
-	/*
-	 * public void setColumnConfig(String sessionId, SaikuColumn config) {
-	 * 
-	 * final List<SaikuColumn> columns =
-	 * sessionHolder.getModel(sessionId).getColumns();
-	 * 
-	 * for (SaikuColumn saikuColumn : columns) {
-	 * if(config.getUid().equals(saikuColumn.getUid())){
-	 * columns.set(columns.indexOf(saikuColumn), config); } }
-	 * 
-	 * }
-	 */
 	public ElementFormat getElementFormat(String sessionId, String id) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-		final Map<String, SaikuElementFormat> rptIdToElementFormat = model.getDerivedModels().getRptIdToElementFormat();
-
 		if (id.contains("dtl")) {
-			return getFormat(id, model, rptIdToElementFormat);
+			final SaikuColumn column = ModelHelper.findColumnById(model, id); 
+			return new ElementFormat(column.getElementFormat().getTempFormat(), column.getName());
 
 		} else if (id.contains("dth")) {
-			return getFormat(id, model, rptIdToElementFormat);
+			final SaikuColumn column = ModelHelper.findColumnById(model, id.replace("dth", "dtl")); 
+			return new ElementFormat(column.getColumnHeaderFormat().getTempFormat(), column.getName());
 
 		} else if (id.contains("ghd")) {
-			final SaikuGroup saikuGroup = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			return new ElementFormat(rptIdToElementFormat.get(id), saikuGroup.getGroupName());
+			final SaikuGroup saikuGroup = ModelHelper.findGroupById(model, id);
+			return new ElementFormat(saikuGroup.getGroupHeaderFormat().getTempFormat(), saikuGroup.getGroupName());
 		}
 
 		else if (id.contains("gft")) {
@@ -420,7 +403,7 @@ public class EditorService {
 			final List<SaikuLabel> msgs = saikuGroup.getGroupFooterElements();
 			for (SaikuLabel msg : msgs) {
 				if (id.equals(msg.getUid())) {
-					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
+					return new ElementFormat(msg.getElementFormat().getTempFormat(), msg.getValue());
 				}
 			}
 		}
@@ -429,7 +412,7 @@ public class EditorService {
 			final List<SaikuLabel> msgs = model.getReportHeaderElements();
 			for (SaikuLabel msg : msgs) {
 				if (id.equals(msg.getUid())) {
-					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
+					return new ElementFormat(msg.getElementFormat().getTempFormat(), msg.getValue());
 
 				}
 			}
@@ -437,28 +420,28 @@ public class EditorService {
 			final List<SaikuLabel> msgs = model.getReportFooterElements();
 			for (SaikuLabel msg : msgs) {
 				if (id.equals(msg.getUid())) {
-					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
+					return new ElementFormat(msg.getElementFormat().getTempFormat(), msg.getValue());
 				}
 			}
 		} else if (id.contains("sum")) {
 			final List<SaikuLabel> msgs = model.getReportSummaryElements();
 			for (SaikuLabel msg : msgs) {
 				if (id.equals(msg.getUid())) {
-					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
+					return new ElementFormat(msg.getElementFormat().getTempFormat(), msg.getValue());
 				}
 			}
 		} else if (id.contains("phd")) {
 			final List<SaikuLabel> msgs = model.getPageHeaderElements();
 			for (SaikuLabel msg : msgs) {
 				if (id.equals(msg.getUid())) {
-					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
+					return new ElementFormat(msg.getElementFormat().getTempFormat(), msg.getValue());
 				}
 			}
 		} else if (id.contains("pft")) {
 			final List<SaikuLabel> msgs = model.getPageFooterElements();
 			for (SaikuLabel msg : msgs) {
 				if (id.equals(msg.getUid())) {
-					return new ElementFormat(rptIdToElementFormat.get(id), msg.getValue());
+					return new ElementFormat(msg.getElementFormat().getTempFormat(), msg.getValue());
 				}
 			}
 		}
@@ -466,46 +449,43 @@ public class EditorService {
 		return null;
 	}
 
-	private ElementFormat getFormat(String id, final SaikuMasterModel model,
-			final Map<String, SaikuElementFormat> rptIdToElementFormat) {
-		final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-		return new ElementFormat(rptIdToElementFormat.get(id), saikuColumn.getName());
-	}
-
-	public DisplayName setElementFormat(String sessionId, ElementFormat format, String id) {
+	public DisplayName setElementFormat(String sessionId, ElementFormat format, String id) throws Exception {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
 		String displayName = format.getValue();
 
 		if (id.contains("dtl")) {
-			final SaikuColumn saikuColumn = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			saikuColumn.setElementFormat(format.getFormat());
+			final SaikuColumn saikuColumn = ModelHelper.findColumnById(model, id);	
+			TemplateUtils.mergeElementFormats(format.getFormat(), saikuColumn.getElementFormat());
 
 		}
 
 		else if (id.contains("dth")) {
-			final SaikuColumn m = (SaikuColumn) model.getDerivedModels().getRptIdToSaikuElement().get(id);
+			
+			final SaikuColumn m = ModelHelper.findColumnById(model, id.replace("dth", "dtl"));	
 
 			List<SaikuColumn> columns = model.getColumns();
 
 			//If width is not set by the client, keep the old one (inc. NULL)
+
+//temp format???			
 			if(format.getFormat().getWidth()==null){
 				format.getFormat().setWidth(m.getColumnHeaderFormat().getWidth());
 			}
 	
-			m.setColumnHeaderFormat(format.getFormat());
+			TemplateUtils.mergeElementFormats(format.getFormat(), m.getColumnHeaderFormat());
 			if (!m.getName().equals(displayName)) {
 				m.setName(StringUtils.getUniqueColumnName(displayName, columns));
 			}
 			return new DisplayName(m.getName(), m.getUid());
 
 		} else if (id.contains("ghd")) {
-			final SaikuGroup m = (SaikuGroup) model.getDerivedModels().getRptIdToSaikuElement().get(id);
-			m.setGroupsHeaderFormat(format.getFormat());
+			final SaikuGroup m = ModelHelper.findGroupById(model, id);
+			TemplateUtils.mergeElementFormats(format.getFormat(), m.getGroupHeaderFormat());
 			m.setGroupName(displayName);
 		} else if (id.contains("gft") || id.contains("rhd")) {
-			final SaikuLabel m = (SaikuLabel) model.getDerivedModels().getRptIdToSaikuElement().get(id);
+			final SaikuLabel m = ModelHelper.findLabelById(model, id);
 			m.setElementFormat(format.getFormat());
 			m.setValue(displayName);
 
@@ -527,10 +507,10 @@ public class EditorService {
 
 	}
 
-	private void setFormat(ElementFormat format, String id, final List<SaikuLabel> msgs) {
+	private void setFormat(ElementFormat format, String id, final List<SaikuLabel> msgs) throws Exception {
 		for (SaikuLabel msg : msgs) {
 			if (id.equals(msg.getUid())) {
-				msg.setElementFormat(format.getFormat());
+				TemplateUtils.mergeElementFormats(format.getFormat(), msg.getElementFormat());
 				msg.setValue(format.getValue());
 			}
 		}
@@ -599,10 +579,6 @@ public class EditorService {
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 		model.getGroups().get(position).setSort(order);
 		model.setCdaDirty(true);
-	}
-
-	public void setMetadataService(IMetadataService metadataService) {
-		this.metadataService = metadataService;
 	}
 
 	public String getModelJson(String sessionId) throws JsonGenerationException, JsonMappingException, IOException {

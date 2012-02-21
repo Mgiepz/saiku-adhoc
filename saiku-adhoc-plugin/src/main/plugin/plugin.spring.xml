@@ -1,128 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-xmlns:context="http://www.springframework.org/schema/context"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ws="http://jax-ws.dev.java.net/spring/core"
-xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
-xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+	xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
 http://jax-ws.dev.java.net/spring/core http://jax-ws.dev.java.net/spring/core.xsd
 http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/servlet.xsd">
 
-<context:annotation-config />
+	<context:annotation-config />
 
-<!-- uncomment for direct jersey services -->
-<!-- bean id="jaxrsPluginServlet" class="org.pentaho.plugin.j2ee.JAXRSPluginServlet"
-/ -->
+	<!-- uncomment for direct jersey services -->
+	<!-- bean id="jaxrsPluginServlet" class="org.pentaho.plugin.j2ee.JAXRSPluginServlet" 
+		/ -->
 
-<context:annotation-config />
+	<context:annotation-config />
 
-<bean id="enunciatePluginServlet" class="org.saiku.adhoc.service.EnunciateJerseyPluginServlet">
-<property name="initParams">
-<map>
-<entry key="com.sun.jersey.config.property.resourceConfigClass"
-value="com.sun.jersey.api.core.PackagesResourceConfig" />
-<entry key="com.sun.jersey.config.property.packages" value="org.saiku.adhoc.rest" />
-<entry
-key="org.codehaus.enunciate.modules.jersey.config.ResourceProviderFactory"
-value="com.sun.jersey.spi.spring.container.SpringComponentProviderFactory" />
-<entry key="com.sun.jersey.spi.container.ContainerRequestFilters"
-value="com.sun.jersey.api.container.filter.PostReplaceFilter" />
-</map>
-</property>
-</bean>
+	<bean id="enunciatePluginServlet" class="org.saiku.adhoc.service.EnunciateJerseyPluginServlet">
+		<property name="initParams">
+			<map>
+				<entry key="com.sun.jersey.config.property.resourceConfigClass"
+					value="com.sun.jersey.api.core.PackagesResourceConfig" />
+				<entry key="com.sun.jersey.config.property.packages" value="org.saiku.adhoc.rest" />
+				<entry
+					key="org.codehaus.enunciate.modules.jersey.config.ResourceProviderFactory"
+					value="com.sun.jersey.spi.spring.container.SpringComponentProviderFactory" />
+				<entry key="com.sun.jersey.spi.container.ContainerRequestFilters"
+					value="com.sun.jersey.api.container.filter.PostReplaceFilter" />
+			</map>
+		</property>
+	</bean>
 
-<!-- beans -->
-<bean id="sessionHolder" class="org.saiku.adhoc.model.WorkspaceSessionHolder">
-<property name="PRPTManager" ref="classpathPrptManager" />
-<property name="CDAManager" ref="classpathCdaManager" />
-</bean>
-<bean id="repositoryHelper"
-class="org.saiku.adhoc.service.repository.PentahoRepositoryHelper">
-</bean>
-<bean id="cdaAccessor" class="org.saiku.adhoc.service.cda.PentahoCdaAccessor">
-<property name="CDAManager" ref="classpathCdaManager" />
-</bean>
+	<!-- common -->
+	<bean id="sessionHolder" class="org.saiku.adhoc.model.WorkspaceSessionHolder">
+		<property name="cdaProvider" ref="cdaProvider" />
+		<property name="prptProvider" ref="prptProvider" />
+		<property name="metadataProvider" ref="metadataProvider" />
+	</bean>
+	<!--bean id="cdaBuilder" class="org.saiku.adhoc.model.builder.CdaBuilder">
+		<property name="metadataProvider" ref="metadataProvider" />
+	</bean-->
 
-<!-- services -->
-<bean id="classpathPrptManager" class="org.saiku.adhoc.datasource.PluginResourcePRPTManager">
-</bean>
+	<!-- pentaho -->
+	<bean id="cdaProvider" class="org.saiku.adhoc.providers.impl.pentaho.PentahoCdaProvider">
+		<property name="repositoryHelper" ref="repositoryHelper" />
+	</bean>	
+	<bean id="prptProvider" class="org.saiku.adhoc.providers.impl.pentaho.PentahoPrptProvider">
+	</bean>	
+	<bean id="metadataProvider" class="org.saiku.adhoc.providers.impl.pentaho.PentahoMetadataProvider">
+		<property name="repositoryHelper" ref="repositoryHelper" />
+	</bean>		
+	<bean id="repositoryHelper" class="org.saiku.adhoc.service.repository.PentahoRepositoryHelper">
+	</bean>
+	
+	<!-- service -->
+	<bean id="queryService" class="org.saiku.adhoc.service.cda.CdaQueryService">
+		<property name="sessionHolder" ref="sessionHolder" />
+		<property name="metadataProvider" ref="metadataProvider" />
+		<property name="cdaAccessor" ref="cdaAccessor" />
+		<property name="repositoryHelper" ref="repositoryHelper" />
+	</bean>
+		
+	<bean id="cdaAccessor" class="org.saiku.adhoc.service.cda.CdaAccessor">
+		<property name="cdaProvider" ref="cdaProvider" />
+	</bean>
 
-<bean id="classpathCdaManager" class="org.saiku.adhoc.datasource.PluginResourceCDAManager">
-<property name="repositoryHelper" ref="repositoryHelper" />
-</bean>
+	<bean id="editorService" class="org.saiku.adhoc.service.EditorService">
+		<property name="sessionHolder" ref="sessionHolder" />
+		<property name="metadataProvider" ref="metadataProvider" />
+	</bean>
 
-<bean id="metadataService"
-class="org.saiku.adhoc.service.repository.PentahoMetadataService">
-<property name="repositoryHelper" ref="repositoryHelper" />
-</bean>
+	<bean id="reportGeneratorService" class="org.saiku.adhoc.service.report.ReportGeneratorService">
+		<property name="sessionHolder" ref="sessionHolder" />
+		<property name="repositoryHelper" ref="repositoryHelper" />
+		<property name="cdaProvider" ref="cdaProvider" />
+		<property name="prptProvider" ref="prptProvider" />
+		<property name="metadataProvider" ref="metadataProvider" />
+	</bean>
 
-<bean id="queryService" class="org.saiku.adhoc.service.cda.CdaQueryService">
-<property name="sessionHolder" ref="sessionHolder" />
-<property name="cdaAccessor" ref="cdaAccessor" />
-<property name="repositoryHelper" ref="repositoryHelper" />
-</bean>
+	<bean id="exportService" class="org.saiku.adhoc.service.cda.ExportService">
+		<property name="sessionHolder" ref="sessionHolder" />
+		<property name="cdaAccessor" ref="cdaAccessor" />
+		<property name="reportGeneratorService" ref="reportGeneratorService" />
+	</bean>
 
-<bean id="editorService" class="org.saiku.adhoc.service.EditorService">
-<property name="sessionHolder" ref="sessionHolder" />
-<property name="metadataService" ref="metadataService" />
-<property name="CDAManager" ref="classpathCdaManager" />
-<property name="reportGeneratorService" ref="reportGeneratorService" />
-</bean>
+	<!-- resources -->
+	<bean id="metadataResource" class="org.saiku.adhoc.rest.MetadataDiscoverResource">
+		<property name="metadataProvider" ref="metadataProvider" />
+	</bean>
 
-<bean id="reportGeneratorService" class="org.saiku.adhoc.service.report.ReportGeneratorService">
-<property name="sessionHolder" ref="sessionHolder" />
-<property name="repositoryHelper" ref="repositoryHelper" />
-<property name="CDAManager" ref="classpathCdaManager" />
-<property name="PRPTManager" ref="classpathPrptManager" />
-</bean>
+	<bean id="pentahoRepositoryResource" class="org.saiku.adhoc.rest.PentahoRepositoryResource">
+		<property name="sessionHolder" ref="sessionHolder" />
+		<property name="repositoryHelper" ref="repositoryHelper" />
+	</bean>
 
-<bean id="exportService" class="org.saiku.adhoc.service.cda.ExportService">
-<property name="sessionHolder" ref="sessionHolder" />
-<property name="cdaAccessor" ref="cdaAccessor" />
-<property name="reportGeneratorService" ref="reportGeneratorService" />
-</bean>
+	<bean id="queryResource" class="org.saiku.adhoc.rest.QueryResource">
+		<property name="queryService" ref="queryService" />
+		<property name="reportGeneratorService" ref="reportGeneratorService" />
+		<property name="editorService" ref="editorService" />
+	</bean>
 
-<!-- resources -->
-<bean id="metadataResource" class="org.saiku.adhoc.rest.MetadataDiscoverResource">
-<property name="metadataDiscoverService" ref="metadataService" />
-</bean>
-
-<bean id="pentahoRepositoryResource" class="org.saiku.adhoc.rest.PentahoRepositoryResource">
-<property name="sessionHolder" ref="sessionHolder" />
-<property name="repositoryHelper" ref="repositoryHelper" />
-</bean>
-
-<bean id="queryResource" class="org.saiku.adhoc.rest.QueryResource">
-<property name="queryService" ref="queryService" />
-<property name="reportGeneratorService" ref="reportGeneratorService" />
-<property name="editorService" ref="editorService" />
-</bean>
-
-<bean id="exportResource" class="org.saiku.adhoc.rest.ExportResource">
-<property name="exportService" ref="exportService" />
-</bean>
-
-<!--bean id="editResource" class="org.saiku.adhoc.rest.EditResource"> <property
-name="editorService" ref="editorService" /> </bean -->
-
-<!--bean id="tempClean" class="org.saiku.adhoc.utils.TempCleanerTask">
-<property name="repositoryHelper" ref="repositoryHelper" />
-</bean>
-
-<bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
-<property name="delay" value="10000" />
-<property name="period" value="50000" />
-<property name="timerTask" ref="tempClean" />
-</bean>
-
-<bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
-<property name="scheduledTimerTasks">
-<list>
-<ref bean="scheduledTask" />
-</list>
-</property>
-</bean-->
+	<bean id="exportResource" class="org.saiku.adhoc.rest.ExportResource">
+		<property name="exportService" ref="exportService" />
+	</bean>
 
 </beans>
 

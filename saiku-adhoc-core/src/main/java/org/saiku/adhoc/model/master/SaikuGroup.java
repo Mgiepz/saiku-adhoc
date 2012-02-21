@@ -38,11 +38,11 @@ public class SaikuGroup implements SaikuElement{
 
 	public SaikuGroup() {
 		this.sort = "NONE";
-		this.groupsHeaderFormat = new SaikuElementFormat();	
+		this.groupHeaderFormat = new SaikuElementFormat();	
 		this.groupFooterElements = new ArrayList<SaikuLabel>();
 	}
 	
-	private SaikuElementFormat groupsHeaderFormat;
+	private SaikuElementFormat groupHeaderFormat;
 
 	private String dataFormat;
 
@@ -57,6 +57,8 @@ public class SaikuGroup implements SaikuElement{
 	private String sort;
 
 	private String groupName;
+	
+	private String layoutId;
 
 	//TODO: Do we really need that label?
 	private String groupTotalsLabel;
@@ -144,12 +146,20 @@ public class SaikuGroup implements SaikuElement{
 		return sort;
 	}
 
-	public void setGroupsHeaderFormat(SaikuElementFormat groupsHeaderFormat) {
-		this.groupsHeaderFormat = groupsHeaderFormat;
+	public void setGroupHeaderFormat(SaikuElementFormat groupHeaderFormat) {
+		this.groupHeaderFormat = groupHeaderFormat;
 	}
 
-	public SaikuElementFormat getGroupsHeaderFormat() {
-		return groupsHeaderFormat;
+	public SaikuElementFormat getGroupHeaderFormat() {
+		return groupHeaderFormat;
+	}
+
+	public void setLayoutId(String layoutId) {
+		this.layoutId = layoutId;
+	}
+
+	public String getLayoutId() {
+		return layoutId;
 	}
 
 }

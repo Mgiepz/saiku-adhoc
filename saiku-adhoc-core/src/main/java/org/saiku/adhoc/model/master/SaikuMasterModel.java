@@ -20,34 +20,34 @@
 
 package org.saiku.adhoc.model.master;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.pentaho.metadata.model.Domain;
-import org.pentaho.metadata.model.LogicalModel;
-import org.pentaho.metadata.query.model.Query;
-import org.pentaho.reporting.engine.classic.core.MasterReport;
-import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
-import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
-import org.saiku.adhoc.messages.Messages;
-import org.saiku.adhoc.model.builder.CdaBuilder;
-import org.saiku.adhoc.model.transformation.TransModelToReport;
-import org.saiku.adhoc.model.transformation.TransModelToWizard;
-import org.saiku.adhoc.server.datasource.ICDAManager;
-import org.saiku.adhoc.server.datasource.SaikuCDA;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
-
-import pt.webdetails.cda.settings.CdaSettings;
 
 //@JsonPropertyOrder({"reportHeaderElements"})
 public class SaikuMasterModel {
+
+	@JsonIgnore
+	public Boolean getCdaDirty() {
+		return cdaDirty;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+
+	public void setDomainId(String domainId) {
+		this.domainId = domainId;
+	}
+
+	public void setLogicalModelId(String logicalModelId) {
+		this.logicalModelId = logicalModelId;
+	}
 
 	public List<SaikuLabel> getReportSummaryElements() {
 		return reportSummaryElements;
@@ -56,33 +56,6 @@ public class SaikuMasterModel {
 	public void setReportSummaryElements(List<SaikuLabel> reportSummaryElements) {
 		this.reportSummaryElements = reportSummaryElements;
 	}
-    
-	@JsonIgnore
-	protected ICDAManager cdaManager;
-
-	@JsonIgnore
-    public void setCDAManager(ICDAManager manager){
-        this.cdaManager = manager;
-        
-    }
-
-	@JsonIgnore
-    public ICDAManager getCDAManager(){
-        return cdaManager;
-    }
-    
-    @JsonIgnore
-    TransModelToReport transReport;
-    
-    @JsonIgnore
-    public void setTransReport(TransModelToReport transReport){
-        this.transReport = transReport;
-        
-    }
-    @JsonIgnore
-    public TransModelToReport getTransReport(){
-        return transReport;
-    }
 
 	protected List<SaikuColumn> columns;
 
@@ -103,35 +76,31 @@ public class SaikuMasterModel {
 
 	protected List<String> sortColumns;
 
-	//TODO: Remove
-	private String reportTitle;
 
 	protected String clientModelSelection;
 
 	protected SaikuReportSettings settings;
 
 	@JsonIgnore
-	protected DerivedModelsCollection derivedModels;
-
-    private ReportGeneratorService reportingManager;
-
-    @JsonIgnore
 	private Log log = LogFactory.getLog(SaikuMasterModel.class);
     
     @JsonIgnore
     private Boolean cdaDirty = true;
+
+	private String domainId;
+
+	private String logicalModelId;
+
+	private String sessionId;
     
 
-	public void init(Domain domain, LogicalModel model, String sessionId, ICDAManager manager, ReportGeneratorService reportGeneratorService) throws SaikuAdhocException{
-        this.cdaManager = manager;
-        this.reportingManager = reportGeneratorService;
-		this.derivedModels = new DerivedModelsCollection(sessionId, domain, model, cdaManager);
-		derivedModels.init();
+	public void init(String sessionId, ReportGeneratorService reportGeneratorService) throws SaikuAdhocException{
+
+		this.sessionId = sessionId;
 
 		if(this.settings==null){
 			this.settings = new SaikuReportSettings();	
 		}
-
 
 		if(this.clientModelSelection==null){
 			//only init these once
@@ -157,21 +126,8 @@ public class SaikuMasterModel {
 
 	private Object readResolve() {
 		//TODO: refactor to make default possible on deserialization
-		derivedModels = null;
 		return this;
 	}
-
-	@JsonIgnore
-	public String getCdaPath() {
-		
-		String solution = cdaManager.getSolution();
-		String path = cdaManager.getPath();
-
-		String action = this.derivedModels.getSessionId() + ".cda";
-
-		return solution + "/" + path + "/" + action;
-	}
-
 
 	public void setReportTemplate(ReportTemplate reportTemplate) {
 		this.settings.setReportTemplate(reportTemplate);		
@@ -180,19 +136,6 @@ public class SaikuMasterModel {
 	@JsonIgnore
 	public ReportTemplate getReportTemplate() {
 		return this.settings.getReportTemplate();
-	}
-
-	@JsonIgnore
-	public DerivedModelsCollection getDerivedModels() {
-		return derivedModels;
-	}
-
-	public void setReportTitle(String reportTitle) {
-		this.reportTitle = reportTitle;
-	}
-
-	public String getReportTitle() {
-		return reportTitle;
 	}
 
 	public List<SaikuColumn> getColumns() {
@@ -205,79 +148,6 @@ public class SaikuMasterModel {
 
 	public List<String> getSortColumns() {
 		return sortColumns;
-	}
-
-
-	/**
-	 * This method will sync the derived models in the correct order
-	 * @throws SaikuAdhocException 
-	 * @throws IOException 
-	 * @throws ResourceException 
-	 * 
-	 * This needs to be removed and should follow a director/builder pattern
-	 * 
-	 */
-	@Deprecated
-	public void deriveModels() throws SaikuAdhocException{
-		
-		if (this.getColumns().isEmpty()){
-			throw new SaikuAdhocException(				
-        			Messages.getErrorString("MasterModel.ERROR_0002_SELECTION_IS_EMPTY")
-        	);
-		}
-		
-		if(log.isDebugEnabled()){
-			logModel();
-		}
-
-		final CdaBuilder cdaBuilder = new CdaBuilder();
-		try {
-			this.derivedModels.setCda(cdaBuilder.build(this, cdaManager));
-		} catch (Exception e) {
-			throw new SaikuAdhocException(				
-					Messages.getErrorString("MasterModel.ERROR_0001_TRANSFORMATION_TO_CDA_FAILED")
-			);
-		}
-				
-		//Wizard
-		TransModelToWizard transWizard = new TransModelToWizard();
-		WizardSpecification wizardSpec;
-		try {
-			wizardSpec = transWizard.doIt(this);
-			this.derivedModels.setWizardSpec(wizardSpec);
-		} catch (Exception e1) {
-			//TODO: move that into transformation.doIt
-			throw new SaikuAdhocException(				
-					Messages.getErrorString("MasterModel.ERROR_0001_TRANSFORMATION_TO_WIZARDSPEC_FAILED")
-			);
-		}
-
-		//Prpt
-			MasterReport reportTemplate;
-			transReport = new TransModelToReport(reportingManager);
-			reportTemplate = transReport.doIt(this);
-			this.derivedModels.setReportTemplate(reportTemplate);
-
-	}
-
-	@JsonIgnore
-	public Query getQuery(){
-		return this.derivedModels.getQuery();		
-	}
-
-	@JsonIgnore
-	public CdaSettings getCdaSettings(){
-		return this.derivedModels.getCda();	
-	}
-
-	@JsonIgnore
-	public WizardSpecification getWizardSpecification(){
-		return this.derivedModels.getWizardSpec();	
-	}
-
-	@JsonIgnore
-	public MasterReport getMasterReport(){
-		return this.derivedModels.getReportTemplate();		
 	}
 
 	public void setParameters(List<SaikuParameter> parameters) {
@@ -361,54 +231,6 @@ public class SaikuMasterModel {
 		return reportFooterElements;
 	}
 
-	@JsonIgnore
-	public SaikuCDA getCda(){
-        String action = this.derivedModels.getSessionId() + ".cda";
-        
-        return cdaManager.getDatasource(action);	
-    }
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((cdaManager == null) ? 0 : cdaManager.hashCode());
-		result = prime * result + ((clientModelSelection == null) ? 0 : clientModelSelection.hashCode());
-		result = prime * result + ((columns == null) ? 0 : columns.hashCode());
-		result = prime * result + ((derivedModels == null) ? 0 : derivedModels.hashCode());
-		result = prime * result + ((groups == null) ? 0 : groups.hashCode());
-		result = prime * result + ((pageFooterElements == null) ? 0 : pageFooterElements.hashCode());
-		result = prime * result + ((pageHeaderElements == null) ? 0 : pageHeaderElements.hashCode());
-		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-		result = prime * result + ((reportFooterElements == null) ? 0 : reportFooterElements.hashCode());
-		result = prime * result + ((reportHeaderElements == null) ? 0 : reportHeaderElements.hashCode());
-		result = prime * result + ((reportSummaryElements == null) ? 0 : reportSummaryElements.hashCode());
-		result = prime * result + ((reportTitle == null) ? 0 : reportTitle.hashCode());
-		result = prime * result + ((reportingManager == null) ? 0 : reportingManager.hashCode());
-		result = prime * result + ((settings == null) ? 0 : settings.hashCode());
-		result = prime * result + ((sortColumns == null) ? 0 : sortColumns.hashCode());
-		result = prime * result + ((transReport == null) ? 0 : transReport.hashCode());
-		return result;
-	}
-
-
-	private void logModel() {
-
-		Set<Entry<String,SaikuElement>> rptIdToElementFormat = this.getDerivedModels().getRptIdToSaikuElement().entrySet();
-		
-		log.debug("Model description: ");
-		
-		for (Entry<String, SaikuElement> entry : rptIdToElementFormat) {
-			String object = "Element: " + entry.getKey() + "->" + entry.getValue().getUid() + ":";
-			if(entry.getValue() instanceof SaikuLabel){
-				object += ((SaikuLabel) entry.getValue()).getValue();	
-			}
-			
-			log.debug(object);
-		}
-
-	}
-
 	public void setCdaDirty(Boolean cdaDirty) {
 		this.cdaDirty = cdaDirty;
 	}
@@ -416,6 +238,19 @@ public class SaikuMasterModel {
 	@JsonIgnore
 	public Boolean isCdaDirty() {
 		return cdaDirty;
+	}
+
+	public String getDomainId() {
+		return this.domainId;
+	}
+
+	public String getLogicalModelId() {
+		return this.logicalModelId;
+	}
+
+	@JsonIgnore
+	public String getSessionId() {
+		return sessionId;
 	}
 	
 }

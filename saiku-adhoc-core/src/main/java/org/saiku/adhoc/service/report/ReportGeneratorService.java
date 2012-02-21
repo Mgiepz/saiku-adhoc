@@ -20,22 +20,19 @@
 
 package org.saiku.adhoc.service.report;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-
-import javax.naming.OperationNotSupportedException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.pentaho.metadata.model.Domain;
+import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
@@ -49,7 +46,10 @@ import org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Pdf
 import org.pentaho.reporting.engine.classic.core.modules.output.table.html.HtmlTableModule;
 import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.BundleWriter;
 import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.BundleWriterException;
+import org.pentaho.reporting.engine.classic.core.parameters.DefaultParameterDefinition;
 import org.pentaho.reporting.engine.classic.core.parameters.ParameterDefinitionEntry;
+import org.pentaho.reporting.engine.classic.core.parameters.PlainParameter;
+import org.pentaho.reporting.engine.classic.core.parameters.ReportParameterDefinition;
 import org.pentaho.reporting.engine.classic.core.states.StateUtilities;
 import org.pentaho.reporting.engine.classic.core.states.datarow.DefaultFlowController;
 import org.pentaho.reporting.engine.classic.core.util.ReportParameterValues;
@@ -64,48 +64,48 @@ import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
+import org.saiku.adhoc.model.builder.CdaBuilder;
+import org.saiku.adhoc.model.builder.WizardBuilder;
 import org.saiku.adhoc.model.dto.HtmlReport;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
-import org.saiku.adhoc.server.datasource.ICDAManager;
-import org.saiku.adhoc.server.datasource.IPRPTManager;
+import org.saiku.adhoc.model.master.SaikuParameter;
+import org.saiku.adhoc.providers.ICdaProvider;
+import org.saiku.adhoc.providers.IMetadataProvider;
+import org.saiku.adhoc.providers.IPrptProvider;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
 import org.saiku.adhoc.utils.ParamUtils;
 import org.saiku.adhoc.utils.TemplateUtils;
 
+import pt.webdetails.cda.settings.CdaSettings;
+
 public class ReportGeneratorService {
+
+	public void setCdaProvider(ICdaProvider cdaProvider) {
+		this.cdaProvider = cdaProvider;
+	}
 
 	protected WorkspaceSessionHolder sessionHolder;
 
 	protected IRepositoryHelper repository;
 
-	private IPRPTManager prptManager;
+	private ICdaProvider cdaProvider;
+
+	private IPrptProvider prptProvider;
 	
-	private ICDAManager cdaManager;
-	
+	private IMetadataProvider metadataProvider;
+
+	public void setMetadataProvider(IMetadataProvider metadataProvider) {
+		this.metadataProvider = metadataProvider;
+	}
+
+	public void setPrptProvider(IPrptProvider prptProvider) {
+		this.prptProvider = prptProvider;
+	}
+
 	protected static final Log log = LogFactory
 	.getLog(ReportGeneratorService.class);
 
-	
-    
-    public void setPRPTManager(IPRPTManager manager){
-        this.prptManager = manager;
-        
-    }
-
-    public IPRPTManager getPRPTManager(){
-        return prptManager;
-    }
-    
-    public void setCDAManager(ICDAManager manager){
-        this.cdaManager = manager;
-        
-    }
-
-    public ICDAManager getCDAManager(){
-        return cdaManager;
-    }
-    
 	public void setSessionHolder(WorkspaceSessionHolder sessionHolder) {
 		this.sessionHolder = sessionHolder;
 	}
@@ -129,20 +129,20 @@ public class ReportGeneratorService {
 	public void renderReportHtml(String sessionId, String templateName, HtmlReport report, Integer acceptedPage) throws Exception {
 
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
-		
+
 		if(model==null){
 			throw new SaikuAdhocException(				
-				Messages.getErrorString("ReportGeneratorService.ERROR_0001_MASTERMODEL_NOT_FOUND")
+					Messages.getErrorString("ReportGeneratorService.ERROR_0001_MASTERMODEL_NOT_FOUND")
 			);
 		}
 
-		sessionHolder.materializeModel(sessionId);
-		String path = prptManager.getTemplatePath();
-		String solution = prptManager.getSolution();
+		sessionHolder.storeCda(sessionId);
+		String path = prptProvider.getTemplatePath();
+		String solution = prptProvider.getSolution();
 
 		if(templateName != null && !templateName.equals("default")){
-		    ReportTemplate template = prptManager.getTemplate(path, solution, templateName);
-	        model.setReportTemplate(template);
+			ReportTemplate template = prptProvider.getTemplate(path, solution, templateName);
+			model.setReportTemplate(template);
 		}
 
 
@@ -153,29 +153,8 @@ public class ReportGeneratorService {
 		generateHtmlReport(output, stream, ParamUtils.getReportParameters("", model), report, acceptedPage);
 
 		String string = stream.toString();
-		
-//		if(log.isDebugEnabled()){
-//			writeHtmlFile(string);	
-//		}
-		
-		
+
 		report.setData(string);		
-
-	}
-
-	
-	private void writeHtmlFile(String string) {
-
-		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter("report.html"));
-			out.write(string);
-			out.close();
-		} 
-		catch (IOException e) 
-		{ 
-			System.out.println("Exception ");
-
-		}
 
 	}
 
@@ -195,7 +174,7 @@ public class ReportGeneratorService {
 		//html
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-		sessionHolder.materializeModel(sessionId);
+		sessionHolder.storeCda(sessionId);
 
 		MasterReport output = processReport(model);			
 
@@ -217,25 +196,23 @@ public class ReportGeneratorService {
 	 */
 	protected MasterReport processReport(SaikuMasterModel model) throws ReportException, ReportProcessingException, SaikuAdhocException, ResourceException, IOException {
 
-
 		CachingDataFactory dataFactory = null;
 
 		try {
 
-			model.deriveModels();
+			final MasterReport reportTemplate = prptProvider.getPrptTemplate(model.getReportTemplate());
+
+			final WizardBuilder wizardBuilder = new WizardBuilder();
+			final WizardSpecification wizardSpecification = wizardBuilder.build(model);
+
+			reportTemplate.setDataFactory(cdaProvider.getDataFactory(model.getSessionId()));
+			reportTemplate.setQuery(model.getSessionId());
 			
-			final MasterReport reportTemplate = model.getDerivedModels().getReportTemplate();
-
-			final WizardSpecification wizardSpecification = model
-			.getWizardSpecification();
-
-			reportTemplate.setDataFactory(model.getDerivedModels()
-					.getCdaDataFactory());
-			reportTemplate.setQuery(model.getDerivedModels().getSessionId());
+			reportTemplate.setParameterDefinition(this.buildParamDefs(model));
+			
 
 			reportTemplate.setAttribute(AttributeNames.Wizard.NAMESPACE,
 					"wizard-spec", wizardSpecification);
-
 
 			final ProcessingContext processingContext = new DefaultProcessingContext();
 			final DataSchemaDefinition definition = reportTemplate
@@ -281,9 +258,9 @@ public class ReportGeneratorService {
 
 			output.setAttribute(AttributeNames.Wizard.NAMESPACE,
 					AttributeNames.Wizard.ENABLE, Boolean.FALSE);
-			
+
 			TemplateUtils.mergePageSetup(model, output);
-			
+
 			return output;
 
 		} finally {
@@ -292,7 +269,40 @@ public class ReportGeneratorService {
 
 	}
 
+	private ReportParameterDefinition buildParamDefs(SaikuMasterModel model) {
 
+		DefaultParameterDefinition paramDef = new DefaultParameterDefinition();
+
+		List<SaikuParameter> parameters = model.getParameters();
+
+		//Generate Filter Parameters
+
+		for (SaikuParameter saikuParameter : parameters) {
+
+			final String categoryId = saikuParameter.getCategory();
+			final String columnId = saikuParameter.getId();	
+			final String parameterName = "F_" + categoryId + "_" + columnId;
+
+			if(saikuParameter.getType().equals("String")){
+				final PlainParameter plainParameter = new PlainParameter(parameterName, String[].class);
+				paramDef.addParameterDefinition(plainParameter);
+			}
+			if(saikuParameter.getType().equals("Date")){
+				String nameFrom = parameterName + "_FROM";
+				String nameTo = parameterName + "_TO";
+
+				final PlainParameter plainParameterFrom = new PlainParameter(nameFrom, java.util.Date.class);
+				paramDef.addParameterDefinition(plainParameterFrom);
+
+				final PlainParameter plainParameterTo = new PlainParameter(nameTo, java.util.Date.class);
+				paramDef.addParameterDefinition(plainParameterTo);
+
+			}
+		}
+		
+		return paramDef;
+		
+	}
 
 	/**
 	 * @param model
@@ -344,7 +354,7 @@ public class ReportGeneratorService {
 	private void generateHtmlReport(MasterReport output, OutputStream stream,
 			Map<String, Object> reportParameters, HtmlReport report, Integer acceptedPage) throws Exception{
 
-		final SimpleReportingComponent reportComponent = prptManager.getReportingComponent();
+		final SimpleReportingComponent reportComponent = prptProvider.getReportingComponent();
 
 		reportComponent.setReport(output);
 		reportComponent.setPaginateOutput(true);
@@ -473,19 +483,18 @@ public class ReportGeneratorService {
 		String[] splits = ParamUtils.splitFirst(path.substring(1),"/");
 
 		ByteArrayOutputStream prptContent = null;
-;
+		;
 		MasterReport output = processReport(model);
 		prptContent = generatePrptOutput(model, output);
 
 		String solPath = splits.length > 1 ? splits[1] : "";
-		
+
 		repository.writeFile(splits[0], solPath, file, prptContent);
 
 
 	}
 
-	public void saveCda(String sessionId, String path, String file) throws OperationNotSupportedException, IOException, TransformerFactoryConfigurationError, TransformerException {
-
+	public void saveCda(String sessionId, String path, String file) throws SaikuAdhocException {
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
 		if (!file.endsWith(".cda")) {
@@ -494,22 +503,34 @@ public class ReportGeneratorService {
 
 		String[] splits = ParamUtils.splitFirst(path.substring(1),"/");
 
-		cdaManager.addDatasource(splits[0], splits[1], file, model.getCdaSettings().asXML());
-//		repository.writeFile(splits[0], splits[1], file, model.getCdaSettings().asXML());
+		try{
+			final Domain domain = metadataProvider.getDomain(model.getDomainId());
+			final LogicalModel logicalModel = metadataProvider.getLogicalModel(model.getDomainId(),model.getLogicalModelId());
+			
+			final CdaBuilder cdaBuilder = new CdaBuilder();
+			CdaSettings cdaSettings = cdaBuilder.build(model, domain, logicalModel);
 
+			cdaProvider.addDatasource(splits[0], splits[1], file, cdaSettings.asXML());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new SaikuAdhocException(
+					Messages.getErrorString("Repository.ERROR_0001_COULD_NOT_PUBLISH_FILE")
+			);
+		}
 
 	}
-	
-    public MasterReport getMasterReport(String fullPath, SimpleReportingComponent reportComponent) throws SaikuAdhocException {
-        try {
-            return prptManager.getMasterReport(fullPath, reportComponent);
-            
-            } catch (Exception e) {
-            throw new SaikuAdhocException(
-            Messages.getErrorString("Repository.ERROR_0001_PRPT_TEMPLATE_NOT_FOUND")
-            );
-         }
-    }
+
+//	public MasterReport getMasterReport(String fullPath, SimpleReportingComponent reportComponent) throws SaikuAdhocException {
+//		try {
+//			return prptProvider.getMasterReport(fullPath, reportComponent);
+//
+//		} catch (Exception e) {
+//			throw new SaikuAdhocException(
+//					Messages.getErrorString("Repository.ERROR_0001_PRPT_TEMPLATE_NOT_FOUND")
+//			);
+//		}
+//	}
 
 
 }

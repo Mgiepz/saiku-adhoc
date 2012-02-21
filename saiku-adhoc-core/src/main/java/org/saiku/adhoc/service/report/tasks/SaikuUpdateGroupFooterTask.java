@@ -71,8 +71,8 @@ public class SaikuUpdateGroupFooterTask implements UpdateTask {
 				m.setValue(val);
 				this.elements.add(m);
 				
-				model.getDerivedModels().getRptIdToSaikuElement().put(uid, m);
-				
+				m.setLayoutId(uid);
+
 			}
 
 			e.setAttribute("http://reporting.pentaho.org/namespaces/engine/attributes/wizard", "allow-metadata-styling", Boolean.FALSE);
@@ -85,8 +85,9 @@ public class SaikuUpdateGroupFooterTask implements UpdateTask {
 
 			TemplateUtils.mergeElementFormats(e.getStyle(), tempFormat);
 
-			model.getDerivedModels().getRptIdToElementFormat().put(uid, tempFormat);
-
+			//set a transient format
+			m.getElementFormat().setTempFormat(tempFormat);
+			
 		}
 	}
 

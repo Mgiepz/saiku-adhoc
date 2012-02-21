@@ -19,26 +19,26 @@
  */
 package org.saiku.adhoc.model;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.OperationNotSupportedException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-
+import org.pentaho.metadata.model.Domain;
+import org.pentaho.metadata.model.LogicalModel;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.messages.Messages;
+import org.saiku.adhoc.model.builder.CdaBuilder;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuParameter;
-import org.saiku.adhoc.server.datasource.ICDAManager;
-import org.saiku.adhoc.server.datasource.IPRPTManager;
+import org.saiku.adhoc.providers.ICdaProvider;
+import org.saiku.adhoc.providers.IMetadataProvider;
+import org.saiku.adhoc.providers.IPrptProvider;
 import org.saiku.adhoc.service.SaikuProperties;
-import org.saiku.adhoc.service.repository.IRepositoryHelper;
+
+import pt.webdetails.cda.settings.CdaSettings;
 
 /**
  * This object is a singleton and holds all models. Models are stored under
@@ -51,42 +51,37 @@ import org.saiku.adhoc.service.repository.IRepositoryHelper;
  */
 public class WorkspaceSessionHolder {
 
-    private IPRPTManager prptManager;
-    private ICDAManager cdaManager;
-   
-    private Map<String, SaikuMasterModel> models = new HashMap<String, SaikuMasterModel>();
+	private Map<String, SaikuMasterModel> models = new HashMap<String, SaikuMasterModel>();
 
-    
-    public void setPRPTManager(IPRPTManager manager){
-        this.prptManager = manager;
-        
-    }
+	private ICdaProvider cdaProvider;
 
-    public IPRPTManager getPRPTManager(){
-        return prptManager;
-    }
-    
-    public void setCDAManager(ICDAManager manager){
-        this.cdaManager = manager;
-        
-    }
+	private IPrptProvider prptProvider;
 
-    public ICDAManager getCDAManager(){
-        return cdaManager;
-    }
+	private IMetadataProvider metadataProvider;
+	
+	public void setMetadataProvider(IMetadataProvider metadataProvider) {
+		this.metadataProvider = metadataProvider;
+	}
+
+	public void setPrptProvider(IPrptProvider prptProvider) {
+		this.prptProvider = prptProvider;
+	}
+
+	public void setCdaProvider(ICdaProvider cdaProvider) {
+		this.cdaProvider = cdaProvider;
+	}
 
 	public void initSession(SaikuMasterModel masterModel, String sessionId) {
 
 		// TODO: Move and make configurable
-		if(masterModel.getReportTemplate()==null){
+		if (masterModel.getReportTemplate() == null) {
 			String name = SaikuProperties.defaultPrptTemplate;
-			masterModel.setReportTemplate(new ReportTemplate(prptManager.getSolution(), prptManager.getTemplatePath(), name));
+			masterModel.setReportTemplate(new ReportTemplate(prptProvider.getSolution(), prptProvider.getTemplatePath(), name));
 		}
-		
+
 		models.put(sessionId, masterModel);
 
 	}
-
 
 	public Map<String, SaikuMasterModel> getModels() {
 		return models;
@@ -106,45 +101,49 @@ public class WorkspaceSessionHolder {
 
 		final List<SaikuColumn> columns = smm.getColumns();
 		for (SaikuColumn saikuColumn : columns) {
-			string.append(saikuColumn.toString()+ "\n");
+			string.append(saikuColumn.toString() + "\n");
 		}
 
 		final List<SaikuGroup> groups = smm.getGroups();
 
 		string.append("GROUPS:\n");
 		for (SaikuGroup saikuGroup : groups) {
-			string.append(saikuGroup.toString()+ "\n");
+			string.append(saikuGroup.toString() + "\n");
 		}
 
 		string.append("FILTERS:\n");
 		final List<SaikuParameter> parameters = smm.getParameters();
 		for (SaikuParameter saikuParameter : parameters) {
-			string.append(saikuParameter.toString()+ "\n");
+			string.append(saikuParameter.toString() + "\n");
 		}
 
 		return string.toString();
 	}
 
-	public void materializeModel(String sessionId) throws SaikuAdhocException {
+	public void storeCda(String sessionId) throws SaikuAdhocException {
 
 		SaikuMasterModel model = this.getModel(sessionId);
 
 		String action = sessionId + ".cda";
 
-		model.deriveModels();
-
-		if(!model.isCdaDirty()){
+		if (!model.isCdaDirty()) {
 			return;
 		}
-	
+
 		try {
-		    cdaManager.addDatasource(prptManager.getSolution(), prptManager.getPath(), action, model.getCdaSettings().asXML());
-		    model.setCdaDirty(false);
+			final Domain domain = metadataProvider.getDomain(model.getDomainId());
+			final LogicalModel logicalModel = metadataProvider.getLogicalModel(model.getDomainId(),model.getLogicalModelId());
+	
+			final CdaBuilder cdaBuilder = new CdaBuilder();
+			CdaSettings cdaSettings = cdaBuilder.build(model, domain, logicalModel);
+
+			cdaProvider.addDatasource(prptProvider.getSolution(), prptProvider.getPath(), action, cdaSettings.asXML());
+			model.setCdaDirty(false);
 		} catch (Exception e) {
-			e.printStackTrace();
-//			throw new SaikuAdhocException(				
-//					Messages.getErrorString("Repository.ERROR_0001_COULD_NOT_PUBLISH_FILE")
-//			);
+			 e.printStackTrace();
+			 throw new SaikuAdhocException(
+			 Messages.getErrorString("Repository.ERROR_0001_COULD_NOT_PUBLISH_FILE")
+			 );
 		}
 
 	}

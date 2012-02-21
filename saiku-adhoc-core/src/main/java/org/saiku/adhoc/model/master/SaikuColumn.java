@@ -60,6 +60,8 @@ public class SaikuColumn implements SaikuElement{
 
 	private String sort;
 	
+	private String layoutId;
+	
 	//private boolean forGroupOnly;
 
 	private boolean hideRepeating;
@@ -249,6 +251,14 @@ public class SaikuColumn implements SaikuElement{
 
 	public boolean isHideRepeating() {
 		return hideRepeating;
+	}
+
+	public void setLayoutId(String layoutId) {
+		this.layoutId = layoutId;
+	}
+
+	public String getLayoutId() {
+		return layoutId;
 	}
 
 }
