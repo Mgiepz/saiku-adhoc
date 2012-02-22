@@ -38,7 +38,7 @@ import org.pentaho.platform.engine.core.system.PentahoSessionHolder;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.pentaho.platform.util.messages.LocaleHelper;
 import org.saiku.adhoc.model.master.ReportTemplate;
-import org.saiku.adhoc.model.master.ReportTemplateServer;
+import org.saiku.adhoc.model.master.ReportTemplateStandalone;
 import org.saiku.adhoc.providers.IPrptProvider;
 import org.saiku.adhoc.service.PluginConfig;
 
@@ -166,7 +166,7 @@ public class StandaloneRepositoryHelper implements IRepositoryHelper {
 
 
 		Map<String, ReportTemplate> datasources = prptProvider.getDatasources();
-        return datasources.values().toArray(new ReportTemplateServer[]{});
+        return datasources.values().toArray(new ReportTemplateStandalone[]{});
 
 
 	}

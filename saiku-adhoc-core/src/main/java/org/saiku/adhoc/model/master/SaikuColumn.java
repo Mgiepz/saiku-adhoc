@@ -66,6 +66,8 @@ public class SaikuColumn implements SaikuElement{
 
 	private boolean hideRepeating;
 	
+	private boolean hideOnReport;
+	
 	public SaikuColumn() {
 		//this.forGroupOnly = false;
 		this.hideRepeating = false;
@@ -259,6 +261,14 @@ public class SaikuColumn implements SaikuElement{
 
 	public String getLayoutId() {
 		return layoutId;
+	}
+
+	public void setHideOnReport(boolean hideOnReport) {
+		this.hideOnReport = hideOnReport;
+	}
+
+	public boolean isHideOnReport() {
+		return hideOnReport;
 	}
 
 }

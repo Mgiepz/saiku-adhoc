@@ -21,14 +21,14 @@ package org.saiku.adhoc.model.master;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class ReportTemplateServer extends ReportTemplate{
+public class ReportTemplateStandalone extends ReportTemplate{
 	
-	public ReportTemplateServer() {
+	public ReportTemplateStandalone() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public ReportTemplateServer(String solution, String path, String name) {
+	public ReportTemplateStandalone(String solution, String path, String name) {
 		this.solution = solution;
 		this.path = path;
 		this.name = name;

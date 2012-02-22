@@ -36,7 +36,7 @@ import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.ReportTemplate;
-import org.saiku.adhoc.model.master.ReportTemplateServer;
+import org.saiku.adhoc.model.master.ReportTemplateStandalone;
 import org.saiku.adhoc.providers.IPrptProvider;
 import org.saiku.adhoc.service.report.SaikuReportingComponent;
 import org.apache.commons.io.FilenameUtils;
@@ -100,7 +100,7 @@ public class StandalonePrptProvider implements IPrptProvider {
 //                        String type = props.getProperty("type");
 //                        if (name != null && type != null) {
 //                            Type t = ReportTemplate.Type.valueOf(type.toUpperCase());
-                            ReportTemplate ds = new ReportTemplateServer(null, file.getCanonicalPath(), FilenameUtils.removeExtension(file.getName()));
+                            ReportTemplate ds = new ReportTemplateStandalone(null, file.getCanonicalPath(), FilenameUtils.removeExtension(file.getName()));
                             datasources.put(file.getName(), ds);
                         //}
                         }

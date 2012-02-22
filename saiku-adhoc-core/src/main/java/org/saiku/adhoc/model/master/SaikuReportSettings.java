@@ -25,8 +25,6 @@ public class SaikuReportSettings {
 		this.pageFormat = pageFormat;
 	}
 
-	private static final int INITIAL_LIMIT = 100;
-	
 	private boolean disableDistinct;
 	private Integer limit;
 	private Integer orientation;
@@ -42,7 +40,6 @@ public class SaikuReportSettings {
 	
 	public SaikuReportSettings() {
 		this.disableDistinct = false;
-		//this.limit = INITIAL_LIMIT;
 		this.orientation = null;
 		this.marginBottom = null;
 		this.marginLeft = null;
