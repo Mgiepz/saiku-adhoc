@@ -52,38 +52,9 @@ public class ExportResource {
 
 	private Log log = LogFactory.getLog(ExportResource.class);
 
-	// Spring
 	public void setExportService(ExportService exportService) {
 		this.exportService = exportService;
 	}
-
-	/*
-	@GET
-	@Produces({ "application/vnd.ms-excel" })
-	@Path("/{queryname}/xls")
-	public StreamingOutput exportXls(@PathParam("queryname") final String queryName, final @Context HttpContext hc) {
-		String name = "export";
-		hc.getResponse().getHttpHeaders()
-		.putSingle("content-disposition", "attachment; filename = " + name + ".xls");
-		
-		return new StreamingOutput() {
-			public void write(OutputStream output) throws IOException, WebApplicationException {
-				try {
-
-					if (log.isDebugEnabled()) {
-						log.debug("REST:GET " + queryName + " exportXls");
-					}
-
-					exportService.writeXls(queryName, output);
-				
-				} catch (Exception e) {
-					throw new WebApplicationException(e);
-				}
-			}
-		};
-
-	}
-*/
 	
 	@GET
 	@Produces({ "application/vnd.ms-excel" })
@@ -134,14 +105,24 @@ public class ExportResource {
 	@GET
 	@Produces({ "text/csv" })
 	@Path("/{queryname}/csv")
-	public String exportCsv(@PathParam("queryname") String queryName) throws CdaException {
-
-		if (log.isDebugEnabled()) {
-			log.debug("REST:GET " + queryName + " exportCsv");
+	public Response exportCsv(@PathParam("queryname") String queryName) {
+		
+		try {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			exportService.writeCsv(queryName, output);
+			String name = "export";
+			
+			byte[] doc = output.toByteArray();
+			
+			return Response.ok(doc, MediaType.APPLICATION_OCTET_STREAM).header(
+					"content-disposition",
+					"attachment; filename = " + name + ".csv").header(
+							"content-length",doc.length).build();
+			
+		} catch (Exception e) {
+			throw new WebApplicationException(e);
 		}
-
-		return exportService.exportCsv(queryName);
-
+		
 	}
 
 }

@@ -20,6 +20,7 @@
 
 package org.saiku.adhoc.service.cda;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 import org.saiku.adhoc.exceptions.CdaException;
@@ -50,7 +51,7 @@ public class ExportService {
 		return cdaAccessor.doQuery(model, sessionId, "xls");
 		
 	}
-	
+		
 	public String exportCsv(String sessionId) throws CdaException {
 
 		SaikuMasterModel query = sessionHolder.getModel(sessionId);
@@ -62,7 +63,6 @@ public class ExportService {
 	public void exportPdf(String sessionId, OutputStream output) throws Exception{
 		this.reportGeneratorService.renderReportPdf(sessionId, output);
 	}
-
 	
 	public void setReportGeneratorService(ReportGeneratorService reportGeneratorService) {
 		this.reportGeneratorService = reportGeneratorService;
@@ -79,6 +79,13 @@ public class ExportService {
 	    cdaAccessor.doQuery(query, sessionId, "xls", output);
 		
 	}
+	
+	public void writeCsv(String sessionId, ByteArrayOutputStream output) {
 
+		SaikuMasterModel query = sessionHolder.getModel(sessionId);
+		
+	    cdaAccessor.doQuery(query, sessionId, "csv", output);
+		
+	}
 
 }
