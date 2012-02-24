@@ -140,7 +140,7 @@ public class CdaBuilder implements ModelBuilder {
 				ColumnDefinition columnDef = new ColumnDefinition();
 				columnDef.setName(saikuColumn.getName());
 				columnDef.setType(ColumnDefinition.TYPE.CALCULATED_COLUMN);
-				columnDef.setFormula(saikuColumn.getFormula());
+				columnDef.setFormula("=" + saikuColumn.getFormula());
 				cdaColumns.add(columnDef);
 			}
 		}
