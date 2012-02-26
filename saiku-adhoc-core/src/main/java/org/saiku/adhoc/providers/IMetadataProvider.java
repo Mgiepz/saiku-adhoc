@@ -21,6 +21,7 @@ package org.saiku.adhoc.providers;
 
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.saiku.adhoc.exceptions.MetadataException;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.metadata.impl.MetadataModel;
@@ -67,5 +68,7 @@ public interface IMetadataProvider {
 	public abstract MetadataModel loadModel(String domainId, String modelId);
 
 	public abstract ReportTemplate[] loadTemplates();
+	
+	public abstract IMetadataDomainRepository getMetadataRepository();
 
 }

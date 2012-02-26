@@ -87,7 +87,6 @@ import org.saiku.adhoc.service.report.tasks.SaikuUpdateGroupHeaderTask;
 import org.saiku.adhoc.service.report.tasks.SaikuUpdateMessagesTask;
 import org.saiku.adhoc.service.report.tasks.SaikuUpdateReportFooterTask;
 import org.saiku.adhoc.service.report.tasks.SaikuUpdateReportHeaderTask;
-import org.saiku.adhoc.service.report.tasks.SaikuUpdateSummaryTask;
 import org.saiku.adhoc.service.report.tasks.UpdateTask;
 
 public class SaikuAdhocPreProcessor implements ReportPreProcessor {
@@ -264,7 +263,9 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 
 			itemBand.addElement(footerElement);
 
-			iterateSection(itemBand, new SaikuUpdateSummaryTask(model.getReportSummaryElements(), RPT_SUMMARY_MSG, model));
+			
+			
+			iterateSection(itemBand, new SaikuUpdateMessagesTask(model.getReportSummaryElements(), RPT_SUMMARY_MSG, model));
 
 		}
 

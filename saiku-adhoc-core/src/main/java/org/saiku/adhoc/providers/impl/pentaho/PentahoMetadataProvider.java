@@ -22,12 +22,7 @@ package org.saiku.adhoc.providers.impl.pentaho;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.metadata.model.Domain;
@@ -38,12 +33,10 @@ import org.pentaho.platform.api.engine.IPentahoSession;
 import org.pentaho.platform.engine.core.system.PentahoBase;
 import org.pentaho.platform.engine.core.system.PentahoSessionHolder;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
-import org.pentaho.platform.util.messages.LocaleHelper;
 import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.metadata.impl.MetadataModel;
-import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
-import org.saiku.adhoc.model.metadata.impl.ModelInfoComparator;
+import org.saiku.adhoc.providers.AbstractMetadataProvider;
 import org.saiku.adhoc.providers.IMetadataProvider;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
 
@@ -56,7 +49,7 @@ import org.saiku.adhoc.service.repository.IRepositoryHelper;
  * <a href="mailto:mgiepz@googlemail.com">Marius Giepz</a>
  * 
  */
-public class PentahoMetadataProvider extends PentahoBase implements IMetadataProvider {
+public class PentahoMetadataProvider extends AbstractMetadataProvider {
 
 	private static final long serialVersionUID = 8481450224870463494L;
 
@@ -74,47 +67,6 @@ public class PentahoMetadataProvider extends PentahoBase implements IMetadataPro
 	}
 
 	/* (non-Javadoc)
-	 * @see refac.saiku.adhoc.service.repository.IMetadataService#getBusinessModels(java.lang.String)
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public MetadataModelInfo[] getBusinessModels(String domainName, String locale) {
-		
-		Locale loc = new Locale(locale);
-		
-		LocaleHelper.setLocale(loc);
-
-		List<MetadataModelInfo> models = new ArrayList<MetadataModelInfo>();
-
-		IMetadataDomainRepository repo = getMetadataRepository();
-
-		if (repo == null) {
-			error(Messages
-					.getErrorString("MetadataService.ERROR_0001_BAD_REPO")); //$NON-NLS-1$
-			return null;
-		}
-
-		// TODO: what context is appropriate here?
-		String context = null;
-
-		try {
-			if (StringUtils.isEmpty(domainName)) {
-				for (String domain : getMetadataRepository().getDomainIds()) {
-					getModelInfos(domain, context, models);
-				}
-			} else {
-				getModelInfos(domainName, context, models);
-			}
-		} catch (Throwable t) {
-			error(Messages
-					.getErrorString("MetadataService.ERROR_0002_BAD_MODEL_LIST"), t); //$NON-NLS-1$
-		}
-
-		Collections.sort(models, new ModelInfoComparator());
-		return models.toArray(new MetadataModelInfo[models.size()]);
-	}
-
-	/* (non-Javadoc)
 	 * @see refac.saiku.adhoc.service.repository.IMetadataService#getLogicalModel(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -128,57 +80,6 @@ public class PentahoMetadataProvider extends PentahoBase implements IMetadataPro
 	@Override
 	public Domain getDomain(String domainId) {
 		return repo.getDomain(domainId);
-	}
-
-	/**
-	 * Returns a list of ModelInfo objects for the specified domain.
-	 * @param domainId
-	 * @param context
-	 *            Area to check for model visibility
-	 * @param models
-	 * @throws UnsupportedEncodingException 
-	 */
-	private void getModelInfos(final String domainId, final String context,
-			List<MetadataModelInfo> models) throws UnsupportedEncodingException {
-
-		Domain domainObject = repo.getDomain(domainId);
-		if (domainObject == null) {
-			return;
-		}
-
-		//Some guessing here
-		String locale = LocaleHelper.getClosestLocale(LocaleHelper.getLocale()
-				.toString(), domainObject.getLocaleCodes());
-
-		// iterate over all of the models in this domain
-		for (LogicalModel model : domainObject.getLogicalModels()) {
-			String vis = (String) model.getProperty("visible");
-			if (vis != null) {
-				String[] visibleContexts = vis.split(",");
-				boolean visibleToContext = false;
-				for (String c : visibleContexts) {
-					if (c.equals(context)) {
-						visibleToContext = true;
-						break;
-					}
-				}
-				if (!visibleToContext) {
-					continue;
-				}
-			}
-			// create a new ModelInfo object and give it the envelope
-			// information about the model
-			MetadataModelInfo modelInfo = new MetadataModelInfo();
-			modelInfo.setDomainId(URLEncoder.encode(domainId,"UTF-8"));
-			modelInfo.setModelId(model.getId());
-			modelInfo.setModelName(model.getName(locale));
-			if (model.getDescription() != null) {
-				String modelDescription = model.getDescription(locale);
-				modelInfo.setModelDescription(modelDescription);
-			}
-			models.add(modelInfo);
-		}
-		return;
 	}
 
 	/* (non-Javadoc)
@@ -230,7 +131,7 @@ public class PentahoMetadataProvider extends PentahoBase implements IMetadataPro
 	 * 
 	 * @return
 	 */
-	protected IMetadataDomainRepository getMetadataRepository() {
+	public IMetadataDomainRepository getMetadataRepository() {
 		IMetadataDomainRepository mdr = PentahoSystem
 				.get(IMetadataDomainRepository.class,
 						PentahoSessionHolder.getSession());
