@@ -1,3 +1,5 @@
+If you want to build Saiku-Reporting:
+
 First build the UI project from git@github.com:Mgiepz/saiku-adhoc-ui.git by checking it out and running:
 mvn clean package  install:install-file -Dfile=target/saiku-adhoc-ui-2.2-SNAPSHOT.war  -DgroupId=org.saiku -DartifactId=saiku-adhoc-ui -Dversion=2.2-SNAPSHOT -Dpackaging=war
 
@@ -9,16 +11,21 @@ mvn clean package
 
 In the resulting "target" directory you will find a saiku-adhoc-plugin-2.2-SNAPSHOT.zip file.
 
-Extract this into pentaho-solutions/system
+If you want to install Saiku-Reporting in your Bi-Server 3.10-stable
 
-There might be some confusion with the libraries responsible for CDA-Access. 
-Have a look at you pentaho/web-inf/lib directory and check if there is a file that begins with
-pentaho-reporting-engine-classic-extensions-cda-...
-Also look at the version number of the reporting engine. If the reporting-engine has a version 3.8.x
-download the jar file from
-http://github.com/Mgiepz/saiku-adhoc/tree/master/lib
-and put it in the lib-folder
-if the reporting engine is a newer trunk-version, copy the jar file from the plugin's lib folder to 
-web-inf/lib
+- Extract the zip-file into pentaho-solutions/system
+
+- Install CDA (if you havent yet).
+
+ATTENTION: Lately there has been some confusion with the libraries responsible for CDA-Access. 
+For now we can only make sure that Saiku Reporting works in Pentaho Bi-Server 3.10 if you use the
+CDA-Extension that we provide with the plugin (pentaho-reporting-engine-classic-extensions-cda-experimental.jar).
+If you have no pentaho-reporting-engine-classic-extensions-cda-xxx.jar in your pentaho/web-inf/lib directory
+you will not be able to export a PRPT-Report to your solution repository.
+Same applies if you have the "wrong" version of that extension installed. To be sure that the export
+works, you should delete the pentaho-reporting-engine-classic-extensions-cda-xxx.jar in pentaho/web-inf/lib 
+with the one that we provide. 
+
+If you're testing a snapshot of a Bi-Server > 3.10 you will have to checkout build the cda-extension yourself.
 
 For questions join us at ##saiku on freenode
