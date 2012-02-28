@@ -9,8 +9,7 @@
 		<title>Saiku Reporting</title>
 		<description>Saiku Reporting File</description>
 		<icon-url>content/saiku-ui/images/src/saiku_16.png</icon-url>
-		<meta-provider>org.saiku.adhoc.service.AdhocContentTypeMetaProvider
-		</meta-provider>
+		<meta-provider>org.saiku.adhoc.service.AdhocContentTypeMetaProvider</meta-provider>
 		<operations>
 			<operation>
 				<id>RUN</id>
