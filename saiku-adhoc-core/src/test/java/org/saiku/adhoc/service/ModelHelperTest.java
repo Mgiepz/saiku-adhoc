@@ -29,7 +29,7 @@ public class ModelHelperTest extends TestCase {
 		cols.add(col);
 		model.setColumns(cols);
 
-		SaikuColumn result = ModelHelper.findColumnById(model, id);
+		SaikuColumn result = ModelHelper.findColumnByLayoutId(model, id);
 
 		assertNotNull(result);
 	}

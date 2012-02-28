@@ -33,11 +33,23 @@ public class ModelHelper {
 		return null;
 	}
 
-	public static SaikuColumn findColumnById(SaikuMasterModel model, String id) {
+	public static SaikuColumn findColumnByLayoutId(SaikuMasterModel model, String id) {
 
 		List<SaikuColumn> columns = model.getColumns();
 		for (SaikuColumn saikuColumn : columns) {
 			if (saikuColumn.getLayoutId().equals(id)) {
+				return saikuColumn;
+			}
+		}
+		return null;
+
+	}
+	
+	public static SaikuColumn findColumnByUid(SaikuMasterModel model, String uid) {
+
+		List<SaikuColumn> columns = model.getColumns();
+		for (SaikuColumn saikuColumn : columns) {
+			if (saikuColumn.getUid().equals(uid)) {
 				return saikuColumn;
 			}
 		}

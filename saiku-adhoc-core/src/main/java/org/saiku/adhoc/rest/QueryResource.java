@@ -289,6 +289,22 @@ public class QueryResource extends PentahoBase {
 		}
 	}
 
+	@GET
+	@Produces({ "application/json" })
+	@Path("/{queryname}/DISTINCT/{distinct}")
+	public Status setDistinct(
+			@PathParam("queryname") String sessionId,
+			@PathParam("distinct") String distinct) {
+
+		try {	
+			editorService.setDistinct(sessionId, Boolean.getBoolean(distinct));
+			return Status.OK;
+		} catch (Exception e) {
+			log.error("Cannot set distinct", e);
+			return Status.INTERNAL_SERVER_ERROR;
+		}
+	}
+	
 	@POST
 	@Path("/{queryname}/COLUMNS/CATEGORY/{category}/COLUMN/{column}/POSITION/{position}")
 	public DisplayName addColumn(

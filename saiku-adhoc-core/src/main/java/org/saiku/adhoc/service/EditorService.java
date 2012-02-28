@@ -303,11 +303,23 @@ public class EditorService {
 
 		findAndRemoveByUid(model, position.getUid());
 
+		String name = null;
+
 		List<SaikuGroup> groups = model.getGroups();
 
 		final LogicalModel logicalModel = metadataProvider.getLogicalModel(model.getDomainId(),model.getLogicalModelId());
 		LogicalColumn logicalColumn = logicalModel.findLogicalColumn(columnId);
-
+		if(logicalColumn!=null){
+			String locale = "en_En";
+			name = logicalColumn.getName(locale);
+			
+		}
+		//if its not a logicalColumn it must be a calculated one
+		else{
+			final SaikuColumn column = ModelHelper.findColumnByUid(model, position.getUid()); 
+			name = column.getName();
+		}
+		
 		SaikuGroup group = null;
 
 		// see if group is allready in the selection
@@ -324,13 +336,13 @@ public class EditorService {
 			group.setColumnId(columnId);
 			group.setCategory(categoryId);
 
-			String locale = "en_En";
-			group.setColumnName(logicalColumn.getName(locale));
-			group.setDisplayName(logicalColumn.getName(locale));
+
+			group.setColumnName(name);
+			group.setDisplayName(name);
 
 			group.setUid(position.getUid());
 
-			group.setGroupTotalsLabel("Total " + logicalColumn.getName(locale));
+			group.setGroupTotalsLabel("Total " + name);
 		}
 
 		groups.add(position.getPosition(), group);
@@ -382,11 +394,11 @@ public class EditorService {
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
 		if (id.contains("dtl")) {
-			final SaikuColumn column = ModelHelper.findColumnById(model, id); 
+			final SaikuColumn column = ModelHelper.findColumnByLayoutId(model, id); 
 			return new ElementFormat(column.getElementFormat().getTempFormat(), column.getName());
 
 		} else if (id.contains("dth")) {
-			final SaikuColumn column = ModelHelper.findColumnById(model, id.replace("dth", "dtl")); 
+			final SaikuColumn column = ModelHelper.findColumnByLayoutId(model, id.replace("dth", "dtl")); 
 			return new ElementFormat(column.getColumnHeaderFormat().getTempFormat(), column.getName());
 
 		} else if (id.contains("ghd")) {
@@ -457,14 +469,14 @@ public class EditorService {
 		String displayName = format.getValue();
 
 		if (id.contains("dtl")) {
-			final SaikuColumn saikuColumn = ModelHelper.findColumnById(model, id);	
+			final SaikuColumn saikuColumn = ModelHelper.findColumnByLayoutId(model, id);	
 			TemplateUtils.mergeElementFormats(format.getFormat(), saikuColumn.getElementFormat());
 
 		}
 
 		else if (id.contains("dth")) {
 			
-			final SaikuColumn m = ModelHelper.findColumnById(model, id.replace("dth", "dtl"));	
+			final SaikuColumn m = ModelHelper.findColumnByLayoutId(model, id.replace("dth", "dtl"));	
 
 			List<SaikuColumn> columns = model.getColumns();
 
@@ -599,6 +611,12 @@ public class EditorService {
 		model.setCdaDirty(true);
 	}
 
+	public void setDistinct(String sessionId, Boolean distinct) {
+		SaikuMasterModel model = sessionHolder.getModel(sessionId);
+		model.getSettings().setDisableDistinct(distinct);
+		model.setCdaDirty(true);
+	}
+	
 	public SaikuReportSettings getReportSettings(String sessionId) {
 		return sessionHolder.getModel(sessionId).getSettings();
 	}
