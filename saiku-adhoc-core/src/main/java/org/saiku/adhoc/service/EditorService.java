@@ -499,9 +499,8 @@ public class EditorService {
 			m.setGroupName(displayName);
 		} else if (id.contains("gft") || id.contains("rhd")) {
 			final SaikuLabel m = ModelHelper.findLabelById(model, id);
-			m.setElementFormat(format.getFormat());
+			TemplateUtils.mergeElementFormats(format.getFormat(), m.getElementFormat());
 			m.setValue(displayName);
-
 		} else if (id.contains("sum")) {
 			final List<SaikuLabel> msgs = model.getReportSummaryElements();
 			setFormat(format, id, msgs);
