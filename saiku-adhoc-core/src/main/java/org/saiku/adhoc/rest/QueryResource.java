@@ -297,7 +297,7 @@ public class QueryResource extends PentahoBase {
 			@PathParam("distinct") String distinct) {
 
 		try {	
-			editorService.setDistinct(sessionId, Boolean.getBoolean(distinct));
+			editorService.setDistinct(sessionId, Boolean.valueOf(distinct));
 			return Status.OK;
 		} catch (Exception e) {
 			log.error("Cannot set distinct", e);

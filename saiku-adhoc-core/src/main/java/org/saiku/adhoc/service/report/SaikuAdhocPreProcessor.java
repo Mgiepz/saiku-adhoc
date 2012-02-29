@@ -101,7 +101,6 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 	private String PAGE_HEADER_MSG = "rpt-phd-";
 	private String RPT_SUMMARY_MSG = "rpt-sum-";
 	private String RPT_FOOTER_MSG = "rpt-rft-";
-	private String GRP_FOOTER_MSG = "rpt-gft-";
 	private String PAGE_FOOTER_MSG = "rpt-pft-";
 
 	private SaikuMasterModel model;

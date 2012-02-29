@@ -73,7 +73,7 @@ public class SaikuUpdateDetailsTask implements UpdateTask {
 		 */
 
 		SaikuElementFormat tempFormat = (SaikuElementFormat) saikuColumn.getElementFormat().clone();
-
+	
 		TemplateUtils.mergeElementFormats(e.getStyle(), tempFormat);
 
 		//<style-expression style-key="visible" formula="=HASCHANGED(&quot;ID&quot;)"/>
