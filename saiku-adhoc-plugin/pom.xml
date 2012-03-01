@@ -30,7 +30,7 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>pentaho</groupId>
+									<groupId>webdetails</groupId>
 									<artifactId>cda</artifactId>
 									<version>TRUNK-SNAPSHOT</version>
 									<outputDirectory>target/dist/saiku-adhoc/lib</outputDirectory>
@@ -245,7 +245,6 @@
 			<id>pentaho-third-party</id>
 			<url>http://repo.pentaho.org/artifactory/third-party/</url>
 		</repository>
-
 		<repository>
 			<id>ibiblio</id>
 			<url>http://ibiblio.org/maven2/</url>
@@ -259,6 +258,14 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>repo</name>
+			<url>http://repo.analytical-labs.com/repo</url>
 		</repository>
 	</repositories>
 	<dependencies>

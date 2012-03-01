@@ -92,11 +92,15 @@ public class SaikuMasterModel {
 	private String logicalModelId;
 
 	private String sessionId;
+	
+	private Integer maxClientSeq;
     
 
 	public void init(String sessionId, ReportGeneratorService reportGeneratorService) throws SaikuAdhocException{
 
 		this.sessionId = sessionId;
+		
+		this.setMaxClientSeq(null);
 
 		if(this.settings==null){
 			this.settings = new SaikuReportSettings();	
@@ -251,6 +255,14 @@ public class SaikuMasterModel {
 	@JsonIgnore
 	public String getSessionId() {
 		return sessionId;
+	}
+
+	public void setMaxClientSeq(Integer maxClientSeq) {
+		this.maxClientSeq = maxClientSeq;
+	}
+
+	public Integer getMaxClientSeq() {
+		return maxClientSeq;
 	}
 	
 }

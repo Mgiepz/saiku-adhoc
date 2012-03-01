@@ -171,8 +171,9 @@ public class CdaBuilder implements ModelBuilder {
 		for (Entry<String, Query> filterQueryEntry : filterQueries.entrySet()) {
 			String filterKey = filterQueryEntry.getKey();
 			Query filterQuery = filterQueryEntry.getValue();
-			DataAccess fCda = new MqlDataAccess(filterKey, filterKey, "1",
+			MqlDataAccess fCda = new MqlDataAccess(filterKey, filterKey, "1",
 					XmlUtils.prettyPrint(xmlHelper.toXML(filterQuery)));
+			fCda.setCacheEnabled(true);
 			cda.addDataAccess(fCda);
 		}
 
@@ -317,7 +318,8 @@ public class CdaBuilder implements ModelBuilder {
 
 		String[] domainInfo = domain.split("/");
 		Connection connection = new MetadataConnection("1", domainInfo[0] + "/" + domainInfo[1], domainInfo[1]);
-		DataAccess dataAccess = new MqlDataAccess(sessionId, sessionId, "1", "");
+		MqlDataAccess dataAccess = new MqlDataAccess(sessionId, sessionId, "1", "");
+		//dataAccess.setCacheEnabled(true);
 		cda.addConnection(connection);
 		cda.addDataAccess(dataAccess);
 		return cda;

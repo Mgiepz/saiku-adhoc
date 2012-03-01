@@ -39,7 +39,7 @@
 		</repository>
 		<repository>
 			<snapshots>
-				<enabled>false</enabled>
+				<enabled>true</enabled>
 			</snapshots>
 			<id>central</id>
 			<name>repo</name>
@@ -306,7 +306,7 @@
 			<version>2.5-20081211</version>
 		</dependency>
 		<dependency>
-			<groupId>pentaho</groupId>
+			<groupId>webdetails</groupId>
 			<artifactId>cda</artifactId>
 			<version>TRUNK-SNAPSHOT</version>
 		</dependency>
