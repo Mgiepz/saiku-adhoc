@@ -20,6 +20,8 @@ import org.pentaho.platform.engine.core.output.SimpleOutputHandler;
 import org.pentaho.platform.engine.core.solution.SimpleParameterProvider;
 import org.pentaho.platform.engine.core.system.PentahoSessionHolder;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
+import org.saiku.adhoc.messages.Messages;
 
 /**
  *
@@ -30,14 +32,14 @@ public class PluginUtils
 
   private static final Log logger = LogFactory.getLog(PluginUtils.class);
 
-  public static String callPlugin(String pluginName, String method, Map<String, Object> params)
+  public static String callPlugin(String pluginName, String method, Map<String, Object> params) throws SaikuAdhocException
   {
     IParameterProvider requestParams = new SimpleParameterProvider(params);
     return callPlugin(pluginName, method, requestParams);
 
   }
 
-  public static String callPlugin(String pluginName, String method, IParameterProvider params)
+  public static String callPlugin(String pluginName, String method, IParameterProvider params) throws SaikuAdhocException
   {
 
     IPentahoSession userSession = PentahoSessionHolder.getSession();
@@ -63,8 +65,9 @@ public class PluginUtils
    * @param params
    * @param outputStream
    * @return
+ * @throws SaikuAdhocException 
    */
-  public static String callPlugin(String pluginName, String method, Map<String, Object> params, OutputStream outputStream)
+  public static String callPlugin(String pluginName, String method, Map<String, Object> params, OutputStream outputStream) throws SaikuAdhocException
     {
 
   	IParameterProvider requestParams = new SimpleParameterProvider(params);
@@ -79,7 +82,9 @@ public class PluginUtils
       catch (Exception e)
       {
         logger.error("Failed to acquire " + pluginName + " plugin: " + e.toString());
-        return null;
+        throw new SaikuAdhocException(				
+				Messages.getErrorString("PluginUtils.ERROR_0002_FAILED_ACQUIRE_PLUGIN")
+		);
       }
       return callPlugin(userSession, contentGenerator, method, params);
     }  
@@ -91,8 +96,9 @@ public class PluginUtils
  * @param params
  * @param outputStream
  * @return
+ * @throws SaikuAdhocException 
  */
-public static void callPlugin(String pluginName, String method, Map<String, Object> params, OutputStream outputStream, String foo)
+public static void callPlugin(String pluginName, String method, Map<String, Object> params, OutputStream outputStream, String foo) throws SaikuAdhocException
   {
 	
 	IParameterProvider requestParams = new SimpleParameterProvider(params);
@@ -108,6 +114,9 @@ public static void callPlugin(String pluginName, String method, Map<String, Obje
     catch (Exception e)
     {
       logger.error("Failed to acquire " + pluginName + " plugin: " + e.toString());
+		throw new SaikuAdhocException(				
+				Messages.getErrorString("PluginUtils.ERROR_0002_FAILED_ACQUIRE_PLUGIN")
+		);
     }
 
     Map<String, Object> pathMap = new HashMap<String, Object>();
@@ -123,13 +132,13 @@ public static void callPlugin(String pluginName, String method, Map<String, Obje
 
 
   
-  public static String callPlugin(IPentahoSession userSession, IContentGenerator contentGenerator, String method, Map<String, Object> params)
+  public static String callPlugin(IPentahoSession userSession, IContentGenerator contentGenerator, String method, Map<String, Object> params) throws SaikuAdhocException
   {
     IParameterProvider requestParams = new SimpleParameterProvider(params);
     return callPlugin(userSession, contentGenerator, method, requestParams);
   }
   
-  public static String callPlugin(IPentahoSession userSession, IContentGenerator contentGenerator, String method, IParameterProvider params)
+  public static String callPlugin(IPentahoSession userSession, IContentGenerator contentGenerator, String method, IParameterProvider params) throws SaikuAdhocException
   {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     IParameterProvider requestParams = params;
@@ -143,7 +152,7 @@ public static void callPlugin(String pluginName, String method, Map<String, Obje
     return callPlugin(userSession, contentGenerator, outputStream, paramProvider);
   }
   
-  public static String callPlugin(IPentahoSession userSession, IContentGenerator cda, OutputStream outputStream, Map<String, IParameterProvider> paramProvider)
+  public static String callPlugin(IPentahoSession userSession, IContentGenerator cda, OutputStream outputStream, Map<String, IParameterProvider> paramProvider) throws SaikuAdhocException
   {
     IOutputHandler outputHandler = new SimpleOutputHandler(outputStream, false);
     try
@@ -157,11 +166,13 @@ public static void callPlugin(String pluginName, String method, Map<String, Obje
     catch (Exception e)
     {
       logger.error("Failed to execute call to plugin: " + e.toString());
-      return null;
+		throw new SaikuAdhocException(				
+				Messages.getErrorString("PluginUtils.ERROR_0001_FAILED_CALL_TO_PLUGIN")
+		);
     }
   }
 
-  public static void callPlugin(IPentahoSession userSession, IContentGenerator cda, OutputStream outputStream, Map<String, IParameterProvider> paramProvider, String foo)
+  public static void callPlugin(IPentahoSession userSession, IContentGenerator cda, OutputStream outputStream, Map<String, IParameterProvider> paramProvider, String foo) throws SaikuAdhocException
   {
     IOutputHandler outputHandler = new SimpleOutputHandler(outputStream, false);
     try
@@ -174,6 +185,9 @@ public static void callPlugin(String pluginName, String method, Map<String, Obje
     catch (Exception e)
     {
       logger.error("Failed to execute call to plugin: " + e.toString());
+		throw new SaikuAdhocException(				
+				Messages.getErrorString("PluginUtils.ERROR_0001_FAILED_CALL_TO_PLUGIN")
+		);
     }
   }
   

@@ -129,11 +129,9 @@ public class QueryResource extends PentahoBase {
 
 		}catch (Exception e) {
 			log.error("Cannot generate report (" + sessionId + ")",e);
-			String error = ExceptionUtils.getRootCauseMessage(e);
-
-			throw new SaikuClientException(error);
+			throw new SaikuClientException(e.getMessage());
 		}
-
+		
 	}
 
 	@POST
@@ -266,9 +264,7 @@ public class QueryResource extends PentahoBase {
 
 		}catch (Exception e) {
 				log.error("Cannot generate report (" + sessionId + ")",e);
-				String error = ExceptionUtils.getRootCauseMessage(e);
-
-				throw new SaikuClientException(error);
+				throw new SaikuClientException(e.getMessage());
 		}
 
 	}
@@ -325,7 +321,8 @@ public class QueryResource extends PentahoBase {
 			log.error("Cannot add column " + businessColumn + " to query ("
 					+ sessionId + ")", e);
 			String error = ExceptionUtils.getRootCauseMessage(e);
-			throw new SaikuClientException(error);		
+			String clientMessage = Messages.getErrorString(error);
+			throw new SaikuClientException(clientMessage);		
 		}
 	}
 
@@ -675,16 +672,16 @@ public class QueryResource extends PentahoBase {
 
 	@POST
 	@Path("/{queryname}/EXPORT/PRPT")
-	public Status exportPrpt(
+	public void exportPrpt(
 			SolutionFileInfo file,
 			@PathParam("queryname") String sessionId) {
 
 		try {
 			reportGeneratorService.savePrpt(sessionId, file.getPath(),file.getFile());
-			return Status.OK;
 		} catch (Exception e) {
-
-			return Status.INTERNAL_SERVER_ERROR;
+			log.error("Cannot export prpt (" + sessionId + ")",e);
+			String clientMessage = Messages.getErrorString(e.getMessage());
+			throw new SaikuClientException(clientMessage);
 		}
 	}
 

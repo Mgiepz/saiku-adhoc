@@ -4,8 +4,8 @@
 	<groupId>org.saiku</groupId>
 	<artifactId>saiku-adhoc-bi-platform-plugin</artifactId>
 	<packaging>jar</packaging>
-	<version>2.2-SNAPSHOT</version>
-	<name>saiku adhoc biserver plugin</name>
+	<version>1.0-RC1</version>
+	<name>saiku reporting biserver plugin</name>
 
 	<properties>
 		<maven.compiler.source>1.5</maven.compiler.source>

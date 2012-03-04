@@ -4,6 +4,18 @@
 	<menu-items>
 		<menu-item id="new-adhoc" anchor="file-new-submenu" label="Saiku Reporting" command="content/saiku-adhoc/web/index.html" type="MENU_ITEM" how="LAST_CHILD" />
 	</menu-items>
+	
+		<overlays>
+		<overlay id="startup.saikuReporting" resourcebundle="../content/saiku-adhoc/web/saiku-adhoc.properties">
+			<overlay id="startup.saikuReporting">
+				<toolbar id="mainToolbar">
+					<toolbarbutton id="openAdhoc" image="../content/saiku-adhoc/web/images/src/adhoc_32.png"
+						onclick="mainToolbarHandler.openUrl('Saiku Reporting','Saiku Reporting','content/saiku-adhoc/web/index.html?biplugin=true')"
+						tooltiptext="Saiku Reporting" insertafter="newAnalysisButton" />
+				</toolbar>
+			</overlay>
+		</overlay>
+	</overlays>
 
 	<content-type type="adhoc" mime-type="text/html">
 		<title>Saiku Reporting</title>

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.saiku</groupId>
 	<artifactId>saiku-adhoc-core</artifactId>
-	<version>2.2-SNAPSHOT</version>
+	<version>1.0-RC1</version>
 	<packaging>jar</packaging>
 	<properties>
 		<spring.version>3.0.3.RELEASE</spring.version>

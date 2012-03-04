@@ -51,7 +51,7 @@ public class StringUtils {
 		
 		String uniqueColumnName = name;
 
-		while (colNames.contains(uniqueColumnName)) {
+		while (colNames.contains(uniqueColumnName)||uniqueColumnName.equals("")) {
 			i++;
 			uniqueColumnName = name + " " + i;
 		}
