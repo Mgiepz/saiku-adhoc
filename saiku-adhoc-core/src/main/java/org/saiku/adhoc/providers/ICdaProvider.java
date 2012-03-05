@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaDataFactory;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.dto.SaikuCda;
 
 public interface ICdaProvider {
@@ -50,9 +51,9 @@ public interface ICdaProvider {
 
 	public CdaDataFactory getDataFactory(String dsId);
 	
-	public void callCDA(String pluginName, String method, Map<String, Object> params, OutputStream outputStream, String foo);
+	public void callCDA(String pluginName, String method, Map<String, Object> params, OutputStream outputStream, String foo) throws SaikuAdhocException;
 
-	public String callCDA(String pluginName, String method, Map<String, Object> params);
+	public String callCDA(String pluginName, String method, Map<String, Object> params) throws SaikuAdhocException;
 
 	public String getSolution();
 

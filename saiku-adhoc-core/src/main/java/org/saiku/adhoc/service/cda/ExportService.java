@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 import org.saiku.adhoc.exceptions.CdaException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.WorkspaceSessionHolder;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
@@ -44,7 +45,7 @@ public class ExportService {
 		this.cdaAccessor = cda;
 	}
 
-	public String exportXls(String sessionId) throws CdaException {
+	public String exportXls(String sessionId) throws CdaException, SaikuAdhocException {
 
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 		
@@ -52,7 +53,7 @@ public class ExportService {
 		
 	}
 		
-	public String exportCsv(String sessionId) throws CdaException {
+	public String exportCsv(String sessionId) throws CdaException, SaikuAdhocException {
 
 		SaikuMasterModel query = sessionHolder.getModel(sessionId);
 
@@ -72,7 +73,7 @@ public class ExportService {
 		return reportGeneratorService;
 	}
 
-	public void writeXls(String sessionId, OutputStream output) {
+	public void writeXls(String sessionId, OutputStream output) throws SaikuAdhocException {
 		
 		SaikuMasterModel query = sessionHolder.getModel(sessionId);
 		
@@ -80,7 +81,7 @@ public class ExportService {
 		
 	}
 	
-	public void writeCsv(String sessionId, ByteArrayOutputStream output) {
+	public void writeCsv(String sessionId, ByteArrayOutputStream output) throws SaikuAdhocException {
 
 		SaikuMasterModel query = sessionHolder.getModel(sessionId);
 		

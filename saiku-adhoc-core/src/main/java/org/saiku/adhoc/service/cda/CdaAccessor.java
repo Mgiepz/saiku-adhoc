@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.saiku.adhoc.exceptions.CdaException;
+import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.providers.ICdaProvider;
 import org.saiku.adhoc.utils.ParamUtils;
@@ -48,7 +49,7 @@ public class CdaAccessor implements ICdaAccessor {
 	}
 
 	@Override
-	public String doQuery(SaikuMasterModel model, String id, String outputType) throws CdaException {
+	public String doQuery(SaikuMasterModel model, String id, String outputType) throws CdaException, SaikuAdhocException {
 
 		Map<String, Object> params = prepareParams(model, id, outputType);
 		
@@ -59,7 +60,7 @@ public class CdaAccessor implements ICdaAccessor {
 	}
 
 	@Override
-	public void doQuery(SaikuMasterModel model, String id, String outputType, OutputStream output) {
+	public void doQuery(SaikuMasterModel model, String id, String outputType, OutputStream output) throws SaikuAdhocException {
 
 		Map<String, Object> params = prepareParams(model, id, outputType);
 

@@ -95,7 +95,7 @@ public class QueryResource extends PentahoBase {
 		}
 
 
-		
+
 		if (log.isDebugEnabled()) {
 			log.debug("REST:GET " + queryName + " saveQuery");
 		}
@@ -124,14 +124,24 @@ public class QueryResource extends PentahoBase {
 	@Path("/{queryname}/result")
 	public String executeQuery(@PathParam("queryname") String sessionId) {
 
+		String result;
+
 		try{
-			return queryService.runQuery(sessionId, sessionId);
+			result = queryService.runQuery(sessionId, sessionId);
 
 		}catch (Exception e) {
 			log.error("Cannot generate report (" + sessionId + ")",e);
 			throw new SaikuClientException(e.getMessage());
 		}
-		
+
+		if(!result.equals("")){
+			return result;
+		}else{
+			throw new SaikuClientException(				
+					Messages.getErrorString("CdaQueryService.ERROR_0001_QUERY_RETURNED_NO_DATA")
+			);
+		}
+
 	}
 
 	@POST
@@ -234,7 +244,7 @@ public class QueryResource extends PentahoBase {
 		try {
 
 			return queryService.getFilterResult(sessionId, category, column);
-		
+
 		} catch (Exception e) {
 			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - " + e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
 			log.error(message, e);
@@ -263,8 +273,8 @@ public class QueryResource extends PentahoBase {
 			return report;
 
 		}catch (Exception e) {
-				log.error("Cannot generate report (" + sessionId + ")",e);
-				throw new SaikuClientException(e.getMessage());
+			log.error("Cannot generate report (" + sessionId + ")",e);
+			throw new SaikuClientException(e.getMessage());
 		}
 
 	}
@@ -300,7 +310,7 @@ public class QueryResource extends PentahoBase {
 			return Status.INTERNAL_SERVER_ERROR;
 		}
 	}
-	
+
 	@POST
 	@Path("/{queryname}/COLUMNS/CATEGORY/{category}/COLUMN/{column}/POSITION/{position}")
 	public DisplayName addColumn(
@@ -509,7 +519,7 @@ public class QueryResource extends PentahoBase {
 			@PathParam("column") String column,
 			@PathParam("position") Integer position) {
 
-	    if (log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("REST:POST " + sessionId + " setColumnConfig position=" + position
 					+ " category=" + category + " column=" + column);
 		}
@@ -532,28 +542,28 @@ public class QueryResource extends PentahoBase {
 	@Consumes({ "application/json" })
 	@Path("/{queryname}/COLUMNS/CATEGORY/{category}/COLUMN/{column}/POSITION/{position}/SORT/{order}")
 	public Status setColumnSort(
-	@PathParam("queryname") String sessionId,
-	@PathParam("category") String category,
-	@PathParam("column") String column,
-	@PathParam("position") Integer position,
-	@PathParam("order") String order) {
+			@PathParam("queryname") String sessionId,
+			@PathParam("category") String category,
+			@PathParam("column") String column,
+			@PathParam("position") Integer position,
+			@PathParam("order") String order) {
 
-	if (log.isDebugEnabled()) {
-	log.debug("REST:POST " + sessionId + " sort position=" + position
-	+ " category=" + category + " column=" + column);
+		if (log.isDebugEnabled()) {
+			log.debug("REST:POST " + sessionId + " sort position=" + position
+					+ " category=" + category + " column=" + column);
+		}
+
+		try {
+			editorService.setColumnSort(sessionId, category, column, position, order);
+			return Status.OK;
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return Status.INTERNAL_SERVER_ERROR;
+		}
+
 	}
 
-	try {
-	editorService.setColumnSort(sessionId, category, column, position, order);
-	return Status.OK;
-	} catch (Exception e) {
-	e.printStackTrace();
-
-	return Status.INTERNAL_SERVER_ERROR;
-	}
-
-	}
-	
 	@POST
 	@Consumes({ "application/json" })
 	@Path("/{queryname}/GROUP/CATEGORY/{category}/COLUMN/{column}/POSITION/{position}/SORT/{order}")
@@ -579,7 +589,7 @@ public class QueryResource extends PentahoBase {
 		}
 
 	}
-	
+
 
 	@Override
 	public Log getLogger() {
@@ -615,7 +625,7 @@ public class QueryResource extends PentahoBase {
 		}
 
 	}
-	
+
 	@POST
 	@Consumes({ "application/json" })
 	@Path("/{queryname}/SETTINGS")
@@ -624,7 +634,7 @@ public class QueryResource extends PentahoBase {
 			@PathParam("queryname") String sessionId) {
 
 		try {
-			 editorService.setReportSettings(sessionId,settings);
+			editorService.setReportSettings(sessionId,settings);
 
 		} catch (Exception e) {
 			log.error("Cannot set settings", e);
@@ -633,7 +643,7 @@ public class QueryResource extends PentahoBase {
 		}
 
 	}
-	
+
 	@GET
 	@Produces({ "application/json" })
 	@Path("/{queryname}/FORMAT/ELEMENT/{id}")
@@ -668,7 +678,7 @@ public class QueryResource extends PentahoBase {
 			throw new SaikuClientException(error);		
 		}
 	}
-	
+
 
 	@POST
 	@Path("/{queryname}/EXPORT/PRPT")

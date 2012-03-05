@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.saiku</groupId>
 	<artifactId>saiku-adhoc-webapp</artifactId>
-	<version>2.2-SNAPSHOT</version>
+	<version>1.0-RC1</version>
 	<name>saiku - webapp</name>
 	<packaging>war</packaging>
 
