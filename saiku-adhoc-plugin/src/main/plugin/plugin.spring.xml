@@ -48,6 +48,7 @@ http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/serv
 	</bean>	
 	<bean id="prptProvider" class="org.saiku.adhoc.providers.impl.pentaho.PentahoPrptProvider">
 	</bean>	
+
 	<bean id="metadataProvider" class="org.saiku.adhoc.providers.impl.pentaho.PentahoMetadataProvider">
 		<property name="repositoryHelper" ref="repositoryHelper" />
 	</bean>		

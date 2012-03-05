@@ -36,14 +36,19 @@ import org.saiku.adhoc.service.repository.IRepositoryHelper;
  *
  */
 public class PentahoCdaProvider implements ICdaProvider {
-	
-    private IRepositoryHelper repository;
-    
-    public void setRepositoryHelper(IRepositoryHelper repository) {
-        this.repository = repository;
-    }
+
+	private IRepositoryHelper repository;
+	private String solution;
+	private String path;
+
+	public void setRepositoryHelper(IRepositoryHelper repository) {
+		this.repository = repository;
+	}
 
 	public PentahoCdaProvider() {
+
+		this.solution = SaikuProperties.temporarySolution;
+		this.path = SaikuProperties.temporaryPath;
 
 	}
 
@@ -54,106 +59,100 @@ public class PentahoCdaProvider implements ICdaProvider {
 	 */
 	@Override
 	public CdaDataFactory getDataFactory(String dsId) {
-		
+
 		CdaDataFactory f = new CdaDataFactory();        
 		String baseUrlField = null;
 		f.setBaseUrlField(baseUrlField);
 		String name = dsId;
 		String queryString = dsId;
-//		CdaQueryEntry entry = new CdaQueryEntry(queryString);
-//		entry.setId(dsId);
-//		f.setQuery(name, entry);     
-//		f.setQuery(name, queryString); 
+		//		CdaQueryEntry entry = new CdaQueryEntry(queryString);
+		//		entry.setId(dsId);
+		//		f.setQuery(name, entry);     
+		//		f.setQuery(name, queryString); 
 		f.setQuery(name, queryString);
 		String baseUrl = SaikuProperties.baseURL;
-		
+
 		//Use this for the login
 		//PentahoSessionHolder.getSession().getId();          
 		f.setBaseUrl(baseUrl);
 		f.setSolution(this.getSolution());
-        f.setPath(this.getPath());
+		f.setPath(this.getPath());
 		String file =  dsId + ".cda";
 		f.setFile(file);      
 		f.setUsername(SaikuProperties.cdaUser);
 		f.setPassword(SaikuProperties.cdaPassword);
 
 		return f;
-		
+
 	}
-	
-    @Override
-    public void load() {
-        // TODO Auto-generated method stub
-        
-    }
 
-    @Override
-    public SaikuCda addDatasource(SaikuCda datasource) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	@Override
+	public void load() {
+		// TODO Auto-generated method stub
 
-    @Override
-    public SaikuCda setDatasource(SaikuCda datasource) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	}
 
-    @Override
-    public List<SaikuCda> addDatasources(List<SaikuCda> datasources) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	@Override
+	public SaikuCda addDatasource(SaikuCda datasource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    public boolean removeDatasource(String datasourceName) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	@Override
+	public SaikuCda setDatasource(SaikuCda datasource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    public Map<String, SaikuCda> getDatasources() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	@Override
+	public List<SaikuCda> addDatasources(List<SaikuCda> datasources) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    public SaikuCda getDatasource(String datasourceName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    public String getSolution(){
-    	return "system";
-    }
-    
+	@Override
+	public boolean removeDatasource(String datasourceName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    @Override
-    public String getPath() {
-        return "saiku-adhoc/temp";
-  
-    }
+	@Override
+	public Map<String, SaikuCda> getDatasources() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-//    @Override
-//    public String getSolution() {
-//        return "system";
-//
-//    }
+	@Override
+	public SaikuCda getDatasource(String datasourceName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    public void addDatasource(String solution, String path, String action, String asXML) {
-    	
-    	repository.writeFile(solution,path, action, asXML);        
-    }
-    
-    public void callCDA(String pluginName, String method, Map<String, Object> params, OutputStream outputStream,
-            String foo) throws SaikuAdhocException {
-        PluginUtils.callPlugin("cda", "doQuery", params, outputStream, null);
-      
-    }
+	public String getSolution(){
+		return this.solution;
+	}
 
-    public String callCDA(String pluginName, String method, Map<String, Object> params) throws SaikuAdhocException {
-        return PluginUtils.callPlugin("cda", "doQuery", params);
-    }
+
+	@Override
+	public String getPath() {
+		return this.path;
+
+	}
+
+	@Override
+	public void addDatasource(String solution, String path, String action, String asXML) {
+
+		repository.writeFile(solution,path, action, asXML);        
+	}
+
+	public void callCDA(String pluginName, String method, Map<String, Object> params, OutputStream outputStream,
+			String foo) throws SaikuAdhocException {
+		PluginUtils.callPlugin("cda", "doQuery", params, outputStream, null);
+
+	}
+
+	public String callCDA(String pluginName, String method, Map<String, Object> params) throws SaikuAdhocException {
+		return PluginUtils.callPlugin("cda", "doQuery", params);
+	}
 
 }

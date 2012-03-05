@@ -73,10 +73,13 @@ public class WorkspaceSessionHolder {
 
 	public void initSession(SaikuMasterModel masterModel, String sessionId) {
 
-		// TODO: Move and make configurable
 		if (masterModel.getReportTemplate() == null) {
 			String name = SaikuProperties.defaultPrptTemplate;
-			masterModel.setReportTemplate(new ReportTemplate(prptProvider.getSolution(), prptProvider.getTemplatePath(), name));
+			//TODO: make it a constant;
+			String path = null;
+			String solution = null;
+			
+			masterModel.setReportTemplate(prptProvider.getTemplate(path, solution, name));
 		}
 
 		models.put(sessionId, masterModel);
@@ -137,7 +140,7 @@ public class WorkspaceSessionHolder {
 			final CdaBuilder cdaBuilder = new CdaBuilder();
 			CdaSettings cdaSettings = cdaBuilder.build(model, domain, logicalModel);
 
-			cdaProvider.addDatasource(prptProvider.getSolution(), prptProvider.getPath(), action, cdaSettings.asXML());
+			cdaProvider.addDatasource(cdaProvider.getSolution(), cdaProvider.getPath(), action, cdaSettings.asXML());
 			model.setCdaDirty(false);
 		} catch (Exception e) {
 			 e.printStackTrace();

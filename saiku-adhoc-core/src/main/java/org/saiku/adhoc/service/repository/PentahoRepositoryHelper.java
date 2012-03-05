@@ -44,10 +44,7 @@ import org.pentaho.platform.util.messages.LocaleHelper;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.service.PluginConfig;
 
-@Deprecated
 public class PentahoRepositoryHelper implements IRepositoryHelper {
-
-	private static final String solution = "system";
 
 	private static final String path = "saiku-adhoc/temp";
 
@@ -202,21 +199,6 @@ public class PentahoRepositoryHelper implements IRepositoryHelper {
 	 *
 	 * @param dir
 	 * @param fileExtensions
-	 */
-	/*
-public Document browse(String dir, final String fileExtensions) {
-
-IPentahoSession userSession = PentahoSessionHolder.getSession();
-
-FileTree tree = new FileTree();
-
-final ISolutionRepository solutionRepository = PentahoSystem.get(ISolutionRepository.class, userSession);
-
-Document dirTree = solutionRepository.getFullSolutionTree(ISolutionRepository.ACTION_EXECUTE, new DirectoryFilter());
-
-return dirTree;
-
-}
 	 */
 
 	@Override

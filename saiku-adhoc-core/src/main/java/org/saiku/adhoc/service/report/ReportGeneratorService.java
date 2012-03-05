@@ -551,16 +551,4 @@ public class ReportGeneratorService {
 
 	}
 
-	//	public MasterReport getMasterReport(String fullPath, SimpleReportingComponent reportComponent) throws SaikuAdhocException {
-	//		try {
-	//			return prptProvider.getMasterReport(fullPath, reportComponent);
-	//
-	//		} catch (Exception e) {
-	//			throw new SaikuAdhocException(
-	//					Messages.getErrorString("Repository.ERROR_0001_PRPT_TEMPLATE_NOT_FOUND")
-	//			);
-	//		}
-	//	}
-
-
 }

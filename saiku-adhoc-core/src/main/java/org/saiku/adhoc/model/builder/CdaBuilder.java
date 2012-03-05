@@ -66,9 +66,6 @@ public class CdaBuilder implements ModelBuilder {
 	public CdaSettings build(SaikuMasterModel masterModel, Domain domain, LogicalModel logicalModel) throws UnsupportedConnectionException,
 			UnsupportedDataAccessException, UnknownDataAccessException, SaikuAdhocException {
 
-//		final Domain domain = metadataProvider.getDomain(masterModel.getDomainId());
-//		final LogicalModel logicalModel = metadataProvider.getLogicalModel(masterModel.getDomainId(),masterModel.getLogicalModelId());
-//		
 		final Collection<ColumnDefinition> cdaColumns = new ArrayList<ColumnDefinition>();
 
 		// The MQL-Query to build
