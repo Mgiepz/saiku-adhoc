@@ -22,6 +22,7 @@
 		<property name="repositoryHelper" ref="repositoryHelper" />
 	</bean>		
 	<bean id="repositoryHelper" class="org.saiku.adhoc.service.repository.StandaloneRepositoryHelper">
+	        <property name="prptProvider" ref="prptProvider" />
 	</bean>	
 
 	<!-- service -->
