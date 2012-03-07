@@ -478,11 +478,8 @@ public class EditorService {
 			
 			final SaikuColumn m = ModelHelper.findColumnByLayoutId(model, id.replace("dth", "dtl"));	
 
-			List<SaikuColumn> columns = model.getColumns();
-
-			//If width is not set by the client, keep the old one (inc. NULL)
-
-//temp format???			
+ 			List<SaikuColumn> columns = model.getColumns();
+		
 			if(format.getFormat().getWidth()==null){
 				format.getFormat().setWidth(m.getColumnHeaderFormat().getWidth());
 			}
@@ -490,6 +487,7 @@ public class EditorService {
 			TemplateUtils.mergeElementFormats(format.getFormat(), m.getColumnHeaderFormat());
 			if (!m.getName().equals(displayName)) {
 				m.setName(StringUtils.getUniqueColumnName(displayName, columns));
+				model.setCdaDirty(true);
 			}
 			return new DisplayName(m.getName(), m.getUid());
 
