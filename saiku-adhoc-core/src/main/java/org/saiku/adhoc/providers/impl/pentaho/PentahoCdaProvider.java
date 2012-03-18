@@ -65,22 +65,14 @@ public class PentahoCdaProvider implements ICdaProvider {
 		f.setBaseUrlField(baseUrlField);
 		String name = dsId;
 		String queryString = dsId;
-		//		CdaQueryEntry entry = new CdaQueryEntry(queryString);
-		//		entry.setId(dsId);
-		//		f.setQuery(name, entry);     
-		//		f.setQuery(name, queryString); 
 		f.setQuery(name, queryString);
 		String baseUrl = SaikuProperties.baseURL;
-
-		//Use this for the login
-		//PentahoSessionHolder.getSession().getId();          
-		f.setBaseUrl(baseUrl);
+          
+		//f.setBaseUrl(baseUrl);
 		f.setSolution(this.getSolution());
 		f.setPath(this.getPath());
 		String file =  dsId + ".cda";
 		f.setFile(file);      
-		f.setUsername(SaikuProperties.cdaUser);
-		f.setPassword(SaikuProperties.cdaPassword);
 
 		return f;
 

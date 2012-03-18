@@ -154,7 +154,7 @@ public class SaikuReportingComponent extends SimpleReportingComponent{
 
     public boolean execute() throws Exception {
         final MasterReport report = getReport();
-
+ 
         try {
             final DefaultParameterContext parameterContext = new DefaultParameterContext(report);
             // open parameter context
