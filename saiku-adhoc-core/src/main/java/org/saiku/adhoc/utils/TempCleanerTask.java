@@ -25,7 +25,7 @@ import org.pentaho.platform.api.util.ITempFileDeleter;
 
 public class TempCleanerTask extends TimerTask {
 
-private static final String path = "system/saiku-adhoc/temp";
+private static final String path = "system/tmp";
 
 public void run() {
 

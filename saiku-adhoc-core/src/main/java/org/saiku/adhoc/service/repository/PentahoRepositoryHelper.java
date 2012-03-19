@@ -46,7 +46,7 @@ import org.saiku.adhoc.service.PluginConfig;
 
 public class PentahoRepositoryHelper implements IRepositoryHelper {
 
-	private static final String path = "saiku-adhoc/temp";
+	private static final String path = "tmp";
 
 	private static Log log = LogFactory.getLog(PentahoRepositoryHelper.class);
 

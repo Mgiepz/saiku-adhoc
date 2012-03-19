@@ -97,16 +97,6 @@
 					</executions> -->
 			</plugin>
 
-
-			<plugin>
-
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-
 		</plugins>
 	</build>
 	<dependencies>
@@ -119,6 +109,13 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20080701</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.annotations</artifactId>
+			<scope>provided</scope>
+			<version>1.6.0</version>
 		</dependency>
 
 		<dependency>
@@ -353,8 +350,7 @@
 		<dependency>
 			<groupId>pentaho-reporting-engine</groupId>
 			<artifactId>pentaho-reporting-engine-classic-extensions-cda</artifactId>
-			<!--version>EXPERIMENTAL</version-->
-			<version>TRUNK-SNAPSHOT</version>
+			<version>saiku-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>pentaho-reporting-engine</groupId>
@@ -464,12 +460,6 @@
 			<artifactId>mockito-core</artifactId>
 			<version>1.9.0</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>0.10.8</version>
-			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>

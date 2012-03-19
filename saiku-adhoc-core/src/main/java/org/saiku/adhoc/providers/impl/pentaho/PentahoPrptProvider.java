@@ -90,7 +90,7 @@ public class PentahoPrptProvider implements IPrptProvider {
 
     @Override
     public String getPath() {
-        return "saiku-adhoc/temp";
+        return "tmp";
     }
 
     @Override

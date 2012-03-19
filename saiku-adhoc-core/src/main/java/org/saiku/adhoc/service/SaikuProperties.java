@@ -250,7 +250,7 @@ public class SaikuProperties extends Properties{
 
 	public static final String metadataFile = getPropString("saiku-adhoc.metadata.file","/metadata.xmi");
 	
-	public static String temporaryPath = getPropString("saiku-adhoc.temp.path","saiku-adhoc/temp");
+	public static String temporaryPath = getPropString("saiku-adhoc.temp.path","tmp");
 	
 	public static String temporarySolution = getPropString("saiku-adhoc.temp.solution","system");
 	
