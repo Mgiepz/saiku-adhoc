@@ -1,19 +1,13 @@
 ###If you want to install Saiku-Reporting in your Bi-Server 3.10-stable
 
-- Extract the zip-file into pentaho-solutions/system
+Please use the ctools-installer from http://github.com/pmalves/ctools-installer to install Saiku-Reporting
 
-- Install CDA (if you havent yet).
-
-ATTENTION: Lately there has been some confusion with the libraries responsible for CDA-Access. 
-For now we can only make sure that Saiku Reporting works in Pentaho Bi-Server 3.10 if you use the
-CDA-Extension that we provide with the plugin (pentaho-reporting-engine-classic-extensions-cda-experimental.jar).
+ATTENTION: 
 If you have no pentaho-reporting-engine-classic-extensions-cda-xxx.jar in your pentaho/web-inf/lib directory
 you will not be able to export a PRPT-Report to your solution repository.
 Same applies if you have the "wrong" version of that extension installed. To be sure that the export
 works, you should replace the pentaho-reporting-engine-classic-extensions-cda-xxx.jar in pentaho/web-inf/lib 
 with the one that we provide (without warranty that your other solutions will still work). 
-
-If you're testing a snapshot of a Bi-Server > 3.10 you will have to checkout build the cda-extension yourself.
 
 ###If you want to build Saiku-Reporting:
 
