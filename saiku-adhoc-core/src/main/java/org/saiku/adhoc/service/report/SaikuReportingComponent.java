@@ -19,6 +19,8 @@
  */
 package org.saiku.adhoc.service.report;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
@@ -51,9 +53,13 @@ import org.pentaho.reporting.engine.classic.core.util.ReportParameterValues;
 import org.pentaho.reporting.engine.classic.extensions.modules.java14print.Java14PrintUtil;
 import org.pentaho.reporting.libraries.base.config.Configuration;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
+import org.pentaho.reporting.libraries.resourceloader.Resource;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.reporting.libraries.xmlns.common.ParserUtil;
 import org.pentaho.reporting.platform.plugin.ParameterXmlContentHandler;
 import org.pentaho.reporting.platform.plugin.ReportContentUtil;
+import org.pentaho.reporting.platform.plugin.ReportCreator;
 import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
 import org.pentaho.reporting.platform.plugin.cache.NullReportCache;
 import org.pentaho.reporting.platform.plugin.cache.ReportCache;
@@ -116,6 +122,8 @@ public class SaikuReportingComponent extends SimpleReportingComponent{
     private boolean dashboardMode;
 
     private Boolean useContentRepository = false;
+
+    private String reportDefinitionPath;
 
     public static final String REPORTHTML_CONTENTHANDLER_PATTERN = "content-handler-pattern"; //$NON-NLS-1$
 
@@ -268,6 +276,16 @@ public class SaikuReportingComponent extends SimpleReportingComponent{
     public void setReportDefinitionInputStream(final InputStream reportDefinitionInputStream) {
     }
 
+    public String getReportDefinitionPath()
+    {
+      return reportDefinitionPath;
+    }
+
+
+    public void setReportDefinitionPath(final String reportDefinitionPath)
+    {
+      this.reportDefinitionPath = reportDefinitionPath;
+    }
     public Map<String, Object> getInputs() {
         if (inputs != null) {
             return Collections.unmodifiableMap(inputs);
@@ -354,6 +372,23 @@ public class SaikuReportingComponent extends SimpleReportingComponent{
     }
 
     public MasterReport getReport() {
+        if(report==null){
+            try {
+                
+                File file = new File(reportDefinitionPath);
+                ResourceManager resourceManager = new ResourceManager();
+                resourceManager.registerDefaults();
+                Resource directly = resourceManager.createDirectly(file, MasterReport.class);
+                return (MasterReport) directly.getResource();
+               
+            } catch (ResourceException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        else {
+        return report;
+        }
         return report;
     }
 
