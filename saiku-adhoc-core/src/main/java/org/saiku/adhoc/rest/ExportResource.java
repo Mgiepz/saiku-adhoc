@@ -32,8 +32,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Service;
 import org.saiku.adhoc.service.cda.ExportService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -45,8 +43,8 @@ import org.springframework.stereotype.Component;
  * 
  */
 
-@Service(Object.class)
-@Property(name="javax.ws.rs", boolValue=true)
+//@Service(Object.class)
+//@Property(name="javax.ws.rs", boolValue=true)
 @Component
 @Path("/saiku-adhoc/rest/export")
 @Scope("request")
