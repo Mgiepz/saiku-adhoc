@@ -100,8 +100,8 @@ public class StandalonePrptProvider implements IPrptProvider {
 //                        String type = props.getProperty("type");
 //                        if (name != null && type != null) {
 //                            Type t = ReportTemplate.Type.valueOf(type.toUpperCase());
-                            ReportTemplate ds = new ReportTemplateStandalone(null, file.getCanonicalPath(), FilenameUtils.removeExtension(file.getName()));
-                            datasources.put(file.getName(), ds);
+                            ReportTemplate ds = new ReportTemplateStandalone(null, FilenameUtils.getFullPath(file.getPath()), FilenameUtils.removeExtension(file.getName()));
+                            datasources.put(FilenameUtils.removeExtension(file.getName()), ds);
                         //}
                         }
                     }
