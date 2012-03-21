@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.model.concept.Concept;
 import org.pentaho.metadata.model.concept.types.AggregationType;
 import org.pentaho.metadata.model.concept.types.Alignment;
 import org.pentaho.metadata.model.concept.types.DataType;
@@ -86,7 +87,11 @@ public class PentahoMetadataUtil extends PentahoBase {
 		// add the categories to the model
 		List<ICategory> categories = new ArrayList<ICategory>();
 		for (org.pentaho.metadata.model.Category cat : m.getCategories()) {
+
+			//check visibility
+			if(isVisible(cat)){
 			categories.add(createCategory(m, cat));
+			}
 		}
 		model.setCategories(categories.toArray(new Category[categories.size()]));
 
@@ -111,7 +116,9 @@ public class PentahoMetadataUtil extends PentahoBase {
 		}
 		List<IColumn> columns = new ArrayList<IColumn>();
 		for (LogicalColumn col : c.getLogicalColumns()) {
-			columns.add(createColumn(m, col, c));
+			if(isVisible(col)){
+				columns.add(createColumn(m, col, c));	
+			}
 		}
 		cat.setColumns(columns.toArray(new Column[columns.size()]));
 
@@ -192,6 +199,32 @@ public class PentahoMetadataUtil extends PentahoBase {
 			col.setFormatMask((String)obj);
 		}
 		return col;
+	}
+
+	public static boolean isVisible(Concept concept) {
+
+		String context = null;
+		
+		//check visible
+		String vis = (String) concept.getProperty("visible");
+		if (vis != null) {
+			String[] visibleContexts = vis.split(",");
+			for (String c : visibleContexts) {
+				if (c.equals(context)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		//also check hidden
+		Boolean hidden = (Boolean) concept.getProperty("hidden");
+		if (hidden != null && hidden.equals(Boolean.TRUE)) {
+			return false;
+		}		
+		
+		return true;
+		
 	}
 
 }

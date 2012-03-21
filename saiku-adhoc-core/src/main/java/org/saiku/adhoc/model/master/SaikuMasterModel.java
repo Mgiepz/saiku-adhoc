@@ -26,17 +26,46 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.service.report.ReportGeneratorService;
 
-//@JsonPropertyOrder({"reportHeaderElements"})
+@JsonPropertyOrder(
+		{
+			"version",
+			"domainId",
+			"logicalModelId",
+			"reportHeaderElements",
+			"pageHeaderElements",
+			"pageFooterElements",
+			"reportFooterElements",
+			"columns",
+			"sortColumns",
+			"groups",
+			"reportSummaryElements",
+			"parameters",
+			"settings",
+			"clientModelSelection",
+			"maxClientSeq"
+		}
+)
+
 public class SaikuMasterModel {
+	
+	private static final String VERSION_INFO = "V_1_0";
 
 	@JsonIgnore
 	public Boolean getCdaDirty() {
 		return cdaDirty;
 	}
+	
+	public String getVersion(){
+		return VERSION_INFO;
+	}
 
+	public  void setVersion(){
+	}
+	
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 	}

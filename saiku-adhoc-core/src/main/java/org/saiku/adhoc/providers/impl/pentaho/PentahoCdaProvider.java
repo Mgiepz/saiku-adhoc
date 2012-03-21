@@ -67,7 +67,9 @@ public class PentahoCdaProvider implements ICdaProvider {
 		String queryString = dsId;
 		f.setQuery(name, queryString);
 		String baseUrl = SaikuProperties.baseURL;
-          
+        //f.setUseLocalCall(false);
+        f.setUsername("joe");
+        f.setPassword("password");
 		f.setBaseUrl(baseUrl);
 		f.setSolution(this.getSolution());
 		f.setPath(this.getPath());
