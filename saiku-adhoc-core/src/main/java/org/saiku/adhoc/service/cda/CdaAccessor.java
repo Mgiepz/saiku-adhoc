@@ -19,7 +19,9 @@
  */
 package org.saiku.adhoc.service.cda;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,8 +54,17 @@ public class CdaAccessor implements ICdaAccessor {
 	public String doQuery(SaikuMasterModel model, String id, String outputType) throws CdaException, SaikuAdhocException {
 
 		Map<String, Object> params = prepareParams(model, id, outputType);
-		
-		final String result = cdaProvider.callCDA("cda", "doQuery", params);
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		cdaProvider.callCDA("cda", "doQuer", params, outputStream, null);
+
+		String result;
+		try {
+			result = outputStream.toString("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new SaikuAdhocException("unsuported encoding");
+		}
 
 		return result;
 
