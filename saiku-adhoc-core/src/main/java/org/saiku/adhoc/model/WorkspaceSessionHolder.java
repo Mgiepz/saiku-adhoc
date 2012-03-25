@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
@@ -36,6 +38,7 @@ import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.providers.ICdaProvider;
 import org.saiku.adhoc.providers.IMetadataProvider;
 import org.saiku.adhoc.providers.IPrptProvider;
+import org.saiku.adhoc.service.EditorService;
 import org.saiku.adhoc.service.SaikuProperties;
 
 import pt.webdetails.cda.settings.CdaSettings;
@@ -58,6 +61,8 @@ public class WorkspaceSessionHolder {
 	private IPrptProvider prptProvider;
 
 	private IMetadataProvider metadataProvider;
+	
+	protected Log log = LogFactory.getLog(WorkspaceSessionHolder.class);
 	
 	public void setMetadataProvider(IMetadataProvider metadataProvider) {
 		this.metadataProvider = metadataProvider;
@@ -136,10 +141,15 @@ public class WorkspaceSessionHolder {
 		try {
 			final Domain domain = metadataProvider.getDomain(model.getDomainId());
 			final LogicalModel logicalModel = metadataProvider.getLogicalModel(model.getDomainId(),model.getLogicalModelId());
-	
+		
 			final CdaBuilder cdaBuilder = new CdaBuilder();
 			CdaSettings cdaSettings = cdaBuilder.build(model, domain, logicalModel);
 
+			if(log.isDebugEnabled()){
+				log.debug(logModel(sessionId));
+				log.debug(cdaSettings.asXML());
+			}
+			
 			cdaProvider.addDatasource(cdaProvider.getSolution(), cdaProvider.getPath(), action, cdaSettings.asXML());
 			model.setCdaDirty(false);
 		} catch (Exception e) {

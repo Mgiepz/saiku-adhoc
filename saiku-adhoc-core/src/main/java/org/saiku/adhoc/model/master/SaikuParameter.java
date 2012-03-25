@@ -36,6 +36,8 @@ public class SaikuParameter {
 	private String name;
 
 	private String id;
+	
+	private String uid;
 
 	private String category;
 	
@@ -61,6 +63,14 @@ public class SaikuParameter {
 
 	public String getId() {
 		return id;
+	}
+	
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 
 	public void setCategory(String category) {

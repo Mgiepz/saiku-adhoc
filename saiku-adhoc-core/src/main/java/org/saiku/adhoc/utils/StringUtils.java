@@ -23,6 +23,9 @@ package org.saiku.adhoc.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.saiku.adhoc.model.master.SaikuColumn;
 
 public class StringUtils {
@@ -57,6 +60,12 @@ public class StringUtils {
 		}
 
 		return uniqueColumnName;
+	}
+	
+	public static String prettyfyJson(String json) throws JSONException{
+		JSONTokener tokener = new JSONTokener(json);
+		JSONObject finalResult = new JSONObject(tokener);
+		return finalResult.toString(4); 
 	}
 
 }

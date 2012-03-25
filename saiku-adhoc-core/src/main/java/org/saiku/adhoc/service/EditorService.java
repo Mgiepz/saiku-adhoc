@@ -172,6 +172,13 @@ public class EditorService {
 
 	}
 
+	/**
+	 * This method is ambigeous. it removes all types of elements but only finds columns
+	 * 
+	 * @param model
+	 * @param uid
+	 * @return
+	 */
 	private SaikuColumn findAndRemoveByUid(SaikuMasterModel model, String uid) {
 
 		final List<SaikuColumn> columns = model.getColumns();
@@ -203,7 +210,24 @@ public class EditorService {
 			groups.remove(saikuGroup);
 		}
 
+
+		final List<SaikuParameter> params = model.getParameters();
+
+		SaikuParameter saikuParam = null;
+		for (Iterator<SaikuParameter> iterator3 = params.iterator(); iterator3.hasNext();) {
+			SaikuParameter param = (SaikuParameter) iterator3.next();
+			if (param.getUid().equals(uid)) {
+				saikuParam = param;
+				break;
+			}
+		}
+		if (saikuParam != null) {
+			params.remove(saikuParam);
+		}
+		
 		return null;
+		
+		
 
 		/*
 		 * Doesnt work with parameters yet
@@ -232,11 +256,11 @@ public class EditorService {
 
 	}
 
-	public void addFilter(String sessionId, String category, String businessColumn, int position) {
+	public void addFilter(String sessionId, String category, String businessColumn, Position position) {
 
 		final SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-		// TODO: We need remove by uid here too
+		findAndRemoveByUid(model, position.getUid());
 
 		List<SaikuParameter> parameters = model.getParameters();
 
@@ -246,9 +270,10 @@ public class EditorService {
 		SaikuParameter parameter = new SaikuParameter(logicalColumn);
 		parameter.setCategory(category);
 		parameter.setId(businessColumn);
+		parameter.setUid(position.getUid());
 		parameter.setType(logicalColumn.getDataType().getName());
 
-		parameters.add(position, parameter);
+		parameters.add(position.getPosition(), parameter);
 
 		model.setCdaDirty(true);
 		

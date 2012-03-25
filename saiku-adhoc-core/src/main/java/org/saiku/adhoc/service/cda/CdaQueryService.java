@@ -126,13 +126,17 @@ public class CdaQueryService {
 	}
 
 	public Properties getProperties(String queryName) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		//nothing there yet
+		Properties props = new Properties();
+
+		return props;
 	}
 
 	public Properties setProperties(String queryName, Properties props) {
-		// TODO Auto-generated method stub
-		return null;
+		//nothing there yet
+
+		return props;
 	}
 
 }

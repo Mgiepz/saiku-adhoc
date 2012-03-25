@@ -51,7 +51,7 @@ import org.saiku.adhoc.service.report.ReportGeneratorService;
 )
 
 public class SaikuMasterModel {
-	
+
 	private static final String VERSION_INFO = "V_1_0";
 
 	@JsonIgnore

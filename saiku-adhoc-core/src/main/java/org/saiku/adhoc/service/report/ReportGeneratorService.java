@@ -47,7 +47,9 @@ import org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Pdf
 import org.pentaho.reporting.engine.classic.core.modules.output.table.html.HtmlTableModule;
 import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.BundleWriter;
 import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.BundleWriterException;
+import org.pentaho.reporting.engine.classic.core.parameters.DefaultListParameter;
 import org.pentaho.reporting.engine.classic.core.parameters.DefaultParameterDefinition;
+import org.pentaho.reporting.engine.classic.core.parameters.ParameterAttributeNames;
 import org.pentaho.reporting.engine.classic.core.parameters.ParameterDefinitionEntry;
 import org.pentaho.reporting.engine.classic.core.parameters.PlainParameter;
 import org.pentaho.reporting.engine.classic.core.parameters.ReportParameterDefinition;
@@ -55,6 +57,7 @@ import org.pentaho.reporting.engine.classic.core.states.StateUtilities;
 import org.pentaho.reporting.engine.classic.core.states.datarow.DefaultFlowController;
 import org.pentaho.reporting.engine.classic.core.util.ReportParameterValues;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaDefinition;
+import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaDataFactory;
 import org.pentaho.reporting.engine.classic.wizard.WizardOverrideFormattingFunction;
 import org.pentaho.reporting.engine.classic.wizard.WizardProcessor;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
@@ -206,7 +209,17 @@ public class ReportGeneratorService {
 			final WizardBuilder wizardBuilder = new WizardBuilder();
 			final WizardSpecification wizardSpecification = wizardBuilder.build(model);
 
-			reportTemplate.setDataFactory(cdaProvider.getDataFactory(model.getSessionId()));
+			ArrayList<String> queryIds = new ArrayList<String>();
+			//add the masterquery
+			queryIds.add(model.getSessionId());
+			
+			//add the param-queries
+			List<SaikuParameter> parameters = model.getParameters();
+			for (SaikuParameter saikuParameter : parameters) {
+				queryIds.add(saikuParameter.getCategory() + "." + saikuParameter.getId());	
+			}
+
+			reportTemplate.setDataFactory(cdaProvider.getDataFactory(queryIds));
 			reportTemplate.setQuery(model.getSessionId());
 
 			reportTemplate.setParameterDefinition(this.buildParamDefs(model));
@@ -306,21 +319,55 @@ public class ReportGeneratorService {
 			final String parameterName = "F_" + categoryId + "_" + columnId;
 
 			if(saikuParameter.getType().equals("String")){
-				final PlainParameter plainParameter = new PlainParameter(parameterName, String[].class);
-				paramDef.addParameterDefinition(plainParameter);
+				final DefaultListParameter listParam = 
+					new DefaultListParameter(categoryId + "." + columnId, columnId, columnId, 
+						parameterName, true, false, String[].class);
+				listParam.setParameterAttribute(
+						ParameterAttributeNames.Core.NAMESPACE, 
+						ParameterAttributeNames.Core.TYPE,
+						ParameterAttributeNames.Core.TYPE_LIST);
+				listParam.setParameterAttribute(
+						ParameterAttributeNames.Core.NAMESPACE, 
+						ParameterAttributeNames.Core.LABEL,
+						saikuParameter.getName());
+				paramDef.addParameterDefinition(listParam);
+				
 			}
 			if(saikuParameter.getType().equals("Date")){
 				String nameFrom = parameterName + "_FROM";
 				String nameTo = parameterName + "_TO";
 
 				final PlainParameter plainParameterFrom = new PlainParameter(nameFrom, java.util.Date.class);
+				plainParameterFrom.setParameterAttribute(
+						ParameterAttributeNames.Core.NAMESPACE, 
+						ParameterAttributeNames.Core.LABEL,
+						saikuParameter.getName() + " from");
+				plainParameterFrom.setParameterAttribute(
+						ParameterAttributeNames.Core.NAMESPACE, 
+						ParameterAttributeNames.Core.TYPE,
+						ParameterAttributeNames.Core.TYPE_DATEPICKER);
 				paramDef.addParameterDefinition(plainParameterFrom);
 
 				final PlainParameter plainParameterTo = new PlainParameter(nameTo, java.util.Date.class);
+				plainParameterTo.setParameterAttribute(
+						ParameterAttributeNames.Core.NAMESPACE, 
+						ParameterAttributeNames.Core.LABEL,
+						saikuParameter.getName() + " until");
+				plainParameterTo.setParameterAttribute(
+						ParameterAttributeNames.Core.NAMESPACE, 
+						ParameterAttributeNames.Core.TYPE,
+						ParameterAttributeNames.Core.TYPE_DATEPICKER);
 				paramDef.addParameterDefinition(plainParameterTo);
 
 			}
 		}
+		
+		//set layout horizontal
+		paramDef.setAttribute(
+				ParameterAttributeNames.Core.NAMESPACE, 
+				ParameterAttributeNames.Core.LAYOUT,
+				ParameterAttributeNames.Core.LAYOUT_HORIZONTAL
+				);
 
 		return paramDef;
 
@@ -494,7 +541,7 @@ public class ReportGeneratorService {
 	}
 
 
-	public void savePrpt(String sessionId, String path, String file) throws ContentIOException, IOException, ReportProcessingException, SaikuAdhocException, ResourceException {
+	public void savePrpt(String sessionId, String path, String file, String username, String password) throws ContentIOException, IOException, ReportProcessingException, SaikuAdhocException, ResourceException {
 
 		//Bundlewriter Exception abbilden
 		try {
@@ -510,6 +557,9 @@ public class ReportGeneratorService {
 
 		MasterReport output = processReport(model);
 		
+		((CdaDataFactory) output.getDataFactory()).setUsername(username);
+		((CdaDataFactory) output.getDataFactory()).setPassword(password);
+		
 		prptContent = generatePrptOutput(model, output);
 		
 		String solPath = splits.length > 1 ? splits[1] : "";
@@ -524,14 +574,14 @@ public class ReportGeneratorService {
 
 	}
 
-	public void saveCda(String sessionId, String path, String file) throws SaikuAdhocException {
+	public void saveCda(String sessionId, String fullPath, String file) throws SaikuAdhocException {
 		SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
 		if (!file.endsWith(".cda")) {
 			file += ".cda";
 		}
 
-		String[] splits = ParamUtils.splitFirst(path.substring(1),"/");
+		String[] splits = ParamUtils.splitFirst(fullPath.substring(1),"/");
 
 		try{
 			final Domain domain = metadataProvider.getDomain(model.getDomainId());
@@ -540,7 +590,9 @@ public class ReportGeneratorService {
 			final CdaBuilder cdaBuilder = new CdaBuilder();
 			CdaSettings cdaSettings = cdaBuilder.build(model, domain, logicalModel);
 
-			cdaProvider.addDatasource(splits[0], splits[1], file, cdaSettings.asXML());
+			String solPath = splits.length > 1 ? splits[1] : "";
+			
+			cdaProvider.addDatasource(splits[0], solPath, file, cdaSettings.asXML());
 
 		} catch (Exception e) {
 			e.printStackTrace();

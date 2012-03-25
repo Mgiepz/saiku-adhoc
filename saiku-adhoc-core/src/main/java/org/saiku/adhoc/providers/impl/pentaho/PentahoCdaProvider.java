@@ -20,10 +20,12 @@
 package org.saiku.adhoc.providers.impl.pentaho;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaDataFactory;
+import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaQueryEntry;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.model.dto.SaikuCda;
 import org.saiku.adhoc.providers.ICdaProvider;
@@ -58,26 +60,26 @@ public class PentahoCdaProvider implements ICdaProvider {
 	 * 
 	 */
 	@Override
-	public CdaDataFactory getDataFactory(String dsId) {
-
+	public CdaDataFactory getDataFactory(ArrayList<String> dsIds) {
+		
 		CdaDataFactory f = new CdaDataFactory();        
 		String baseUrlField = null;
 		f.setBaseUrlField(baseUrlField);
-		String name = dsId;
-		String queryString = dsId;
-		f.setQuery(name, queryString);
+
 		String baseUrl = SaikuProperties.baseURL;
-        //f.setUseLocalCall(false);
-        f.setUsername("joe");
-        f.setPassword("password");
+		f.setUsername(SaikuProperties.cdaUser);
+		f.setPassword(SaikuProperties.cdaPassword);
 		f.setBaseUrl(baseUrl);
 		f.setSolution(this.getSolution());
 		f.setPath(this.getPath());
-		String file =  dsId + ".cda";
+		String file =  dsIds.get(0) + ".cda";
 		f.setFile(file);      
 
-		return f;
+		for (String id : dsIds) {
+			f.setQueryEntry(id, new CdaQueryEntry(id, id));
+		}
 
+		return f;
 	}
 
 	@Override

@@ -20,6 +20,7 @@
 package org.saiku.adhoc.providers;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +50,7 @@ public interface ICdaProvider {
 
 	public void addDatasource(String solution, String path, String action, String asXML);
 
-	public CdaDataFactory getDataFactory(String dsId);
+	public CdaDataFactory getDataFactory(ArrayList<String> queryIds);
 	
 	public void callCDA(String pluginName, String method, Map<String, Object> params, OutputStream outputStream, String foo) throws SaikuAdhocException;
 

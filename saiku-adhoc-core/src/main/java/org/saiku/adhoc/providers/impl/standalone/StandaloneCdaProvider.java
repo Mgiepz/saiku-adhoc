@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,32 +79,27 @@ public class StandaloneCdaProvider implements ICdaProvider {
 	 * 
 	 */
 	@Override
-	public CdaDataFactory getDataFactory(String dsId) {
+	public CdaDataFactory getDataFactory(ArrayList<String> dsIds) {
 		
 		CdaDataFactory f = new CdaDataFactory();        
 		String baseUrlField = null;
 		f.setBaseUrlField(baseUrlField);
-		String name = dsId;
-		String queryString = dsId;
-//		CdaQueryEntry entry = new CdaQueryEntry(queryString);
-//		entry.setId(dsId);
-//		f.setQuery(name, entry);     
-//		f.setQuery(name, queryString); 
-		f.setQuery(name, queryString);    
+
 		String baseUrl = SaikuProperties.baseURL;
-		
-		//Use this for the login
-		//PentahoSessionHolder.getSession().getId();          
-		f.setBaseUrl(baseUrl);
-		f.setSolution(this.solution);
-        f.setPath(this.path);
-		String file =  dsId + ".cda";
-		f.setFile(file);      
 		f.setUsername(SaikuProperties.cdaUser);
 		f.setPassword(SaikuProperties.cdaPassword);
+		f.setBaseUrl(baseUrl);
+		f.setSolution(this.getSolution());
+		f.setPath(this.getPath());
+		String file =  dsIds.get(0) + ".cda";
+		f.setFile(file);      
+		
+		for (String id : dsIds) {
+			f.setQuery(id, id);	
+		}
 
 		return f;
-		
+
 	}
 
 	   public void setPath(String path) {

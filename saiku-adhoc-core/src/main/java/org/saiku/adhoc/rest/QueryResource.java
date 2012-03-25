@@ -53,6 +53,7 @@ import org.saiku.adhoc.model.dto.FilterResult;
 import org.saiku.adhoc.model.dto.FilterValue;
 import org.saiku.adhoc.model.dto.HtmlReport;
 import org.saiku.adhoc.model.dto.Position;
+import org.saiku.adhoc.model.dto.PrptSolutionFileInfo;
 import org.saiku.adhoc.model.dto.SavedQuery;
 import org.saiku.adhoc.model.dto.SolutionFileInfo;
 import org.saiku.adhoc.model.master.SaikuColumn;
@@ -201,7 +202,8 @@ public class QueryResource extends PentahoBase {
 			return queryService.setProperties(queryName, props);
 		} catch(Exception e) {
 			log.error("Cannot set properties for query (" + queryName + ")",e);
-			return null;
+			//return something
+			return  queryService.getProperties(queryName);
 		}
 
 	}
@@ -375,8 +377,7 @@ public class QueryResource extends PentahoBase {
 		}
 
 		try {
-			editorService.addFilter(sessionId, category, businessColumn,
-					position.getPosition());
+			editorService.addFilter(sessionId, category, businessColumn, position);
 			return Status.OK;
 		} catch (Exception e) {
 			log.error("Cannot add Filter " + businessColumn + " to query ("
@@ -683,11 +684,12 @@ public class QueryResource extends PentahoBase {
 	@POST
 	@Path("/{queryname}/EXPORT/PRPT")
 	public void exportPrpt(
-			SolutionFileInfo file,
+			PrptSolutionFileInfo file,
 			@PathParam("queryname") String sessionId) {
 
 		try {
-			reportGeneratorService.savePrpt(sessionId, file.getPath(),file.getFile());
+			reportGeneratorService.savePrpt(sessionId, file.getPath(),file.getFile(),
+					file.getUser(),file.getPassword());
 		} catch (Exception e) {
 			log.error("Cannot export prpt (" + sessionId + ")",e);
 			String clientMessage = Messages.getErrorString(e.getMessage());
