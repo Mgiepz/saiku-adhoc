@@ -52,7 +52,7 @@ import org.saiku.adhoc.service.report.ReportGeneratorService;
 
 public class SaikuMasterModel {
 
-	private static final String VERSION_INFO = "V_1_0";
+	private final static String VERSION_INFO = "V_1_0";
 
 	@JsonIgnore
 	public Boolean getCdaDirty() {
@@ -63,7 +63,8 @@ public class SaikuMasterModel {
 		return VERSION_INFO;
 	}
 
-	public  void setVersion(){
+	public void setVersion(String version){
+
 	}
 	
 	public void setSessionId(String sessionId) {
