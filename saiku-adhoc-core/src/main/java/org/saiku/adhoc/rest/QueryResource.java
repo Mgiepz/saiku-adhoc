@@ -39,8 +39,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Service;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.pentaho.platform.engine.core.system.PentahoBase;
@@ -68,8 +66,6 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-@org.apache.felix.scr.annotations.Service(Object.class)
-@org.apache.felix.scr.annotations.Property(name="javax.ws.rs", boolValue=true)
 @Path("/saiku-adhoc/rest/query")
 @Scope("request")
 @XmlAccessorType(XmlAccessType.NONE)
