@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -40,6 +39,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.pentaho.platform.engine.core.system.PentahoBase;
@@ -57,7 +58,6 @@ import org.saiku.adhoc.model.dto.PrptSolutionFileInfo;
 import org.saiku.adhoc.model.dto.SavedQuery;
 import org.saiku.adhoc.model.dto.SolutionFileInfo;
 import org.saiku.adhoc.model.master.SaikuColumn;
-import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.model.master.SaikuReportSettings;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
 import org.saiku.adhoc.service.EditorService;
@@ -68,6 +68,8 @@ import org.springframework.stereotype.Component;
 
 
 @Component
+@org.apache.felix.scr.annotations.Service(Object.class)
+@org.apache.felix.scr.annotations.Property(name="javax.ws.rs", boolValue=true)
 @Path("/saiku-adhoc/rest/query")
 @Scope("request")
 @XmlAccessorType(XmlAccessType.NONE)

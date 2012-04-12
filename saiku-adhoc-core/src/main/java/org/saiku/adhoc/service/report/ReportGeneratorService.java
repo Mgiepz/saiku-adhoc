@@ -346,6 +346,10 @@ public class ReportGeneratorService {
 						ParameterAttributeNames.Core.NAMESPACE, 
 						ParameterAttributeNames.Core.TYPE,
 						ParameterAttributeNames.Core.TYPE_DATEPICKER);
+				plainParameterFrom.setParameterAttribute(
+						ParameterAttributeNames.Core.NAMESPACE, 
+						ParameterAttributeNames.Core.DEFAULT_VALUE_FORMULA,
+						"=TODAY()");				
 				paramDef.addParameterDefinition(plainParameterFrom);
 
 				final PlainParameter plainParameterTo = new PlainParameter(nameTo, java.util.Date.class);
@@ -357,6 +361,10 @@ public class ReportGeneratorService {
 						ParameterAttributeNames.Core.NAMESPACE, 
 						ParameterAttributeNames.Core.TYPE,
 						ParameterAttributeNames.Core.TYPE_DATEPICKER);
+				plainParameterTo.setParameterAttribute(
+						ParameterAttributeNames.Core.NAMESPACE, 
+						ParameterAttributeNames.Core.DEFAULT_VALUE_FORMULA,
+						"=TODAY()");	
 				paramDef.addParameterDefinition(plainParameterTo);
 
 			}

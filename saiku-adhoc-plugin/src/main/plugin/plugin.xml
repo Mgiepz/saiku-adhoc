@@ -50,7 +50,7 @@
 		<static-path url="/saiku-adhoc/web/images" localFolder="web/images" />
 	</static-paths>
 
-	<content-generator scope="session" id="adhoc-service" type="adhoc-service">
+	<content-generator scope="session" id="adhoc-service" type="adhoc">
 		<classname>org.saiku.adhoc.service.SaikuAdhocContentGenerator</classname>
 		<title>saiku-adhoc</title>
 	</content-generator>
