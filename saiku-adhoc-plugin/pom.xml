@@ -4,7 +4,7 @@
 	<groupId>org.saiku</groupId>
 	<artifactId>saiku-adhoc-bi-platform-plugin</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-RC1</version>
+	<version>1.0-RC2</version>
 	<name>saiku reporting biserver plugin</name>
 
 	<properties>
