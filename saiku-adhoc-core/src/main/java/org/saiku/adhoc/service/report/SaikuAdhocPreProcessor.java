@@ -472,6 +472,15 @@ public class SaikuAdhocPreProcessor implements ReportPreProcessor {
 		final String id = "wizard::details-" + field.getField();
 		detailElement.setName(id);
 		detailElement.getStyle().setStyleProperty(ElementStyleKeys.MIN_WIDTH, new Float(width));
+		
+
+//		detailElement.setAttribute(AttributeNames.Wizard.NAMESPACE, AttributeNames.Wizard.ALLOW_METADATA_STYLING,
+//				false);
+//		detailElement.setAttribute(AttributeNames.Wizard.NAMESPACE, AttributeNames.Wizard.ALLOW_METADATA_ATTRIBUTES,
+//				false);
+//
+//		
+		
 		if (Boolean.TRUE.equals(detailElement.getAttribute(AttributeNames.Wizard.NAMESPACE,
 				AttributeNames.Wizard.ALLOW_METADATA_STYLING))) {
 			detailElement.setAttribute("http://reporting.pentaho.org/namespaces/engine/attributes/wizard",

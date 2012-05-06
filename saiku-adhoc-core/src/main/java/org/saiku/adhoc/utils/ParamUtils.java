@@ -60,16 +60,17 @@ public class ParamUtils {
 				String[] values = valueList
 				.toArray(new String[valueList.size()]);
 
-				reportParameters.put(nameFrom, values[0]);
-				reportParameters.put(nameTo, values[1]);
-
-				
+				if(!(values.length < 2))	{	
 				try {
 					reportParameters.put(nameFrom, dateFormat.parse(values[0]));
 					reportParameters.put(nameTo, dateFormat.parse(values[1]));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+				}else{
+					reportParameters.put(nameFrom, null);
+					reportParameters.put(nameTo, null);
 				}
 
 			}

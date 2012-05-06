@@ -182,8 +182,7 @@ public class TemplateUtils {
 		for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
 
 			if (descriptor.getWriteMethod() != null) {
-				//				Object originalValue = descriptor.getReadMethod()
-				//				.invoke(target);
+
 				Object sourceValue = descriptor.getReadMethod().invoke(
 						source);
 				if (sourceValue != null) {
@@ -209,7 +208,6 @@ public class TemplateUtils {
 		if (prptFormat == null && saikuFormat == null) {
 			return;
 		}
-
 
 		if (saikuFormat.getPaddingLeft() == null) {
 			final Float padding = (Float) prptFormat.getStyleProperty(ElementStyleKeys.PADDING_LEFT, null);

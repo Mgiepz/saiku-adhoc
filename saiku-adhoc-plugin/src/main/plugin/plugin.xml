@@ -55,6 +55,6 @@
 		<title>saiku-adhoc</title>
 	</content-generator>
 
-	<content-generator id="saiku-adhoc" title="fa la la la la, la la la la" type="notused" class="org.saiku.adhoc.service.ServletAdapterContentGenerator" />
+	<content-generator id="saiku-adhoc" title="fa la la la la, la la la la" type="saiku-adhoc" class="org.saiku.adhoc.service.ServletAdapterContentGenerator" />
 
 </plugin>

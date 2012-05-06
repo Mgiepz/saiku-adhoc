@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.concept.types.AggregationType;
+import org.pentaho.metadata.model.concept.types.Alignment;
 
 /**
  * @author mgie
@@ -101,6 +102,28 @@ public class SaikuColumn implements SaikuElement{
 		this.description = logicalColumn.getDescription(locale);	
 		this.name = logicalColumn.getName(locale);
 		this.columnFormat = new SaikuElementFormat();		
+		
+		Alignment propAlignment = (Alignment) logicalColumn.getProperty("alignment");
+
+		if(propAlignment!=null){
+		if(propAlignment==Alignment.LEFT){
+			this.columnHeaderFormat.setHorizontalAlignment("LEFT");
+			this.columnFormat.setHorizontalAlignment("LEFT");
+		}else if (propAlignment==Alignment.RIGHT){
+			this.columnHeaderFormat.setHorizontalAlignment("RIGHT");
+			this.columnFormat.setHorizontalAlignment("RIGHT");
+		}else if (propAlignment==Alignment.CENTERED){
+			this.columnHeaderFormat.setHorizontalAlignment("CENTER");
+			this.columnFormat.setHorizontalAlignment("CENTER");
+		}
+		}
+		
+		String propMask = (String) logicalColumn.getProperty("mask");
+	
+		if(propMask!=null){
+			this.formatMask = propMask;
+		}
+	
 		this.columnHeaderFormat = new SaikuElementFormat();		
 		this.fieldType = logicalColumn.getDataType().getName();		
 		//this.forGroupOnly = false;

@@ -206,7 +206,9 @@ public class CdaBuilder implements ModelBuilder {
 				query.getParameters().add(paramMql);
 			}
 
-			if (param.getType().equals(DataType.DATE.getName())) {
+			if (param.getType().equals(DataType.DATE.getName()) 
+					//&& !(param.getParameterValues().size() < 2)
+					) {
 
 				String formulaFrom = "[" + columnId + "] > " + "[param:" + filterName + "_FROM]";
 				String formulaTo = "[" + columnId + "] < " + "[param:" + filterName + "_TO]";
@@ -251,7 +253,9 @@ public class CdaBuilder implements ModelBuilder {
 
 				parameters.add(paramCda);
 
-			} else if (column.getDataType().getName().equals("Date")) {
+			} else if (column.getDataType().getName().equals("Date")
+					//&& !(saikuParameter.getParameterValues().size() < 2)
+			) {
 
 				String nameFrom = filterName + "_FROM";
 				String nameTo = filterName + "_TO";
@@ -259,11 +263,13 @@ public class CdaBuilder implements ModelBuilder {
 				String pattern = "dd.mm.yyyy";
 
 				pt.webdetails.cda.dataaccess.Parameter paramCdaFrom = new pt.webdetails.cda.dataaccess.Parameter(nameFrom,
-						type, "", pattern, pt.webdetails.cda.dataaccess.Parameter.Access.PUBLIC.name());
+						type, "${TODAY()}", pattern, pt.webdetails.cda.dataaccess.Parameter.Access.PUBLIC.name());
 
 				pt.webdetails.cda.dataaccess.Parameter paramCdaTo = new pt.webdetails.cda.dataaccess.Parameter(nameTo, type,
-						"", pattern, pt.webdetails.cda.dataaccess.Parameter.Access.PUBLIC.name());
+						"${TODAY()}", pattern, pt.webdetails.cda.dataaccess.Parameter.Access.PUBLIC.name());
 
+				
+				
 				parameters.add(paramCdaFrom);
 				parameters.add(paramCdaTo);
 

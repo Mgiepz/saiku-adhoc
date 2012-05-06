@@ -212,11 +212,14 @@ public class ReportGeneratorService {
 			ArrayList<String> queryIds = new ArrayList<String>();
 			//add the masterquery
 			queryIds.add(model.getSessionId());
-			
+
 			//add the param-queries
 			List<SaikuParameter> parameters = model.getParameters();
 			for (SaikuParameter saikuParameter : parameters) {
-				queryIds.add(saikuParameter.getCategory() + "." + saikuParameter.getId());	
+				//TODO: there might be other types that dont need a query
+				if(!saikuParameter.getType().equals("Date")){
+					queryIds.add(saikuParameter.getCategory() + "." + saikuParameter.getId());	
+				}
 			}
 
 			reportTemplate.setDataFactory(cdaProvider.getDataFactory(queryIds));
@@ -321,7 +324,7 @@ public class ReportGeneratorService {
 			if(saikuParameter.getType().equals("String")){
 				final DefaultListParameter listParam = 
 					new DefaultListParameter(categoryId + "." + columnId, columnId, columnId, 
-						parameterName, true, false, String[].class);
+							parameterName, true, false, String[].class);
 				listParam.setParameterAttribute(
 						ParameterAttributeNames.Core.NAMESPACE, 
 						ParameterAttributeNames.Core.TYPE,
@@ -331,7 +334,7 @@ public class ReportGeneratorService {
 						ParameterAttributeNames.Core.LABEL,
 						saikuParameter.getName());
 				paramDef.addParameterDefinition(listParam);
-				
+
 			}
 			if(saikuParameter.getType().equals("Date")){
 				String nameFrom = parameterName + "_FROM";
@@ -349,7 +352,7 @@ public class ReportGeneratorService {
 				plainParameterFrom.setParameterAttribute(
 						ParameterAttributeNames.Core.NAMESPACE, 
 						ParameterAttributeNames.Core.DEFAULT_VALUE_FORMULA,
-						"=TODAY()");				
+				"TODAY()");				
 				paramDef.addParameterDefinition(plainParameterFrom);
 
 				final PlainParameter plainParameterTo = new PlainParameter(nameTo, java.util.Date.class);
@@ -364,18 +367,18 @@ public class ReportGeneratorService {
 				plainParameterTo.setParameterAttribute(
 						ParameterAttributeNames.Core.NAMESPACE, 
 						ParameterAttributeNames.Core.DEFAULT_VALUE_FORMULA,
-						"=TODAY()");	
+				"TODAY()");	
 				paramDef.addParameterDefinition(plainParameterTo);
 
 			}
 		}
-		
+
 		//set layout horizontal
 		paramDef.setAttribute(
 				ParameterAttributeNames.Core.NAMESPACE, 
 				ParameterAttributeNames.Core.LAYOUT,
 				ParameterAttributeNames.Core.LAYOUT_HORIZONTAL
-				);
+		);
 
 		return paramDef;
 
@@ -553,27 +556,27 @@ public class ReportGeneratorService {
 
 		//Bundlewriter Exception abbilden
 		try {
-		SaikuMasterModel model = sessionHolder.getModel(sessionId);
+			SaikuMasterModel model = sessionHolder.getModel(sessionId);
 
-		if (!file.endsWith(".prpt")) {
-			file += ".prpt";
-		}
+			if (!file.endsWith(".prpt")) {
+				file += ".prpt";
+			}
 
-		String[] splits = ParamUtils.splitFirst(path.substring(1),"/");
+			String[] splits = ParamUtils.splitFirst(path.substring(1),"/");
 
-		ByteArrayOutputStream prptContent = null;
+			ByteArrayOutputStream prptContent = null;
 
-		MasterReport output = processReport(model);
-		
-		((CdaDataFactory) output.getDataFactory()).setUsername(username);
-		((CdaDataFactory) output.getDataFactory()).setPassword(password);
-		
-		prptContent = generatePrptOutput(model, output);
-		
-		String solPath = splits.length > 1 ? splits[1] : "";
+			MasterReport output = processReport(model);
 
-		repository.writeFile(splits[0], solPath, file, prptContent);
-		
+			((CdaDataFactory) output.getDataFactory()).setUsername(username);
+			((CdaDataFactory) output.getDataFactory()).setPassword(password);
+
+			prptContent = generatePrptOutput(model, output);
+
+			String solPath = splits.length > 1 ? splits[1] : "";
+
+			repository.writeFile(splits[0], solPath, file, prptContent);
+
 		} catch (BundleWriterException e) {
 			log.error(e);
 			throw new SaikuAdhocException(Messages.getErrorString("ReportGenerator.ERROR_0004_BUNDLEWRITER"));
@@ -599,7 +602,7 @@ public class ReportGeneratorService {
 			CdaSettings cdaSettings = cdaBuilder.build(model, domain, logicalModel);
 
 			String solPath = splits.length > 1 ? splits[1] : "";
-			
+
 			cdaProvider.addDatasource(splits[0], solPath, file, cdaSettings.asXML());
 
 		} catch (Exception e) {

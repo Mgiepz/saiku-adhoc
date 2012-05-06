@@ -114,8 +114,7 @@ public class CdaQueryService {
 		}
 
 		if(column.getDataType().equals(DataType.DATE)){
-			//second argument should be the currently selected date
-			return new FilterResult(null,null, column.getDataType().getName());	
+			return new FilterResult(null,selectedValues, column.getDataType().getName());	
 		}else{
 			final String filterResultJson = this.runQuery(filterKey, sessionId);
 			return new FilterResult(filterResultJson,
