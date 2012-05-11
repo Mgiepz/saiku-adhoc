@@ -25,8 +25,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.ReportElement;
-import org.pentaho.reporting.engine.classic.core.function.FormulaExpression;
-import org.pentaho.reporting.engine.classic.core.style.ElementStyleKeys;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
@@ -57,8 +55,6 @@ public class SaikuUpdateDetailsTask implements UpdateTask {
 
 		final String rptId = "rpt-dtl-0-" + index;
 
-		//final String htmlClass = "saiku " + columns.get(index).getUid().replace("rpt-dtl-", "rpt-dth-");;
-
 		final String htmlClass = "saiku " + rptId;
 
 		saikuColumn.setLayoutId(rptId);
@@ -75,14 +71,8 @@ public class SaikuUpdateDetailsTask implements UpdateTask {
 		SaikuElementFormat tempFormat = (SaikuElementFormat) saikuColumn.getElementFormat().clone();
 	
 		TemplateUtils.mergeElementFormats(e.getStyle(), tempFormat);
-
-		//<style-expression style-key="visible" formula="=HASCHANGED(&quot;ID&quot;)"/>
-		//TODO: also show on group change and on pagebreak
-		
+	
 		if(saikuColumn.isHideRepeating()){
-//			FormulaExpression expression = new FormulaExpression();
-//			expression.setFormula("=HASCHANGED(\""+ saikuColumn.getName() +"\")");
-//			e.setStyleExpression(ElementStyleKeys.VISIBLE, expression);
 			e.setAttribute("http://reporting.pentaho.org/namespaces/engine/attributes/wizard", 
 					AttributeNames.Wizard.ONLY_SHOW_CHANGING_VALUES, Boolean.TRUE);	
 		}

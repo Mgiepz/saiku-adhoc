@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
@@ -39,7 +40,6 @@ import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.ReportTemplateStandalone;
 import org.saiku.adhoc.providers.IPrptProvider;
 import org.saiku.adhoc.service.report.SaikuReportingComponent;
-import org.apache.commons.io.FilenameUtils;
 
 public class StandalonePrptProvider implements IPrptProvider {
 	

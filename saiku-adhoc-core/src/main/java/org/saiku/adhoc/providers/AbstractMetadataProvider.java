@@ -19,7 +19,6 @@ import org.pentaho.platform.util.messages.LocaleHelper;
 import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
 import org.saiku.adhoc.model.metadata.impl.ModelInfoComparator;
-import org.saiku.adhoc.providers.impl.pentaho.PentahoMetadataUtil;
 
 /**
  * @author mg

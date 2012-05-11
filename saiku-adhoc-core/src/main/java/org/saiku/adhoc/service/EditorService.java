@@ -52,7 +52,6 @@ import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.model.master.SaikuReportSettings;
 import org.saiku.adhoc.model.metadata.impl.MetadataModelInfo;
 import org.saiku.adhoc.providers.IMetadataProvider;
-import org.saiku.adhoc.service.report.ReportGeneratorService;
 import org.saiku.adhoc.utils.StringUtils;
 import org.saiku.adhoc.utils.TemplateUtils;
 

@@ -5,9 +5,7 @@ import java.util.List;
 
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
-import org.saiku.adhoc.model.dto.ElementFormat;
 import org.saiku.adhoc.model.master.SaikuColumn;
-import org.saiku.adhoc.model.master.SaikuElement;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuLabel;
 import org.saiku.adhoc.model.master.SaikuMasterModel;

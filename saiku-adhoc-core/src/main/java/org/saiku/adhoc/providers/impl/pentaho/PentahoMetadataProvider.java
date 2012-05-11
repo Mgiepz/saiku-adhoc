@@ -20,9 +20,6 @@
 
 package org.saiku.adhoc.providers.impl.pentaho;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.metadata.model.Domain;
@@ -30,14 +27,12 @@ import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.pentaho.platform.api.engine.ILogger;
 import org.pentaho.platform.api.engine.IPentahoSession;
-import org.pentaho.platform.engine.core.system.PentahoBase;
 import org.pentaho.platform.engine.core.system.PentahoSessionHolder;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.metadata.impl.MetadataModel;
 import org.saiku.adhoc.providers.AbstractMetadataProvider;
-import org.saiku.adhoc.providers.IMetadataProvider;
 import org.saiku.adhoc.service.repository.IRepositoryHelper;
 
 

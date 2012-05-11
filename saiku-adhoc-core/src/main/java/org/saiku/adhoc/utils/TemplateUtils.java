@@ -24,7 +24,6 @@ import java.awt.Insets;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
@@ -38,7 +37,6 @@ import org.pentaho.reporting.engine.classic.core.style.ElementStyleKeys;
 import org.pentaho.reporting.engine.classic.core.style.ElementStyleSheet;
 import org.pentaho.reporting.engine.classic.core.style.TextStyleKeys;
 import org.pentaho.reporting.engine.classic.core.util.PageFormatFactory;
-import org.pentaho.reporting.engine.classic.core.util.PageSize;
 import org.saiku.adhoc.exceptions.ReportException;
 import org.saiku.adhoc.model.master.SaikuElementFormat;
 import org.saiku.adhoc.model.master.SaikuMasterModel;

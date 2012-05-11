@@ -30,7 +30,6 @@ import org.pentaho.metadata.model.LogicalModel;
 import org.saiku.adhoc.exceptions.SaikuAdhocException;
 import org.saiku.adhoc.messages.Messages;
 import org.saiku.adhoc.model.builder.CdaBuilder;
-import org.saiku.adhoc.model.master.ReportTemplate;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
@@ -38,7 +37,6 @@ import org.saiku.adhoc.model.master.SaikuParameter;
 import org.saiku.adhoc.providers.ICdaProvider;
 import org.saiku.adhoc.providers.IMetadataProvider;
 import org.saiku.adhoc.providers.IPrptProvider;
-import org.saiku.adhoc.service.EditorService;
 import org.saiku.adhoc.service.SaikuProperties;
 
 import pt.webdetails.cda.settings.CdaSettings;

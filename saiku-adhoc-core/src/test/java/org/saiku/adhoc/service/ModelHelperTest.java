@@ -5,7 +5,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.saiku.adhoc.model.dto.ElementFormat;
 import org.saiku.adhoc.model.master.SaikuColumn;
 import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuLabel;

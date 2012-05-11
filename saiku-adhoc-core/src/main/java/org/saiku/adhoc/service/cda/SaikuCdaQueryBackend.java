@@ -22,7 +22,6 @@ import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaQueryE
 import org.pentaho.reporting.engine.classic.extensions.datasources.cda.CdaResponseParser;
 
 import pt.webdetails.cda.dataaccess.InvalidParameterException;
-import pt.webdetails.cda.dataaccess.Parameter.Type;
 import pt.webdetails.cda.utils.FormulaEvaluator;
 import pt.webdetails.cda.utils.Util;
 /**

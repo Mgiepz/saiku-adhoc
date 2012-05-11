@@ -20,7 +20,6 @@
 package org.saiku.adhoc.service.report;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
@@ -59,7 +58,6 @@ import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.reporting.libraries.xmlns.common.ParserUtil;
 import org.pentaho.reporting.platform.plugin.ParameterXmlContentHandler;
 import org.pentaho.reporting.platform.plugin.ReportContentUtil;
-import org.pentaho.reporting.platform.plugin.ReportCreator;
 import org.pentaho.reporting.platform.plugin.SimpleReportingComponent;
 import org.pentaho.reporting.platform.plugin.cache.NullReportCache;
 import org.pentaho.reporting.platform.plugin.cache.ReportCache;
