@@ -80,9 +80,11 @@ public class SaikuUpdateDetailsTask implements UpdateTask {
 		//TODO: also show on group change and on pagebreak
 		
 		if(saikuColumn.isHideRepeating()){
-			FormulaExpression expression = new FormulaExpression();
-			expression.setFormula("=HASCHANGED(\""+ saikuColumn.getName() +"\")");
-			e.setStyleExpression(ElementStyleKeys.VISIBLE, expression);
+//			FormulaExpression expression = new FormulaExpression();
+//			expression.setFormula("=HASCHANGED(\""+ saikuColumn.getName() +"\")");
+//			e.setStyleExpression(ElementStyleKeys.VISIBLE, expression);
+			e.setAttribute("http://reporting.pentaho.org/namespaces/engine/attributes/wizard", 
+					AttributeNames.Wizard.ONLY_SHOW_CHANGING_VALUES, Boolean.TRUE);	
 		}
 
 		//set a transient format
