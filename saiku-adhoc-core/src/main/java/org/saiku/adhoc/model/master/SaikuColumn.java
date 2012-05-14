@@ -102,6 +102,7 @@ public class SaikuColumn implements SaikuElement{
 		this.description = logicalColumn.getDescription(locale);	
 		this.name = logicalColumn.getName(locale);
 		this.columnFormat = new SaikuElementFormat();		
+		this.columnHeaderFormat = new SaikuElementFormat();	
 		
 		Alignment propAlignment = (Alignment) logicalColumn.getProperty("alignment");
 
