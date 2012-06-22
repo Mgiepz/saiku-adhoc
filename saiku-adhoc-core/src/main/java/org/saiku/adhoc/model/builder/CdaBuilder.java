@@ -257,7 +257,7 @@ public class CdaBuilder implements ModelBuilder {
 				String nameFrom = filterName + "_FROM";
 				String nameTo = filterName + "_TO";
 				String type = pt.webdetails.cda.dataaccess.Parameter.Type.DATE.getName();
-				String pattern = "dd.mm.yyyy";
+				String pattern = "dd.MM.yyyy";
 
 				pt.webdetails.cda.dataaccess.Parameter paramCdaFrom = new pt.webdetails.cda.dataaccess.Parameter(nameFrom,
 						type, "${TODAY()}", pattern, pt.webdetails.cda.dataaccess.Parameter.Access.PUBLIC.name());

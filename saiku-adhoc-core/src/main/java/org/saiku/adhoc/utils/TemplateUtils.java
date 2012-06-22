@@ -125,6 +125,9 @@ public class TemplateUtils {
 	 */
 	private static ElementAlignment saikuToPrptAlignment(String aString) {
 
+		
+		//TODO: "TOP".equals(aString);
+		
 		if (aString.equals("TOP")) {
 			return ElementAlignment.TOP;
 		} else if (aString.equals("BOTTOM")) {

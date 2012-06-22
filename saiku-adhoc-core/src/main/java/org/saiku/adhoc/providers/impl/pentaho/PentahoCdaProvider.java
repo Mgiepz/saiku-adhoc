@@ -74,6 +74,7 @@ public class PentahoCdaProvider implements ICdaProvider {
 		f.setPath(this.getPath());
 		String file =  dsIds.get(0) + ".cda";
 		f.setFile(file);      
+		f.setUseLocalCall(true);
 
 		for (String id : dsIds) {
 			f.setQueryEntry(id, new CdaQueryEntry(id, id));
