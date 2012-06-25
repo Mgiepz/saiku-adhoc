@@ -58,7 +58,7 @@ import pt.webdetails.cda.dataaccess.UnsupportedDataAccessException;
 import pt.webdetails.cda.settings.CdaSettings;
 import pt.webdetails.cda.settings.UnknownDataAccessException;
 
-public class CdaBuilder implements ModelBuilder {
+public class CdaBuilder {
 
 
 	public CdaSettings build(SaikuMasterModel masterModel, Domain domain, LogicalModel logicalModel) throws UnsupportedConnectionException,

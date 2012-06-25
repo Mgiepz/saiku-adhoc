@@ -124,8 +124,7 @@ public class SaikuColumn implements SaikuElement{
 		if(propMask!=null){
 			this.formatMask = propMask;
 		}
-	
-		this.columnHeaderFormat = new SaikuElementFormat();		
+		
 		this.fieldType = logicalColumn.getDataType().getName();		
 		//this.forGroupOnly = false;
 

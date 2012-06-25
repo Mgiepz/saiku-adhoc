@@ -21,7 +21,7 @@ import org.saiku.adhoc.model.master.SaikuGroup;
 import org.saiku.adhoc.model.master.SaikuMasterModel;
 import org.saiku.adhoc.utils.TemplateUtils;
 
-public class WizardBuilder implements ModelBuilder {
+public class WizardBuilder {
 
 	private static final Log log = LogFactory.getLog(WizardBuilder.class);
 
