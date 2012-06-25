@@ -207,8 +207,8 @@ public class CdaBuilder implements ModelBuilder {
 					//&& !(param.getParameterValues().size() < 2)
 					) {
 
-				String formulaFrom = "[" + columnId + "] > " + "[param:" + filterName + "_FROM]";
-				String formulaTo = "[" + columnId + "] < " + "[param:" + filterName + "_TO]";
+				String formulaFrom = "[" + columnId + "] >= " + "[param:" + filterName + "_FROM]";
+				String formulaTo = "[" + columnId + "] <= " + "[param:" + filterName + "_TO]";
 
 				Constraint from = new Constraint(CombinationType.AND, formulaFrom);
 				query.getConstraints().add(from);
