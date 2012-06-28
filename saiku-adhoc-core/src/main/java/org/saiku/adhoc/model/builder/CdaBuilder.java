@@ -304,7 +304,9 @@ public class CdaBuilder {
 				Query filterQuery = new Query(domain, logicalModel);
 
 				Selection selection = new Selection(category, column, AggregationType.NONE);
+				
 				filterQuery.getSelections().add(selection);
+				filterQuery.getOrders().add(new Order(selection, Type.ASC ));
 				filterQueries.put(filterKey, filterQuery);
 			}
 		}
