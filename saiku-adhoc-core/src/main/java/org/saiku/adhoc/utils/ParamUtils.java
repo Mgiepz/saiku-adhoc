@@ -73,6 +73,19 @@ public class ParamUtils {
 				}
 
 			}
+			
+			if (saikuParameter.getType().equals("Numeric")) {
+				List<String> valueList = saikuParameter.getParameterValues();
+				Double[] values = new Double[valueList.size()];
+				int i = 0;
+				for (String myInt : valueList) 
+	            {
+	            	values[i] = Double.valueOf(myInt);
+	            	i++;
+	            }
+				reportParameters.put(parameterName, values);
+			}
+
 
 		}
 		return reportParameters;

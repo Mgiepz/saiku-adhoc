@@ -371,6 +371,24 @@ public class ReportGeneratorService {
 				paramDef.addParameterDefinition(plainParameterTo);
 
 			}
+			
+			if(saikuParameter.getType().equals("Numeric")){
+				final DefaultListParameter listParam = 
+					new DefaultListParameter(categoryId + "." + columnId, columnId, columnId, 
+							parameterName, true, false, Object[].class);
+				listParam.setParameterAttribute(
+						ParameterAttributeNames.Core.NAMESPACE, 
+						ParameterAttributeNames.Core.TYPE,
+						ParameterAttributeNames.Core.TYPE_LIST);
+				listParam.setParameterAttribute(
+						ParameterAttributeNames.Core.NAMESPACE, 
+						ParameterAttributeNames.Core.LABEL,
+						saikuParameter.getName());
+				paramDef.addParameterDefinition(listParam);
+
+			}
+
+			
 		}
 
 		//set layout horizontal

@@ -192,6 +192,17 @@ public class CdaBuilder {
 			final String filterName = "F_" + param.getCategory() + "_" + param.getId();
 			String columnId = param.getCategory() + "." + param.getId();
 
+			if (param.getType().equals(DataType.NUMERIC.getName())) {
+				// numeric parameters
+				String formula = "OR(" + "IN([" + columnId + "]; [param:" + filterName + "]);" + "EQUALS(\"\"; [param:"
+						+ filterName + "]))";
+				Constraint cst = new Constraint(CombinationType.AND, formula);
+				query.getConstraints().add(cst);
+
+				Parameter paramMql = new Parameter(filterName, DataType.NUMERIC, "");
+				query.getParameters().add(paramMql);
+			}
+
 			if (param.getType().equals(DataType.STRING.getName())) {
 				// string parameters
 				String formula = "OR(" + "IN([" + columnId + "]; [param:" + filterName + "]);" + "EQUALS(\"\"; [param:"
@@ -270,6 +281,16 @@ public class CdaBuilder {
 				parameters.add(paramCdaFrom);
 				parameters.add(paramCdaTo);
 
+			} else if (column.getDataType().getName().equals("Numeric")) {
+				
+				String type = "Numeric";
+				String pattern = "";
+				type = pt.webdetails.cda.dataaccess.Parameter.Type.NUMERIC_ARRAY.getName();
+				pt.webdetails.cda.dataaccess.Parameter paramCda = new pt.webdetails.cda.dataaccess.Parameter(filterName,
+						type, "", pattern, pt.webdetails.cda.dataaccess.Parameter.Access.PUBLIC.name());
+
+				parameters.add(paramCda);
+			
 			}
 
 		}
