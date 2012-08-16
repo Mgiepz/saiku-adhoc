@@ -100,11 +100,11 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<dependency>
+<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
@@ -455,12 +455,12 @@
 			<artifactId>commons-vfs</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>1.9.0</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 
 	</dependencies>
 

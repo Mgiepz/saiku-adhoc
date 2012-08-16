@@ -106,7 +106,6 @@ public class SaikuMasterModel {
 
 	protected List<String> sortColumns;
 
-
 	protected String clientModelSelection;
 
 	protected SaikuReportSettings settings;

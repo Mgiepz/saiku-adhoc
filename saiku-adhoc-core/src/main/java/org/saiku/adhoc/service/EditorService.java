@@ -21,6 +21,7 @@
 package org.saiku.adhoc.service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.pentaho.metadata.model.Domain;
@@ -125,11 +127,26 @@ public class EditorService {
 					URLEncoder.encode(masterModel.getDomainId(), "UTF-8") + "/"
 							+ masterModel.getLogicalModelId());
 
-		} catch (Exception e) {
+		} catch (UnsupportedEncodingException e) {
 			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - "
 					+ e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
 			log.error(message, e);
-			throw new SaikuAdhocException("Encoding not supported", e);
+			throw new SaikuAdhocException(message, e);
+		} catch (JsonParseException e) {
+			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - "
+					+ e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
+			log.error(message, e);
+			throw new SaikuAdhocException(message, e);
+		} catch (JsonMappingException e) {
+			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - "
+					+ e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
+			log.error(message, e);
+			throw new SaikuAdhocException(message, e);
+		} catch (IOException e) {
+			final String message = e.getCause() != null ? e.getCause().getClass().getName() + " - "
+					+ e.getCause().getMessage() : e.getClass().getName() + " - " + e.getMessage();
+			log.error(message, e);
+			throw new SaikuAdhocException(message, e);
 		}
 
 		if (log.isDebugEnabled()) {

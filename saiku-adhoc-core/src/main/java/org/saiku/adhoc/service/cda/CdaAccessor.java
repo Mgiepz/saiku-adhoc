@@ -57,7 +57,7 @@ public class CdaAccessor implements ICdaAccessor {
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-		cdaProvider.callCDA("cda", "doQuer", params, outputStream, null);
+		cdaProvider.callCDA("cda", "doQuery", params, outputStream, null);
 
 		String result;
 		try {

@@ -47,6 +47,10 @@ public class SaikuUpdateReportHeaderTask implements UpdateTask {
 		Element el = (Element) e;
 
 		final String uid = prefix + index;
+		
+		/*
+		 * Not only merge the format but also the text and such?
+		 */
 
 		if (el.getElementTypeName().equals("message") || el.getElementTypeName().equals("label")) {
 			final String htmlClass = "saiku " + uid;

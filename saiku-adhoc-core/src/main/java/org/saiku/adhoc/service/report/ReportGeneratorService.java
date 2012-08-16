@@ -272,7 +272,7 @@ public class ReportGeneratorService {
 			reportTemplate.setAttribute(AttributeNames.Wizard.NAMESPACE,
 					AttributeNames.Wizard.ENABLE, Boolean.TRUE);
 
-
+			//ist das einmal zu viel?
 			ReportPreProcessor processor = new SaikuAdhocPreProcessor();
 			((SaikuAdhocPreProcessor) processor).setSaikuMasterModel(model);
 			MasterReport output = processor.performPreProcessing(
