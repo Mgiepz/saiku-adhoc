@@ -13,6 +13,12 @@
 	</properties>
 	<repositories>
 		<repository>
+  			<id>maven2-repository.dev.java.net</id>
+  			<name>Java.net Repository for Maven</name>
+  			<url>http://download.java.net/maven/2/</url>
+  			<layout>default</layout>
+		</repository>
+		<repository>
 			<id>repo.pentaho.org</id>
 			<name>repo.pentaho.org-releases</name>
 			<url>http://repository.pentaho.org/artifactory/pentaho</url>
@@ -36,14 +42,6 @@
 			<id>central</id>
 			<name>repo</name>
 			<url>http://repo.analytical-labs.com/repo</url>
-		</repository>
-		<repository>
-			<id>java.net</id>
-			<name>java</name>
-			<url>http://download.java.net/maven/2/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
 		</repository>
 	</repositories>
 	<build>
