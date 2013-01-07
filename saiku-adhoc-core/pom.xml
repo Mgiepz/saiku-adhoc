@@ -30,20 +30,20 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>java.net</id>
-			<name>java</name>
-			<url>http://download.java.net/maven/2/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
 			<id>central</id>
 			<name>repo</name>
 			<url>http://repo.analytical-labs.com/repo</url>
+		</repository>
+		<repository>
+			<id>java.net</id>
+			<name>java</name>
+			<url>http://download.java.net/maven/2/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 	<build>
