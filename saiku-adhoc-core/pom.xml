@@ -1,4 +1,3 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -12,6 +11,10 @@
 		<spring.security.tiger.version>2.0.6.RELEASE</spring.security.tiger.version>
 	</properties>
 	<repositories>
+	<repository>
+        <id>maven-central</id>
+        <url>http://repo1.maven.org/maven2</url>
+    </repository>
 		<repository>
   			<id>maven2-repository.dev.java.net</id>
   			<name>Java.net Repository for Maven</name>
