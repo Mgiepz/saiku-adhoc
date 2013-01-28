@@ -312,7 +312,7 @@
 		<dependency>
 			<groupId>webdetails</groupId>
 			<artifactId>cda</artifactId>
-			<version>TRUNK-SNAPSHOT</version>
+			<version>TRUNK-20130128.133942-1</version>
 		</dependency>
 		<dependency>
 			<groupId>xerces</groupId>
