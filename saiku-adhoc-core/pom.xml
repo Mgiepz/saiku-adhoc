@@ -357,7 +357,7 @@
 		<dependency>
 			<groupId>pentaho-reporting-engine</groupId>
 			<artifactId>pentaho-reporting-engine-classic-extensions-cda</artifactId>
-			<version>saiku-SNAPSHOT</version>
+			<version>saiku-20130128.135119-1</version>
 		</dependency>
 		<dependency>
 			<groupId>pentaho-reporting-engine</groupId>
