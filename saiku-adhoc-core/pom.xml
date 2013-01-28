@@ -16,7 +16,6 @@
             <name>Java.net Repository for Glassfish</name>
             <url>http://download.java.net/maven/glassfish</url>
         </repository>
-        <repository> 
 		<repository>
 			<id>repo.pentaho.org</id>
 			<name>repo.pentaho.org-releases</name>
