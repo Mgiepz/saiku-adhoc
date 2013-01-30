@@ -310,10 +310,10 @@
 			<version>2.5-20081211</version>
 		</dependency>
 		<dependency>
-			<groupId>webdetails</groupId>
-			<artifactId>cda</artifactId>
-			<version>TRUNK-20130128.133942-1</version>
-		</dependency>
+    <groupId>pt.webdetails</groupId>
+    <artifactId>cda</artifactId>
+    <version>TRUNK-20130130.171253-1</version>
+</dependency>
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xmlParserAPIs</artifactId>
