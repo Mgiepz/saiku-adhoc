@@ -75,7 +75,7 @@ public class StandaloneCdaResource {
         params.put("dataAccessId", dataAccessId);
         IParameterProvider requestParams = new SimpleParameterProvider(params);
         try {
-            ccg.doQuery(requestParams, out);
+         //   ccg.doQuery(requestParams, out);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
