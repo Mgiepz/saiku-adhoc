@@ -107,6 +107,11 @@
 		</plugins>
 	</build>
 	<dependencies>
+	<dependency>
+    <groupId>pt.webdetails</groupId>
+    <artifactId>cpf</artifactId>
+    <version>TRUNK-20130130.173337-1</version>
+</dependency>
 <dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
