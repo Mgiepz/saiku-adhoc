@@ -30,9 +30,15 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>webdetails</groupId>
-									<artifactId>cda</artifactId>
-									<version>TRUNK-SNAPSHOT</version>
+    								<groupId>webdetails</groupId>
+    								<artifactId>cda</artifactId>
+    								<version>TRUNK-20130128.133942-1</version>
+									<outputDirectory>target/dist/saiku-adhoc/lib</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+    								<groupId>pt.webdetails</groupId>
+    								<artifactId>cpf</artifactId>
+    								<version>TRUNK-20130130.173337-1</version>
 									<outputDirectory>target/dist/saiku-adhoc/lib</outputDirectory>
 								</artifactItem>
 								<artifactItem>
@@ -210,7 +216,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.3</version>
+				<version>2.4</version>
 				<!-- set encoding to something not platform dependent -->
 				<configuration>
 					<encoding>UTF-8</encoding>
@@ -237,6 +243,14 @@
 	</build>
 	<repositories>
 		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>repo</name>
+			<url>http://repo.analytical-labs.com/repo</url>
+		</repository>
+		<repository>
 			<id>pentaho-repo</id>
 			<name>pentaho repository</name>
 			<url>http://repository.pentaho.org/artifactory/pentaho</url>
@@ -259,14 +273,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<repository>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>central</id>
-			<name>repo</name>
-			<url>http://repo.analytical-labs.com/repo</url>
-		</repository>
 	</repositories>
 	<dependencies>
 <dependency>
@@ -274,12 +280,16 @@
 	<artifactId>jettison</artifactId>
 	<version>1.2</version>
 </dependency>
-            
-		<dependency>
-			<groupId>pentaho</groupId>
-			<artifactId>cda</artifactId>
-			<version>TRUNK-SNAPSHOT</version>
+		<!--dependency>
+			<groupId>webdetails</groupId>
+    		<artifactId>cda</artifactId>
+    		<version>TRUNK-20130128.133942-1</version>
 		</dependency>
+		<dependency>
+    		<groupId>pt.webdetails</groupId>
+    		<artifactId>cpf</artifactId>
+    		<version>TRUNK-20130130.173337-1</version>
+		</dependency-->
 		<dependency>
 			<groupId>pentaho</groupId>
 			<artifactId>pentaho-bi-platform-util</artifactId>

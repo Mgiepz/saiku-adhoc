@@ -314,11 +314,16 @@
 			<artifactId>servlet-api</artifactId>
 			<version>2.5-20081211</version>
 		</dependency>
-<dependency>
+		<dependency>
+    <groupId>pt.webdetails</groupId>
+    <artifactId>cda</artifactId>
+    <version>TRUNK-20130130.171253-1</version>
+</dependency>
+<!--dependency>
     <groupId>pt.webdetails</groupId>
     <artifactId>cda</artifactId>
     <version>666</version>
-</dependency>
+</dependency-->
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xmlParserAPIs</artifactId>
