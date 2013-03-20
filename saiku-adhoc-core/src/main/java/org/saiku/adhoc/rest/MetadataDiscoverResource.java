@@ -89,7 +89,8 @@ public class MetadataDiscoverResource {
     			log.debug("REST:GET " + " getModel domainId=" + domainId + " modelId=" + modelId);
     		}
 			
-			return metadataProvider.loadModel(URLDecoder.decode(domainId,"UTF-8"),modelId);
+			String strippedDomainId = URLDecoder.decode(domainId,"UTF-8");
+			return metadataProvider.loadModel(strippedDomainId + "/metadata.xmi",modelId);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
