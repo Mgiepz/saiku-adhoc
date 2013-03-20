@@ -11,11 +11,15 @@
 		<spring.security.tiger.version>2.0.6.RELEASE</spring.security.tiger.version>
 	</properties>
 	<repositories>
-	 <!--repository>
+		<repository>
+        <id>maven-central</id>
+        <url>http://repo1.maven.org/maven2</url>
+    </repository>
+	 <repository>
             <id>glassfish-repository</id>
             <name>Java.net Repository for Glassfish</name>
             <url>http://download.java.net/maven/glassfish</url>
-        </repository-->
+        </repository>
 		<repository>
 			<id>repo.pentaho.org</id>
 			<name>repo.pentaho.org-releases</name>
@@ -32,10 +36,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<repository>
-        <id>maven-central</id>
-        <url>http://repo1.maven.org/maven2</url>
-    </repository>
 	<repository>
 			<snapshots>
 				<enabled>true</enabled>
