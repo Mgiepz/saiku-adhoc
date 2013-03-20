@@ -30,15 +30,15 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-    								<groupId>webdetails</groupId>
+    								<groupId>pentaho</groupId>
     								<artifactId>cda</artifactId>
-    								<version>TRUNK-20130128.133942-1</version>
+    								<version>TRUNK-20130320.164434-1</version>
 									<outputDirectory>target/dist/saiku-adhoc/lib</outputDirectory>
 								</artifactItem>
 								<artifactItem>
-    								<groupId>pt.webdetails</groupId>
+    								<groupId>pentaho</groupId>
     								<artifactId>cpf</artifactId>
-    								<version>TRUNK-20130130.173337-1</version>
+    								<version>TRUNK-20130320.164639-1</version>
 									<outputDirectory>target/dist/saiku-adhoc/lib</outputDirectory>
 								</artifactItem>
 								<artifactItem>
@@ -152,18 +152,16 @@
 									<outputDirectory>target/dist/saiku-adhoc/lib</outputDirectory>
 								</artifactItem>
 								<artifactItem>
-																	<groupId>org.codehaus.jettison</groupId>
-	<artifactId>jettison</artifactId>
-	<version>1.2</version>
+									<groupId>org.codehaus.jettison</groupId>
+									<artifactId>jettison</artifactId>
+									<version>1.2</version>
 									<outputDirectory>target/dist/saiku-adhoc/lib</outputDirectory>
 								</artifactItem>
-
 							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
